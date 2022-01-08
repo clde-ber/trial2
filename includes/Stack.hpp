@@ -3,6 +3,8 @@
 
 class stack
 {
+    private:
+        size_t _n;
     public:
         template< typename T >
         stack( void )

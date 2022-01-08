@@ -1,46 +1,179 @@
 #ifndef CONTAINER_H
 #define CONTAINER_H
 
-#include "Stack.hpp"
-#include "Vector.hpp"
-#include "Map.hpp"
-
 #include <iostream>
 #include <string>
 #include <memory>
+#include <cstddef>
+
+#define TRUE 1
+#define FALSE 0
 
 namespace ft
 {
     template< typename T >
-    class stack< T >
+    class stack
     {
+        private:
+            size_t _n;
+            T* _p;
+            class OutOfLimitsException : public std::exception
+            {
+                public:
+                    virtual const char* what() const throw()
+                    {
+                        return "Stack element exception: out of limits!";
+                    }
+            };
         public:
             stack( void )
             {
                 std::allocator< T > alloc;
-
-                alloc.allocate(0, T);
+                _n = 0;
+                _p = alloc.allocate(0, this);
             }
-            template< typename T >
+            stack( size_t n )
+            {
+                std::allocator< T > alloc;
+                _n = n;
+                _p = alloc.allocate(_n, this);
+            }
             stack( const stack & rhs )
             {
                 *this = rhs;
             }
-            template< typename T >
             stack & operator=( stack const & rhs )
             {
                 std::allocator< T > alloc;
-                return new (this) stack(rhs);
+                alloc.deallocate(_p, _n);
+                _n = rhs._n;
+                _p = alloc.allocate(rhs._n, this);
+                for (size_t i = 0; i < _n; i++)
+                    _p[i] = rhs._p[i];
+                return *this;
             }
-            template< typename T >
-            ~stack( void )
+            virtual ~stack( void )
             {
                 std::allocator< T > alloc;
-                alloc.deallocate(this, size());
+                alloc.deallocate(_p, _n);
             }
-    };
-    class Vector;
-    class Map;
+            size_t size() const
+            {
+                return _n;
+            }
+            bool empty() const
+            {
+                if (!_n)
+                    return TRUE;
+                return FALSE;
+            }
+            T & operator[](size_t n)
+            {
+                if (n < 0 or n >= _n)
+                throw OutOfLimitsException();
+                return _p[n];
+            }
+            int operator<(T const & rhs)
+            {
+                if (_n < rhs._n)
+                    return 1;
+                return 0;
+            }
+
+            int operator>(T const & rhs)
+            {
+                if (_n > rhs._n)
+                    return 1;
+                return 0;
+            }
+
+            int operator<=(T const & rhs)
+            {
+                if (_n <= rhs._n)
+                    return 1;
+                return 0;
+            }
+
+            int operator>=(T const & rhs)
+            {
+                if (_n >= rhs._n)
+                    return 1;
+                return 0;
+            }
+
+            int operator==(T const & rhs)
+            {
+                if (_n == rhs._n)
+                    return 1;
+                return 0;
+            }
+
+            int operator!=(T const & rhs)
+            {
+                if (_n != rhs._n)
+                    return 1;
+                return 0;
+            }
+
+            T operator+(T const & rhs)
+            {
+                return *this + rhs;
+            }
+
+            T operator-(T const & rhs)
+            {
+                return *this - rhs;
+            }
+
+            T operator*(T const & rhs)
+            {
+                return *this * rhs;
+            }
+
+            T operator/(T const & rhs)
+            {
+                return  *this / rhs;
+            }
+
+            T & operator++( void )
+            {
+                ++_n;
+                return *this;
+            }
+
+            T operator++(int)
+            {
+                T tmp = *this;
+                _n++;
+                return tmp;
+            }
+
+            T & operator--( void )
+            {
+                --_n;
+                return *this;
+            }
+
+            T operator--(int)
+            {
+                T tmp = *this;
+                _n--;
+                return tmp;
+            }
+        };
+        class Vector;
+        class Map;
 }
+
+    // empty : Test whether container is empty 
+    // size : Return size OK
+    // top : Access next element
+    // push_back
+    // pop_back
+    // push : Insert element
+    // pop : Remove top element 
+    // back
+    // push_back
+    // pop_back
 
 #endif
