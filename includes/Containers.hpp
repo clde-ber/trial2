@@ -25,6 +25,14 @@ namespace ft
                         return "Stack element exception: out of limits!";
                     }
             };
+            class EmptyStackException : public std::exception
+            {
+                public:
+                    virtual const char* what() const throw()
+                    {
+                        return "Stack exception: empty stack!";
+                    }
+            };
         public:
             stack( void )
             {
@@ -72,6 +80,12 @@ namespace ft
                 if (n < 0 or n >= _n)
                 throw OutOfLimitsException();
                 return _p[n];
+            }
+            T & top()
+            {
+                if (!empty())
+                    return _p[_n - 1];
+                throw EmptyStackException();
             }
         };
         class Vector;
