@@ -87,6 +87,26 @@ namespace ft
                     return _p[_n - 1];
                 throw EmptyStackException();
             }
+            void push(T const & val)
+            {
+                stack< T > tmp(_n + 1);
+                for (size_t i = 0; i < _n; i++)
+                    tmp._p[i] = _p[i];
+                tmp._p[_n] = val;
+                tmp._n = _n + 1;
+                *this = tmp;
+            }
+            void pop()
+            {
+                if (!_n)
+                    throw EmptyStackException();
+                std::allocator< T > alloc;
+                stack< T > tmp(_n - 1);
+                for (size_t i = 0; i < _n - 1; i++)
+                    tmp._p[i] = _p[i];
+                tmp._n = _n - 1;
+                *this = tmp;
+            }
         };
         class Vector;
         class Map;

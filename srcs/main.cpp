@@ -25,8 +25,25 @@ int main( void )
         std::cout << "**********" << std::endl;
         ft::stack< int > stackempty;
         std::cout << stack1.top() << std::endl;
+        //std::cout << "**********" << std::endl;
+        //std::cout << stackempty.top() << std::endl;
         std::cout << "**********" << std::endl;
-        std::cout << stackempty.top() << std::endl;
+        stack1.push(16);
+        for(int i = 0; i < 6; i++)
+            std::cout << stack1[i] << std::endl;
+        std::cout << "**********" << std::endl;
+        stackempty.push(1);
+        //for(int i = 0; i < 1; i++)
+            //std::cout << stackempty[i] << std::endl;
+        //std::cout << "**********" << std::endl;
+        stack1.pop();
+        //for(int i = 0; i < 6; i++)
+            //std::cout << stack1[i] << std::endl;
+        //std::cout << "**********" << std::endl;
+        stackempty.pop();
+        stackempty.pop();
+        for(int i = 0; i < 1; i++)
+            std::cout << stackempty[i] << std::endl;
     }
     catch(const std::exception& e)
     {
