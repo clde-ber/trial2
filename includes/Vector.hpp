@@ -1,6 +1,10 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+#include <algorithm>
+
+#define MAX_SIZE 
+
 namespace ft
 {
     template< typename T >
@@ -26,8 +30,8 @@ namespace ft
                 }
         };
         public:
-            typedef typename ft::vector<T> iterator;
-            typedef typename ft::vector<T> reverse_iterator;
+            typedef T* iterator;
+            typedef T* reverse_iterator;
 
             vector( void ) : _n(0), _p(0)
             {
@@ -65,19 +69,19 @@ namespace ft
             }
             iterator begin()
             {
-                return _p[0];
+                return &_p[0];
             }
             iterator end()
             {
-                return _p[_n];
+                return &_p[_n];
             }
             iterator rbegin()
             {
-                return _p[_n];
+                return &_p[_n];
             }
             iterator rend()
             {
-                return _p[0];
+                return &_p[0];
             }
             bool empty() const
             {

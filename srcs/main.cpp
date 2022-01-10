@@ -1,6 +1,11 @@
 #include "Stack.hpp"
 #include "Vector.hpp"
 
+void printVector(char it)
+{
+    std::cout << it << std::endl;
+}
+
 int main( void )
 {
     unsigned long n = 10;
@@ -74,6 +79,9 @@ int main( void )
             vectorAssign[i] = 'b';
         for (unsigned long i = 0; i < vectorAssign.size(); i++)
             std::cout << vectorAssign[i] << std::endl;
+        std::for_each(vectorAssign.begin(), vectorAssign.end(), printVector);
+        std::cout << vectorCopy.size() << std::endl;
+        std::cout << vectorCopy.empty() << std::endl;
     }
     catch(const std::exception& e)
     {
