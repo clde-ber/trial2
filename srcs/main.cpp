@@ -80,8 +80,26 @@ int main( void )
         for (unsigned long i = 0; i < vectorAssign.size(); i++)
             std::cout << vectorAssign[i] << std::endl;
         std::for_each(vectorAssign.begin(), vectorAssign.end(), printVector);
+        std::cout << "*************" << std::endl;
         std::cout << vectorCopy.size() << std::endl;
+        std::cout << "*************" << std::endl;
         std::cout << vectorCopy.empty() << std::endl;
+        vectorAssign.push_back('x');
+        vectorCopy.push_back('y');
+        std::cout << "*************" << std::endl;
+        std::for_each(vectorAssign.rend(), vectorAssign.rbegin(), printVector);
+        std::cout << "*************" << std::endl;
+        std::for_each(vectorCopy.rend(), vectorCopy.rbegin(), printVector);
+        std::cout << "*************" << std::endl;
+        std::cout << vectorAssign.back() << std::endl;
+        std::cout << "*************" << std::endl;
+        std::cout << vectorCopy.back() << std::endl;
+        vectorAssign.pop_back();
+        vectorCopy.pop_back();
+        std::cout << "*************" << std::endl;
+        std::for_each(vectorAssign.rend(), vectorAssign.rbegin(), printVector);
+        std::cout << "*************" << std::endl;
+        std::for_each(vectorCopy.rend(), vectorCopy.rbegin(), printVector);
     }
     catch(const std::exception& e)
     {

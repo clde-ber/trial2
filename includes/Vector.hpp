@@ -95,6 +95,34 @@ namespace ft
                     throw OutOfLimitsException();
                 return _p[n];
             }
+            T & back()
+            {
+                if (!empty())
+                    return _p[_n - 1];
+                throw EmptyStackException();
+            }
+            void push_back(T const & val)
+            {
+                vector< T > tmp(_n + 1);
+                for (unsigned long i = 0; i < _n; i++)
+                    tmp._p[i] = _p[i];
+                tmp._p[_n] = val;
+                tmp._n = _n + 1;
+                this->~vector();
+                *this = tmp;
+            }
+            void pop_back()
+            {
+                if (!_n)
+                    throw EmptyStackException();
+                std::allocator< T > alloc;
+                vector< T > tmp(_n - 1);
+                for (unsigned long i = 0; i < _n - 1; i++)
+                    tmp._p[i] = _p[i];
+                tmp._n = _n - 1;
+                this->~vector();
+                *this = tmp;
+            }
     };
 };
 
