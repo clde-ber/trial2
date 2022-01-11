@@ -183,7 +183,35 @@ namespace ft
                     *this = tmp;
                 }
                 else
-                tmp.~vector();
+                    tmp.~vector();
+            }
+            void assign(iterator first, iterator last)
+            {
+                unsigned long i = 0;
+                unsigned long len = 0;
+                while (first != last)
+                {
+                    first++;
+                    i++;
+                }
+                len = i;
+                while (i)
+                {
+                    first--;
+                    i--;
+                }
+                reserve(len);
+                for (unsigned long x = 0; x < len; x++)
+                {
+                    _p[x] = *first;
+                    first++;
+                }
+            }
+            void assign(size_t n, const T & val)
+            {
+                reserve(n);
+                for (unsigned long x = 0; x < n; x++)
+                    _p[x] = val;
             }
     };
 };

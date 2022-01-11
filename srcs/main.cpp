@@ -136,6 +136,12 @@ int main( void )
         std::cout << "*************" << std::endl;
         vectorCopy.resize(15, '*');
         std::for_each(vectorCopy.begin(), vectorCopy.end(), printVector);
+        std::cout << "*************" << std::endl;
+        vectorAssign.assign(vectorCopy.rend(), vectorCopy.rbegin());
+        std::for_each(vectorAssign.begin(), vectorAssign.end(), printVector);
+        std::cout << "*************" << std::endl;
+        vectorCopy.assign(7, '$');
+        std::for_each(vectorCopy.begin(), vectorCopy.end(), printVector);
     }
     catch(const std::exception& e)
     {
