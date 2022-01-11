@@ -121,6 +121,11 @@ int main( void )
         std::cout << vectorAssign.size() << std::endl;
         std::cout << "*************" << std::endl;
         std::cout << vectorAssign.capacity() << std::endl;
+        std::cout << "*************" << std::endl;
+        ft::vector<int> vectorNb(5);
+        std::cout << vectorAssign.max_size() << std::endl;
+        std::cout << "*************" << std::endl;
+        std::cout << vectorNb.max_size() << std::endl;
     }
     catch(const std::exception& e)
     {

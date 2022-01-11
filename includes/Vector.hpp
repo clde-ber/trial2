@@ -152,6 +152,22 @@ namespace ft
             {
                 return _capacity;
             }
+            size_t ft_pow(size_t n, size_t pow) const
+            {
+                size_t i = 0;
+                size_t res = 1;
+
+                while (i < pow)
+                {
+                    res = res * n;
+                    i++;
+                }
+                return res;
+            }
+            size_t max_size() const
+            {
+                return (ft_pow(2, 32) / sizeof(T)) * ft_pow(2, 32) - 1;
+            }
     };
 };
 
