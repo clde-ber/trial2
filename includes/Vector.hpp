@@ -200,7 +200,8 @@ namespace ft
                     first--;
                     i--;
                 }
-                reserve(len);
+                if (len != _capacity)
+                    reserve(len);
                 for (unsigned long x = 0; x < len; x++)
                 {
                     _p[x] = *first;
@@ -209,9 +210,162 @@ namespace ft
             }
             void assign(size_t n, const T & val)
             {
-                reserve(n);
+                if (n != _capacity)
+                    reserve(n);
                 for (unsigned long x = 0; x < n; x++)
                     _p[x] = val;
+            }
+            iterator insert (iterator position, const T & val)
+            {
+                unsigned long i = 0;
+                iterator it = begin();
+                iterator ite = end();
+                if (_n + 1 > _capacity)
+                {
+                    ft::vector<T> *tmp;
+                    tmp = this;
+                    ft::vector<T> res(_n + 1);
+                    while (it != position && it != ite)
+                    {
+                        res._p[i] = *it;
+                        it++;
+                        i++;
+                    }
+                    res._p[i++] = val;
+                    while (it != ite)
+                    {
+                        res._p[i] = *it;
+                        it++;
+                        i++;
+                    }
+                    tmp->~vector();
+                    *this = res;
+                }
+                else
+                {
+                    while (it != position && it != ite)
+                    {
+                        _p[i] = *it;
+                        it++;
+                        i++;
+                    }
+                    _p[i++] = val;
+                    while (it != ite)
+                    {
+                        _p[i] = *it;
+                        it++;
+                        i++;
+                    }
+                }
+                return position;
+            }
+            void insert (iterator position, size_t n, const T & val)
+            {
+                unsigned long i = 0;
+                iterator it = begin();
+                iterator ite = end();
+                if (_n + n > _capacity)
+                {
+                    ft::vector<T> *tmp;
+                    tmp = this;
+                    ft::vector<T> res(_n + n);
+                    while (it != position && it != ite)
+                    {
+                        res._p[i] = *it;
+                        it++;
+                        i++;
+                    }
+                    for (unsigned long x = 0; x < n; x++)
+                        res._p[i++] = val;
+                    while (it != ite)
+                    {
+                        res._p[i] = *it;
+                        it++;
+                        i++;
+                    }
+                    tmp->~vector();
+                    *this = res;
+                }
+                else
+                {
+                    while (it != position && it != ite)
+                    {
+                        _p[i] = *it;
+                        it++;
+                        i++;
+                    }
+                    for (unsigned long x = 0; x < n; x++)
+                        _p[i++] = val;
+                    while (it != ite)
+                    {
+                        _p[i] = *it;
+                        it++;
+                        i++;
+                    }
+                }
+            }
+            void insert (iterator position, iterator first, iterator last)
+            {
+                unsigned long i = 0;
+                unsigned long len = 0;
+                iterator it = begin();
+                iterator ite = end();
+                while (first != last)
+                {
+                    i++;
+                    first++;
+                }
+                len = i;
+                while (i)
+                {
+                    first--;
+                    i--;
+                }
+                if (_n + len > _capacity)
+                {
+                    ft::vector<T> *tmp;
+                    tmp = this;
+                    ft::vector<T> res(_n + len);
+                    while (it != position && it != ite)
+                    {
+                        res._p[i] = *it;
+                        it++;
+                        i++;
+                    }
+                    while (first != last)
+                    {
+                        res._p[i++] = *first;
+                        first++;
+                    }
+                    while (it != ite)
+                    {
+                        res._p[i] = *it;
+                        it++;
+                        i++;
+                    }
+                    tmp->~vector();
+                    *this = res;
+                }
+                else
+                {
+                    while (it != position && it != ite)
+                    {
+                        _p[i] = *it;
+                        it++;
+                        i++;
+                    }
+                    while (first != last)
+                    {
+                        _p[i++] = *first;
+                        first++;
+                    }
+                    while (it != ite)
+                    {
+                        _p[i] = *it;
+                        it++;
+                        i++;
+                    }
+                }
             }
     };
 };
