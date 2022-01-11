@@ -1,6 +1,7 @@
 #include "Stack.hpp"
 #include "Vector.hpp"
 #include <algorithm>
+#include <vector>
 
 void printVector(char it)
 {
@@ -122,10 +123,13 @@ int main( void )
         std::cout << "*************" << std::endl;
         std::cout << vectorAssign.capacity() << std::endl;
         std::cout << "*************" << std::endl;
-        ft::vector<int> vectorNb(5);
         std::cout << vectorAssign.max_size() << std::endl;
         std::cout << "*************" << std::endl;
+        ft::vector<int *> vectorNb(5);
+        std::vector<int *> realVector(5);
         std::cout << vectorNb.max_size() << std::endl;
+        std::cout << "*************" << std::endl;
+        std::cout << realVector.max_size() << std::endl;
     }
     catch(const std::exception& e)
     {
