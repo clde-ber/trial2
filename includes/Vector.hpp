@@ -1,7 +1,7 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include <algorithm>
+#include <stdexcept>
 
 #define MAX_SIZE 
 
@@ -11,8 +11,9 @@ namespace ft
     class vector
     {
         private:
-            unsigned long _n;
+            size_t _n;
             T* _p;
+            size_t _capacity;
         class OutOfLimitsException : public std::exception
         {
             public:
@@ -33,15 +34,15 @@ namespace ft
             typedef T* iterator;
             typedef T* reverse_iterator;
 
-            vector( void ) : _n(0), _p(0)
+            vector( void ) : _n(0), _p(0), _capacity(0)
             {
                 std::allocator< T > alloc;
-                _p = alloc.allocate(_n, this);
+                _p = alloc.allocate(_capacity, this);
             }
-            vector( unsigned long n ) : _n(n), _p(0)
+            vector( unsigned long n ) : _n(n), _p(0), _capacity(n)
             {
                 std::allocator< T > alloc;
-                _p = alloc.allocate(_n, this);
+                _p = alloc.allocate(_capacity, this);
             }
             vector( const vector & rhs )
             {
@@ -52,14 +53,16 @@ namespace ft
                 std::allocator< T > alloc;
                 _p = alloc.allocate(rhs._n, this);
                 _n = rhs._n;
-                for (unsigned long i = 0; i < _n; i++)
+                _capacity = rhs._capacity;
+                for (unsigned long i = 0; i < _capacity; i++)
                     _p[i] = rhs._p[i];
                 return *this;
             }
             virtual ~vector( void )
             {
                 std::allocator< T > alloc;
-                alloc.deallocate(_p, _n);
+                alloc.deallocate(_p, _capacity);
+                _capacity = 0;
                 _n = 0;
                 _p = 0;
             }
@@ -91,7 +94,7 @@ namespace ft
             }
             T & operator[](unsigned long n)
             {
-                if (n < 0 or n >= _n)
+                if (n < 0 or n >= _capacity)
                     throw OutOfLimitsException();
                 return _p[n];
             }
@@ -101,13 +104,30 @@ namespace ft
                     return _p[_n - 1];
                 throw EmptyStackException();
             }
+            T & front()
+            {
+                if (!empty())
+                    return _p[0];
+                throw EmptyStackException();
+            }
+            T * data()
+            {
+                if (!empty())
+                    return &_p[0];
+                throw EmptyStackException();
+            }
+            T & at(size_t pos)
+            {
+                if (!(pos < size()))
+                    throw std::out_of_range("out of range");
+                return _p[pos];
+            }
             void push_back(T const & val)
             {
-                vector< T > tmp(_n + 1);
-                for (unsigned long i = 0; i < _n; i++)
+                vector< T > tmp(_capacity + 1);
+                for (unsigned long i = 0; i < _capacity; i++)
                     tmp._p[i] = _p[i];
-                tmp._p[_n] = val;
-                tmp._n = _n + 1;
+                tmp._p[_capacity] = val;
                 this->~vector();
                 *this = tmp;
             }
@@ -116,12 +136,21 @@ namespace ft
                 if (!_n)
                     throw EmptyStackException();
                 std::allocator< T > alloc;
-                vector< T > tmp(_n - 1);
-                for (unsigned long i = 0; i < _n - 1; i++)
+                vector< T > tmp(_capacity - 1);
+                for (unsigned long i = 0; i < _capacity - 1; i++)
                     tmp._p[i] = _p[i];
-                tmp._n = _n - 1;
                 this->~vector();
                 *this = tmp;
+            }
+            void reserve( size_t new_cap )
+            {
+                ft::vector< T > newV(new_cap);
+                this->~vector();
+                *this = newV;
+            }
+            size_t capacity() const
+            {
+                return _capacity;
             }
     };
 };

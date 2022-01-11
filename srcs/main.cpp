@@ -1,5 +1,6 @@
 #include "Stack.hpp"
 #include "Vector.hpp"
+#include <algorithm>
 
 void printVector(char it)
 {
@@ -70,14 +71,14 @@ int main( void )
         ft::vector< char > vectorCopy(vector1);
         ft::vector< char > vectorAssign;
         vectorAssign = vector1;
-        for (unsigned long i = 0; i < vectorCopy.size(); i++)
+        for (unsigned long i = 0; i < vectorCopy.capacity(); i++)
             vectorCopy[i] = 'a';
-        for (unsigned long i = 0; i < vectorCopy.size(); i++)
+        for (unsigned long i = 0; i < vectorCopy.capacity(); i++)
             std::cout << vectorCopy[i] << std::endl;
         std::cout << "*************" << std::endl;
-        for (unsigned long i = 0; i < vectorAssign.size(); i++)
+        for (unsigned long i = 0; i < vectorAssign.capacity(); i++)
             vectorAssign[i] = 'b';
-        for (unsigned long i = 0; i < vectorAssign.size(); i++)
+        for (unsigned long i = 0; i < vectorAssign.capacity(); i++)
             std::cout << vectorAssign[i] << std::endl;
         std::for_each(vectorAssign.begin(), vectorAssign.end(), printVector);
         std::cout << "*************" << std::endl;
@@ -86,6 +87,14 @@ int main( void )
         std::cout << vectorCopy.empty() << std::endl;
         vectorAssign.push_back('x');
         vectorCopy.push_back('y');
+        std::cout << "*************" << std::endl;
+        std::cout << vectorCopy.size() << std::endl;
+        std::cout << "*************" << std::endl;
+        std::cout << vectorAssign.size() << std::endl;
+        std::cout << "*************" << std::endl;
+        std::cout << vectorAssign.at(5) << std::endl;
+        std::cout << "*************" << std::endl;
+        std::cout << vectorCopy.at(5) << std::endl;
         std::cout << "*************" << std::endl;
         std::for_each(vectorAssign.rend(), vectorAssign.rbegin(), printVector);
         std::cout << "*************" << std::endl;
@@ -100,6 +109,18 @@ int main( void )
         std::for_each(vectorAssign.rend(), vectorAssign.rbegin(), printVector);
         std::cout << "*************" << std::endl;
         std::for_each(vectorCopy.rend(), vectorCopy.rbegin(), printVector);
+        std::cout << "*************" << std::endl;
+        std::cout << vectorAssign.front() << std::endl;
+        std::cout << "*************" << std::endl;
+        std::cout << vectorCopy.front() << std::endl;
+        std::cout << "*************" << std::endl;
+        std::cout << *vectorAssign.data() << std::endl;
+        std::cout << "*************" << std::endl;
+        std::cout << *vectorCopy.data() << std::endl;
+        std::cout << "*************" << std::endl;
+        std::cout << vectorAssign.size() << std::endl;
+        std::cout << "*************" << std::endl;
+        std::cout << vectorAssign.capacity() << std::endl;
     }
     catch(const std::exception& e)
     {
