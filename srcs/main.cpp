@@ -130,6 +130,12 @@ int main( void )
         std::cout << vectorNb.max_size() << std::endl;
         std::cout << "*************" << std::endl;
         std::cout << realVector.max_size() << std::endl;
+        std::cout << "*************" << std::endl;
+        vectorAssign.resize(3, '0');
+        std::for_each(vectorAssign.begin(), vectorAssign.end(), printVector);
+        std::cout << "*************" << std::endl;
+        vectorCopy.resize(15, '*');
+        std::for_each(vectorCopy.begin(), vectorCopy.end(), printVector);
     }
     catch(const std::exception& e)
     {

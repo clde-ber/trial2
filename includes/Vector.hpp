@@ -168,6 +168,23 @@ namespace ft
             {
                 return (ft_pow(2, 32) / sizeof(T)) * ft_pow(2, 32) - 1;
             }
+            void resize (size_t n, T value)
+            {
+                unsigned long i = 0;
+                std::allocator< T > alloc;
+                vector< T > tmp(n);
+                if (n != _capacity)
+                {
+                    for (i = 0; i < _capacity; i++)
+                        tmp._p[i] = _p[i];
+                    for (unsigned long j = i; j < tmp._capacity; j++)
+                        tmp._p[j] = value;
+                    this->~vector();
+                    *this = tmp;
+                }
+                else
+                tmp.~vector();
+            }
     };
 };
 
