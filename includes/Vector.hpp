@@ -51,11 +51,12 @@ namespace ft
             vector & operator=( vector const & rhs )
             {
                 std::allocator< T > alloc;
-                _p = alloc.allocate(rhs._n, this);
+                _p = alloc.allocate(rhs._capacity, this);
                 _n = rhs._n;
                 _capacity = rhs._capacity;
                 for (unsigned long i = 0; i < _capacity; i++)
                     _p[i] = rhs._p[i];
+                rhs.~vector();
                 return *this;
             }
             virtual ~vector( void )
@@ -147,6 +148,7 @@ namespace ft
                 ft::vector< T > newV(new_cap);
                 this->~vector();
                 *this = newV;
+                newV.~vector();
             }
             size_t capacity() const
             {
@@ -372,6 +374,7 @@ namespace ft
             iterator erase(iterator position)
             {
                 unsigned long i = 0;
+                unsigned long len = 0;
                 iterator it = begin();
                 iterator ite = end();
                 while (it != ite)
@@ -381,21 +384,24 @@ namespace ft
                         _p[i] = *it;
                         i++;
                     }
+                    if (it == position)
+                        len = i;
                     it++;
                 }
                 resize(i, 0);
                 it = begin();
                 ite = end();
-                while (i > 1 && it != ite)
+                while (len && it != ite)
                 {
                     it++;
-                    i--;
+                    len--;
                 }
                 return it;
             }
             iterator erase(iterator first, iterator last)
             {
                 unsigned long i = 0;
+                unsigned long len = 0;
                 iterator it = begin();
                 iterator ite = end();
                 while (it != ite)
@@ -408,6 +414,7 @@ namespace ft
                     }
                     else
                     {
+                        len = i;
                         while (it != last && it != ite)
                             it++;
                     }
@@ -415,17 +422,29 @@ namespace ft
                 resize(i, 0);
                 it = begin();
                 ite = end();
-                std::cout << i << std::endl;
-                while (i > 1 && it != ite)
+                while (len && it != ite)
                 {
                     it++;
-                    i--;
+                    len--;
                 }
                 return it;
             }
+            void swap(ft::vector< T > & x)
+            {
+                ft::vector< T > tmp(*this);
+
+                *this = x;
+                x.~vector();
+                x = tmp;
+            }
     };
 };
+// this x
+// a    b
 
+// tmp = this
+// this = x
+// x = tmp
 #endif
 /*
 begin

@@ -8,6 +8,11 @@ void printVector(char it)
     std::cout << it << std::endl;
 }
 
+void printFloat(float it)
+{
+    std::cout << it << std::endl;
+}
+
 int main( void )
 {
     unsigned long n = 10;
@@ -93,8 +98,8 @@ int main( void )
         std::cout << "*************" << std::endl;
         std::cout << vectorAssign.size() << std::endl;
         std::cout << "*************" << std::endl;
-        std::cout << vectorAssign.at(5) << std::endl;
-        std::cout << "*************" << std::endl;
+        //std::cout << vectorAssign.at(5) << std::endl;
+        //std::cout << "*************" << std::endl;
         std::cout << vectorCopy.at(5) << std::endl;
         std::cout << "*************" << std::endl;
         std::for_each(vectorAssign.rend(), vectorAssign.rbegin(), printVector);
@@ -104,7 +109,7 @@ int main( void )
         std::cout << vectorAssign.back() << std::endl;
         std::cout << "*************" << std::endl;
         std::cout << vectorCopy.back() << std::endl;
-        vectorAssign.pop_back();
+        //vectorAssign.pop_back();
         vectorCopy.pop_back();
         std::cout << "*************" << std::endl;
         std::for_each(vectorAssign.rend(), vectorAssign.rbegin(), printVector);
@@ -155,6 +160,15 @@ int main( void )
         std::cout << *vectorCopy.erase(vectorCopy.begin()) << std::endl;
         std::cout << "*************" << std::endl;
         std::for_each(vectorCopy.begin(), vectorCopy.end(), printVector);
+        ft::vector< float > swapf;
+        ft::vector< float > swapc;
+        swapf.assign(5, 0.02f);
+        swapc.assign(6, 0.15f);
+        swapf.swap(swapc);
+        std::cout << "*************" << std::endl;
+        std::for_each(swapf.begin(), swapf.end(), printFloat);
+        std::cout << "*************" << std::endl;
+        std::for_each(swapc.begin(), swapc.end(), printFloat);
     }
     catch(const std::exception& e)
     {
