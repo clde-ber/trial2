@@ -61,8 +61,11 @@ namespace ft
             }
             virtual ~vector( void )
             {
-                std::allocator< T > alloc;
-                alloc.deallocate(_p, _capacity);
+                if (_p)
+                {
+                    std::allocator< T > alloc;
+                    alloc.deallocate(_p, _capacity);
+                }
                 _capacity = 0;
                 _n = 0;
                 _p = 0;
@@ -436,6 +439,10 @@ namespace ft
                 *this = x;
                 x.~vector();
                 x = tmp;
+            }
+            void clear()
+            {
+                this->~vector();
             }
     };
 };

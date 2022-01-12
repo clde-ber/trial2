@@ -169,6 +169,8 @@ int main( void )
         std::for_each(swapf.begin(), swapf.end(), printFloat);
         std::cout << "*************" << std::endl;
         std::for_each(swapc.begin(), swapc.end(), printFloat);
+        swapc.clear();
+        std::cout << swapc.at(0) << std::endl;
     }
     catch(const std::exception& e)
     {
