@@ -36,8 +36,8 @@ namespace ft
 
             vector( void ) : _n(0), _p(0), _capacity(0)
             {
-                std::allocator< T > alloc;
-                _p = alloc.allocate(_capacity, this);
+                //std::allocator< T > alloc;
+                //_p = alloc.allocate(_capacity, this);
             }
             vector( unsigned long n ) : _n(n), _p(0), _capacity(n)
             {
@@ -176,14 +176,16 @@ namespace ft
                 if (n != _capacity)
                 {
                     for (i = 0; i < _capacity; i++)
-                        tmp._p[i] = _p[i];
+                    {
+                        if (i < tmp._capacity)
+                            tmp._p[i] = _p[i];
+                    }
                     for (unsigned long j = i; j < tmp._capacity; j++)
                         tmp._p[j] = value;
                     this->~vector();
                     *this = tmp;
                 }
-                else
-                    tmp.~vector();
+                tmp.~vector();
             }
             void assign(iterator first, iterator last)
             {
@@ -222,8 +224,6 @@ namespace ft
                 iterator ite = end();
                 if (_n + 1 > _capacity)
                 {
-                    ft::vector<T> *tmp;
-                    tmp = this;
                     ft::vector<T> res(_n + 1);
                     while (it != position && it != ite)
                     {
@@ -238,8 +238,10 @@ namespace ft
                         it++;
                         i++;
                     }
-                    tmp->~vector();
+                   // tmp->~vector();
+                    this->~vector();
                     *this = res;
+                    res.~vector();
                 }
                 else
                 {
@@ -266,8 +268,6 @@ namespace ft
                 iterator ite = end();
                 if (_n + n > _capacity)
                 {
-                    ft::vector<T> *tmp;
-                    tmp = this;
                     ft::vector<T> res(_n + n);
                     while (it != position && it != ite)
                     {
@@ -283,8 +283,10 @@ namespace ft
                         it++;
                         i++;
                     }
-                    tmp->~vector();
+                   // tmp->~vector();
+                   this->~vector();
                     *this = res;
+                    res.~vector();
                 }
                 else
                 {
@@ -323,8 +325,6 @@ namespace ft
                 }
                 if (_n + len > _capacity)
                 {
-                    ft::vector<T> *tmp;
-                    tmp = this;
                     ft::vector<T> res(_n + len);
                     while (it != position && it != ite)
                     {
@@ -343,8 +343,10 @@ namespace ft
                         it++;
                         i++;
                     }
-                    tmp->~vector();
+                  //  tmp->~vector();
+                    this->~vector();
                     *this = res;
+                    res.~vector();
                 }
                 else
                 {
@@ -366,6 +368,60 @@ namespace ft
                         i++;
                     }
                 }
+            }
+            iterator erase(iterator position)
+            {
+                unsigned long i = 0;
+                iterator it = begin();
+                iterator ite = end();
+                while (it != ite)
+                {
+                    if (it != position)
+                    {
+                        _p[i] = *it;
+                        i++;
+                    }
+                    it++;
+                }
+                resize(i, 0);
+                it = begin();
+                ite = end();
+                while (i > 1 && it != ite)
+                {
+                    it++;
+                    i--;
+                }
+                return it;
+            }
+            iterator erase(iterator first, iterator last)
+            {
+                unsigned long i = 0;
+                iterator it = begin();
+                iterator ite = end();
+                while (it != ite)
+                {
+                    if (it != first)
+                    {
+                        _p[i] = *it;
+                        it++;
+                        i++;
+                    }
+                    else
+                    {
+                        while (it != last && it != ite)
+                            it++;
+                    }
+                }
+                resize(i, 0);
+                it = begin();
+                ite = end();
+                std::cout << i << std::endl;
+                while (i > 1 && it != ite)
+                {
+                    it++;
+                    i--;
+                }
+                return it;
             }
     };
 };

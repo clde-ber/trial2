@@ -147,6 +147,14 @@ int main( void )
         vectorCopy.insert(vectorCopy.begin() + 8, vectorAssign.begin(), vectorAssign.end());
         vectorCopy.insert(vectorCopy.begin() + 4, 3, '0');
         std::for_each(vectorCopy.begin(), vectorCopy.end(), printVector);
+        std::cout << "*************" << std::endl;
+        std::cout << *vectorCopy.erase(vectorCopy.begin() + 3, vectorCopy.begin() + 7) << std::endl;
+        std::cout << "*************" << std::endl;
+        std::for_each(vectorCopy.begin(), vectorCopy.end(), printVector);
+        std::cout << "*************" << std::endl;
+        std::cout << *vectorCopy.erase(vectorCopy.begin()) << std::endl;
+        std::cout << "*************" << std::endl;
+        std::for_each(vectorCopy.begin(), vectorCopy.end(), printVector);
     }
     catch(const std::exception& e)
     {

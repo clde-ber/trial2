@@ -36,8 +36,8 @@ namespace ft
         public:
             stack( void ) : _n(0), _p(0)
             {
-                std::allocator< T > alloc;
-                _p = alloc.allocate(_n, this);
+                //std::allocator< T > alloc;
+                //_p = alloc.allocate(_n, this);
             }
             stack( unsigned long n ) : _n(n), _p(0)
             {
