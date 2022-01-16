@@ -51,6 +51,7 @@ namespace ft
             stack & operator=( stack const & rhs )
             {
                 std::allocator< T > alloc;
+                this->~stack();
                 _p = alloc.allocate(rhs._n, this);
                 _n = rhs._n;
                 for (unsigned long i = 0; i < _n; i++)

@@ -7,7 +7,7 @@
 
 namespace ft
 {
-    template< typename T >
+    template< typename T, class Allocator = std::allocator< T > >
     class vector
     {
         private:
@@ -31,9 +31,13 @@ namespace ft
                 }
         };
         public:
-            typedef T* iterator;
-            typedef T* reverse_iterator;
+            typedef T* pointer;
+            typedef pointer iterator;
+            typedef pointer reverse_iterator;
+            typedef pointer const_iterator;
+            typedef pointer const_reverse_iterator;
 
+            
             vector( void ) : _n(0), _p(0), _capacity(0)
             {
                 //std::allocator< T > alloc;
@@ -48,15 +52,21 @@ namespace ft
             {
                 *this = rhs;
             }
+            template < typename U >
+            vector(U it, U ite) : _n(0), _p(0), _capacity(0)
+            {
+                assign(it, ite);
+            }
             vector & operator=( vector const & rhs )
             {
                 std::allocator< T > alloc;
+                if (_p)
+                    this->~vector();
                 _p = alloc.allocate(rhs._capacity, this);
                 _n = rhs._n;
                 _capacity = rhs._capacity;
                 for (unsigned long i = 0; i < _capacity; i++)
                     _p[i] = rhs._p[i];
-                rhs.~vector();
                 return *this;
             }
             virtual ~vector( void )
@@ -132,7 +142,7 @@ namespace ft
                 for (unsigned long i = 0; i < _capacity; i++)
                     tmp._p[i] = _p[i];
                 tmp._p[_capacity] = val;
-                this->~vector();
+                //this->~vector();
                 *this = tmp;
             }
             void pop_back()
@@ -143,13 +153,13 @@ namespace ft
                 vector< T > tmp(_capacity - 1);
                 for (unsigned long i = 0; i < _capacity - 1; i++)
                     tmp._p[i] = _p[i];
-                this->~vector();
+                //this->~vector();
                 *this = tmp;
             }
             void reserve( size_t new_cap )
             {
                 ft::vector< T > newV(new_cap);
-                this->~vector();
+                //this->~vector();
                 *this = newV;
                 newV.~vector();
             }
@@ -176,7 +186,6 @@ namespace ft
             void resize (size_t n, T value)
             {
                 unsigned long i = 0;
-                std::allocator< T > alloc;
                 vector< T > tmp(n);
                 if (n != _capacity)
                 {
@@ -187,12 +196,13 @@ namespace ft
                     }
                     for (unsigned long j = i; j < tmp._capacity; j++)
                         tmp._p[j] = value;
-                    this->~vector();
+                    //this->~vector();
                     *this = tmp;
                 }
                 tmp.~vector();
             }
-            void assign(iterator first, iterator last)
+            template< typename U >
+            void assign(U first, U last)
             {
                 unsigned long i = 0;
                 unsigned long len = 0;
@@ -244,7 +254,7 @@ namespace ft
                         i++;
                     }
                    // tmp->~vector();
-                    this->~vector();
+                    //this->~vector();
                     *this = res;
                     res.~vector();
                 }
@@ -289,7 +299,7 @@ namespace ft
                         i++;
                     }
                    // tmp->~vector();
-                   this->~vector();
+                   //this->~vector();
                     *this = res;
                     res.~vector();
                 }
@@ -311,7 +321,8 @@ namespace ft
                     }
                 }
             }
-            void insert (iterator position, iterator first, iterator last)
+             template< typename U >
+            void insert (iterator position, U first, U last)
             {
                 unsigned long i = 0;
                 unsigned long len = 0;
@@ -349,7 +360,7 @@ namespace ft
                         i++;
                     }
                   //  tmp->~vector();
-                    this->~vector();
+                    //this->~vector();
                     *this = res;
                     res.~vector();
                 }
@@ -401,7 +412,8 @@ namespace ft
                 }
                 return it;
             }
-            iterator erase(iterator first, iterator last)
+            template< typename U >
+            iterator erase(U first, U last)
             {
                 unsigned long i = 0;
                 unsigned long len = 0;
@@ -434,15 +446,17 @@ namespace ft
             }
             void swap(ft::vector< T > & x)
             {
-                ft::vector< T > tmp(*this);
+                ft::vector< T > tmp;
 
+                tmp = *this;
                 *this = x;
-                x.~vector();
                 x = tmp;
             }
             void clear()
             {
                 this->~vector();
+                vector< T > tmp;
+                *this = tmp;
             }
     };
 };

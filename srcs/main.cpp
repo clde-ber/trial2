@@ -2,6 +2,7 @@
 #include "Vector.hpp"
 #include <algorithm>
 #include <vector>
+#include <list>
 
 void printVector(char it)
 {
@@ -9,6 +10,11 @@ void printVector(char it)
 }
 
 void printFloat(float it)
+{
+    std::cout << it << std::endl;
+}
+
+void printInt(int it)
 {
     std::cout << it << std::endl;
 }
@@ -170,7 +176,14 @@ int main( void )
         std::cout << "*************" << std::endl;
         std::for_each(swapc.begin(), swapc.end(), printFloat);
         swapc.clear();
-        std::cout << swapc.at(0) << std::endl;
+        //std::cout << swapc.at(0) << std::endl;
+        std::list< int > list;
+        list.push_back(1);
+        list.push_back(2);
+        list.push_back(3);
+        ft::vector< int > listV(list.begin(), list.end());
+        std::cout << "*************" << std::endl;
+        std::for_each(listV.begin(), listV.end(), printInt);
     }
     catch(const std::exception& e)
     {
