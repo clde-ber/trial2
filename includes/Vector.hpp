@@ -2,42 +2,32 @@
 #define VECTOR_H
 
 #include <stdexcept>
+#include <iostream>
+#include <cstddef>
+#include "Iter.hpp"
 
-#define MAX_SIZE 
+#define TRUE 1
+#define FALSE 0
 
 namespace ft
 {
-    template< typename T, class Allocator = std::allocator< T > >
+    template< typename T, class It = iter< T > >
     class vector
     {
         private:
             size_t _n;
             T* _p;
             size_t _capacity;
-        class OutOfLimitsException : public std::exception
-        {
-            public:
-                virtual const char* what() const throw()
-                {
-                    return "Vector element exception: out of limits!";
-                }
-        };
-        class EmptyStackException : public std::exception
-        {
-            public:
-                virtual const char* what() const throw()
-                {
-                    return "Vector exception: empty vector!";
-                }
-        };
         public:
-            typedef T* pointer;
-            typedef pointer iterator;
-            typedef pointer reverse_iterator;
-            typedef pointer const_iterator;
-            typedef pointer const_reverse_iterator;
+            typedef int size_type;
+            typedef T value_type;
+            typedef T& reference;
+            typedef It pointer;
+            typedef It iterator;
+            typedef It reverse_iterator;
+            typedef It const_iterator;
+            typedef It const_reverse_iterator;
 
-            
             vector( void ) : _n(0), _p(0), _capacity(0)
             {
                 //std::allocator< T > alloc;
@@ -48,57 +38,87 @@ namespace ft
                 std::allocator< T > alloc;
                 _p = alloc.allocate(_capacity, this);
             }
-            vector( const vector & rhs )
+            vector( unsigned long n, T const & value ) : _n(n), _p(0), _capacity(n)
+            {
+                std::allocator< T > alloc;
+                _p = alloc.allocate(_capacity, this);
+                for (unsigned long i = 0; i < _capacity; i++)
+                    _p[i] = value;
+            }
+            vector( const vector & rhs ) : _n(rhs._n), _p(0), _capacity(rhs._capacity)
             {
                 *this = rhs;
             }
-            template < typename U >
+            template< typename U >
             vector(U it, U ite) : _n(0), _p(0), _capacity(0)
             {
                 assign(it, ite);
             }
             vector & operator=( vector const & rhs )
             {
-                std::allocator< T > alloc;
-                if (_p)
-                    this->~vector();
-                _p = alloc.allocate(rhs._capacity, this);
+                _p = 0;
                 _n = rhs._n;
                 _capacity = rhs._capacity;
-                for (unsigned long i = 0; i < _capacity; i++)
+                std::allocator< T > alloc;
+                _p = alloc.allocate(rhs._capacity, this);
+                for (unsigned long i = 0; i < rhs._capacity; i++)
                     _p[i] = rhs._p[i];
                 return *this;
             }
             virtual ~vector( void )
             {
-                if (_p)
+               /*if (_p)
                 {
                     std::allocator< T > alloc;
                     alloc.deallocate(_p, _capacity);
-                }
-                _capacity = 0;
-                _n = 0;
-                _p = 0;
+                    _capacity = 0;
+                    _n = 0;
+                    _p = 0;
+                }*/
+            }
+            It begin()
+            {
+                It ret(&_p[0]);
+                return ret._it;
+            }
+            It end()
+            {
+                It ret(&_p[_n]);
+                return ret._it;
+            }
+            It rbegin()
+            {
+                It ret(&_p[_n]);
+                return ret._it;
+            }
+            It rend()
+            {
+                It ret(&_p[0]);
+                return ret._it;
+            }
+            It begin() const
+            {
+                It ret(&_p[0]);
+                return ret._it;
+            }
+            It end() const
+            {
+                It ret(&_p[_n]);
+                return ret._it;
+            }
+            It rbegin() const
+            {
+                It ret(&_p[_n]);
+                return ret._it;
+            }
+            It rend() const
+            {
+                It ret(&_p[0]);
+                return ret._it;
             }
             unsigned long size() const
             {
                 return _n;
-            }
-            iterator begin()
-            {
-                return &_p[0];
-            }
-            iterator end()
-            {
-                return &_p[_n];
-            }
-            iterator rbegin()
-            {
-                return &_p[_n];
-            }
-            iterator rend()
-            {
-                return &_p[0];
             }
             bool empty() const
             {
@@ -109,59 +129,63 @@ namespace ft
             T & operator[](unsigned long n)
             {
                 if (n < 0 or n >= _capacity)
-                    throw OutOfLimitsException();
+                    throw std::exception();
                 return _p[n];
             }
-            T & back()
+            T & back() const
             {
                 if (!empty())
                     return _p[_n - 1];
-                throw EmptyStackException();
+                throw std::exception();
             }
-            T & front()
+            T & front() const
             {
                 if (!empty())
                     return _p[0];
-                throw EmptyStackException();
+                throw std::exception();
             }
             T * data()
             {
                 if (!empty())
                     return &_p[0];
-                throw EmptyStackException();
+                throw std::exception();
             }
-            T & at(size_t pos)
+            T & at(size_t pos) const
             {
                 if (!(pos < size()))
-                    throw std::out_of_range("out of range");
+                    throw std::out_of_range("");
                 return _p[pos];
-            }
-            void push_back(T const & val)
-            {
-                vector< T > tmp(_capacity + 1);
-                for (unsigned long i = 0; i < _capacity; i++)
-                    tmp._p[i] = _p[i];
-                tmp._p[_capacity] = val;
-                //this->~vector();
-                *this = tmp;
-            }
-            void pop_back()
-            {
-                if (!_n)
-                    throw EmptyStackException();
-                std::allocator< T > alloc;
-                vector< T > tmp(_capacity - 1);
-                for (unsigned long i = 0; i < _capacity - 1; i++)
-                    tmp._p[i] = _p[i];
-                //this->~vector();
-                *this = tmp;
             }
             void reserve( size_t new_cap )
             {
                 ft::vector< T > newV(new_cap);
-                //this->~vector();
+                this->~vector();
                 *this = newV;
                 newV.~vector();
+            }
+            void resize (size_t n, T const & value = value_type())
+            {
+                ft::vector< T > tmp2(n);
+                unsigned long i = 0;
+                while (i < n && i < size())
+                {
+                    tmp2._p[i] = _p[i];
+                    i++;
+                }
+                while (i < n)
+                    tmp2._p[i++] = value;
+                *this = tmp2;
+                tmp2.~vector();
+            }
+            void push_back(T const & val)
+            {
+                resize(_capacity + 1, val);
+            }
+            void pop_back()
+            {
+                if (!_n)
+                    throw std::exception();
+               resize(_capacity - 1);
             }
             size_t capacity() const
             {
@@ -183,274 +207,168 @@ namespace ft
             {
                 return (ft_pow(2, 32) / sizeof(T)) * ft_pow(2, 32) - 1;
             }
-            void resize (size_t n, T value)
-            {
-                unsigned long i = 0;
-                vector< T > tmp(n);
-                if (n != _capacity)
-                {
-                    for (i = 0; i < _capacity; i++)
-                    {
-                        if (i < tmp._capacity)
-                            tmp._p[i] = _p[i];
-                    }
-                    for (unsigned long j = i; j < tmp._capacity; j++)
-                        tmp._p[j] = value;
-                    //this->~vector();
-                    *this = tmp;
-                }
-                tmp.~vector();
-            }
             template< typename U >
             void assign(U first, U last)
             {
-                unsigned long i = 0;
-                unsigned long len = 0;
-                while (first != last)
+               size_t i = 0;
+               size_t len = 0;
+                while(first != last)
                 {
                     first++;
                     i++;
                 }
                 len = i;
-                while (i)
-                {
+                while (i--)
                     first--;
-                    i--;
-                }
-                if (len != _capacity)
-                    reserve(len);
-                for (unsigned long x = 0; x < len; x++)
-                {
-                    _p[x] = *first;
-                    first++;
-                }
+                insert(begin(), first, last);
+                resize(len);
             }
-            void assign(size_t n, const T & val)
+            void assign(size_type n, T const & value)
             {
-                if (n != _capacity)
-                    reserve(n);
-                for (unsigned long x = 0; x < n; x++)
-                    _p[x] = val;
+                insert(begin(), n, value);
+                resize(n);
+            }
+            void insert(iterator pos, size_type const n, const T & val)
+            {
+                size_type i = 0;
+                size_type x = 0;
+                size_type len = _capacity;
+                while (pos != begin())
+                {
+                    pos--;
+                    i++;
+                }
+                ft::vector< T > copy(*this);
+                ft::vector< T > res(_n + n);
+                for (x = 0; x < i; x++)
+                    res._p[x] = copy._p[x];
+                for (size_type y = 0; y < n; y++)
+                    res._p[x++] = val;
+                while (i < len)
+                    res._p[x++] = copy._p[i++];
+                this->~vector();
+                *this = res;
+                copy.~vector();
+                res.~vector();
+            }
+            template< typename U >
+            void insert(iterator pos, U first, U last)
+            {
+                size_type i = 0;
+                size_type ct = 0;
+                size_type x = 0;
+                size_type y = 0;
+                size_type len = size();
+                while (pos != begin())
+                {
+                    pos--;
+                    i++;
+                }
+                while (first != last)
+                {
+                    ct++;
+                    first++;
+                    y++;
+                }
+                while (y--)
+                    first--;
+                ft::vector< T > copy(*this);
+                ft::vector< T > res(_n + ct);
+                for (x = 0; x < i; x++)
+                    res._p[x] = copy._p[x];
+                for (size_type y = 0; y < ct; y++)
+                    res._p[x++] = *(first++);
+                while (i < len)
+                    res._p[x++] = copy._p[i++];
+                this->~vector();
+                *this = res;
+                copy.~vector();
+                res.~vector();
             }
             iterator insert (iterator position, const T & val)
             {
-                unsigned long i = 0;
-                iterator it = begin();
-                iterator ite = end();
-                if (_n + 1 > _capacity)
+                size_type i = 0;
+                size_type x = 0;
+                size_type len = _capacity;
+                unsigned long pos = 0;
+                while (position != begin())
                 {
-                    ft::vector<T> res(_n + 1);
-                    while (it != position && it != ite)
-                    {
-                        res._p[i] = *it;
-                        it++;
-                        i++;
-                    }
-                    res._p[i++] = val;
-                    while (it != ite)
-                    {
-                        res._p[i] = *it;
-                        it++;
-                        i++;
-                    }
-                   // tmp->~vector();
-                    //this->~vector();
-                    *this = res;
-                    res.~vector();
-                }
-                else
-                {
-                    while (it != position && it != ite)
-                    {
-                        _p[i] = *it;
-                        it++;
-                        i++;
-                    }
-                    _p[i++] = val;
-                    while (it != ite)
-                    {
-                        _p[i] = *it;
-                        it++;
-                        i++;
-                    }
-                }
-                return position;
-            }
-            void insert (iterator position, size_t n, const T & val)
-            {
-                unsigned long i = 0;
-                iterator it = begin();
-                iterator ite = end();
-                if (_n + n > _capacity)
-                {
-                    ft::vector<T> res(_n + n);
-                    while (it != position && it != ite)
-                    {
-                        res._p[i] = *it;
-                        it++;
-                        i++;
-                    }
-                    for (unsigned long x = 0; x < n; x++)
-                        res._p[i++] = val;
-                    while (it != ite)
-                    {
-                        res._p[i] = *it;
-                        it++;
-                        i++;
-                    }
-                   // tmp->~vector();
-                   //this->~vector();
-                    *this = res;
-                    res.~vector();
-                }
-                else
-                {
-                    while (it != position && it != ite)
-                    {
-                        _p[i] = *it;
-                        it++;
-                        i++;
-                    }
-                    for (unsigned long x = 0; x < n; x++)
-                        _p[i++] = val;
-                    while (it != ite)
-                    {
-                        _p[i] = *it;
-                        it++;
-                        i++;
-                    }
-                }
-            }
-             template< typename U >
-            void insert (iterator position, U first, U last)
-            {
-                unsigned long i = 0;
-                unsigned long len = 0;
-                iterator it = begin();
-                iterator ite = end();
-                while (first != last)
-                {
+                    position--;
                     i++;
-                    first++;
+                    pos++;
                 }
-                len = i;
-                while (i)
-                {
-                    first--;
-                    i--;
-                }
-                if (_n + len > _capacity)
-                {
-                    ft::vector<T> res(_n + len);
-                    while (it != position && it != ite)
-                    {
-                        res._p[i] = *it;
-                        it++;
-                        i++;
-                    }
-                    while (first != last)
-                    {
-                        res._p[i++] = *first;
-                        first++;
-                    }
-                    while (it != ite)
-                    {
-                        res._p[i] = *it;
-                        it++;
-                        i++;
-                    }
-                  //  tmp->~vector();
-                    //this->~vector();
-                    *this = res;
-                    res.~vector();
-                }
-                else
-                {
-                    while (it != position && it != ite)
-                    {
-                        _p[i] = *it;
-                        it++;
-                        i++;
-                    }
-                    while (first != last)
-                    {
-                        _p[i++] = *first;
-                        first++;
-                    }
-                    while (it != ite)
-                    {
-                        _p[i] = *it;
-                        it++;
-                        i++;
-                    }
-                }
+                ft::vector< T > copy(*this);
+                ft::vector< T > res(_n + 1);
+                for (x = 0; x < i; x++)
+                    res._p[x] = copy._p[x];
+                res._p[x++] = val;
+                while (i < len)
+                    res._p[x++] = copy._p[i++];
+                this->~vector();
+                *this = res;
+                copy.~vector();
+                res.~vector();
+                return begin() + pos;
             }
             iterator erase(iterator position)
             {
                 unsigned long i = 0;
-                unsigned long len = 0;
+                unsigned long pos = 0;
                 iterator it = begin();
                 iterator ite = end();
+                while (it != position && it != ite)
+                {
+                    i++;
+                    it++;
+                }
+                pos = i;
+                it++;
                 while (it != ite)
                 {
-                    if (it != position)
-                    {
-                        _p[i] = *it;
-                        i++;
-                    }
-                    if (it == position)
-                        len = i;
+                    _p[i] = _p[i + 1];
+                    i++;
                     it++;
                 }
-                resize(i, 0);
-                it = begin();
-                ite = end();
-                while (len && it != ite)
-                {
-                    it++;
-                    len--;
-                }
-                return it;
+                resize(i);
+                return begin() + pos;
             }
-            template< typename U >
-            iterator erase(U first, U last)
+            iterator erase(iterator first, iterator last)
             {
                 unsigned long i = 0;
                 unsigned long len = 0;
+                unsigned long pos = 0;
                 iterator it = begin();
                 iterator ite = end();
-                while (it != ite)
-                {
-                    if (it != first)
-                    {
-                        _p[i] = *it;
-                        it++;
-                        i++;
-                    }
-                    else
-                    {
-                        len = i;
-                        while (it != last && it != ite)
-                            it++;
-                    }
-                }
-                resize(i, 0);
-                it = begin();
-                ite = end();
-                while (len && it != ite)
+                while (it != first && it != ite)
                 {
                     it++;
-                    len--;
+                    i++;
                 }
-                return it;
+                pos = i;
+                while (it != last && it != ite)
+                {
+                    len++;
+                    it++;
+                }
+                while (it != ite)
+                {
+                    _p[i] = _p[i + len];
+                    i++;
+                    it++;
+                }
+                resize(i);
+                return begin() + pos;
             }
             void swap(ft::vector< T > & x)
             {
                 ft::vector< T > tmp;
 
                 tmp = *this;
+                this->~vector();
                 *this = x;
+                x.~vector();
                 x = tmp;
+                tmp.~vector();
             }
             void clear()
             {
@@ -459,7 +377,7 @@ namespace ft
                 *this = tmp;
             }
     };
-};
+}
 // this x
 // a    b
 

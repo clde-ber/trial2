@@ -21,12 +21,12 @@ void printInt(int it)
 
 int main( void )
 {
-    unsigned long n = 10;
-    unsigned long k = 1;
+    //unsigned long n = 10;
+    //unsigned long k = 1;
     unsigned long size = 5;
 
     std::cout << "*** stack ***" << std::endl;
-    try
+   /* try
     {
         ft::stack< int > stack1(size);
         for (unsigned long i = 0; i < 5; i++)
@@ -70,7 +70,7 @@ int main( void )
     catch(const std::exception& e)
     {
         std::cerr << e.what() << std::endl;
-    }
+    }*/
     std::cout << "*** vector **" << std::endl;
    try
     {
@@ -115,7 +115,7 @@ int main( void )
         std::cout << vectorAssign.back() << std::endl;
         std::cout << "*************" << std::endl;
         std::cout << vectorCopy.back() << std::endl;
-        //vectorAssign.pop_back();
+        vectorAssign.pop_back();
         vectorCopy.pop_back();
         std::cout << "*************" << std::endl;
         std::for_each(vectorAssign.rend(), vectorAssign.rbegin(), printVector);
