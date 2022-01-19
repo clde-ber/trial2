@@ -1,7 +1,7 @@
 .SUFFIXES:
 
 NAME	=	containers
-LIST	=	main \
+LIST	=	rev_ite_construct \
 			
 HEADER	=	-I includes/
 CFLAGS	=	-Wall -Wextra -Werror -MMD -std=c++98 -g3 -fsanitize=address
