@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <cstddef>
+#include <algorithm>
 #include "Iter.hpp"
 
 #define TRUE 1
@@ -22,7 +23,7 @@ namespace ft
             typedef int size_type;
             typedef T value_type;
             typedef T& reference;
-            typedef It pointer;
+            typedef T* pointer;
             typedef It iterator;
             typedef It reverse_iterator;
             typedef It const_iterator;
@@ -76,46 +77,52 @@ namespace ft
                     _p = 0;
                 }*/
             }
-            It begin()
+            iterator begin()
             {
                 It ret(&_p[0]);
                 return ret._it;
             }
-            It end()
+            iterator end()
             {
                 It ret(&_p[_n]);
                 return ret._it;
             }
-            It rbegin()
+            reverse_iterator rbegin()
             {
                 It ret(&_p[_n]);
                 return ret._it;
             }
-            It rend()
+            reverse_iterator rend()
             {
                 It ret(&_p[0]);
                 return ret._it;
             }
-            It begin() const
+            const_iterator begin() const
             {
                 It ret(&_p[0]);
                 return ret._it;
             }
-            It end() const
+            const_iterator end() const
             {
                 It ret(&_p[_n]);
                 return ret._it;
             }
-            It rbegin() const
+            const_reverse_iterator rbegin() const
             {
                 It ret(&_p[_n]);
                 return ret._it;
             }
-            It rend() const
+            const_reverse_iterator rend() const
             {
                 It ret(&_p[0]);
                 return ret._it;
             }
+            bool operator==(const ft::vector< T >& rhs) const {return this->_p==rhs._p;}
+            bool operator!=(const ft::vector< T >& rhs) const {return this->_p!=rhs._p;}
+            bool operator>(const ft::vector< T >& rhs) const {return this->_p>rhs._p;}
+            bool operator>=(const ft::vector< T >& rhs) const {return this->_p>=rhs._p;}
+            bool operator<(const ft::vector< T >& rhs) const {return this->_p<rhs._p;}
+            bool operator<=(const ft::vector< T >& rhs) const {return this->_p<=rhs._p;}
             unsigned long size() const
             {
                 return _n;
@@ -361,14 +368,15 @@ namespace ft
             }
             void swap(ft::vector< T > & x)
             {
-                ft::vector< T > tmp;
-
-                tmp = *this;
-                this->~vector();
-                *this = x;
-                x.~vector();
-                x = tmp;
-                tmp.~vector();
+                T *tmpP = x._p;
+                size_t tmpC = x._capacity;
+                size_t tmpN = x._n;
+                x._p = this->_p;
+                x._capacity = this->_capacity;
+                x._n = this->_n;
+                this->_p = tmpP;
+                this->_capacity = tmpC;
+                this->_n = tmpN;
             }
             void clear()
             {
