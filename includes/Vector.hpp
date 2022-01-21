@@ -23,12 +23,15 @@ namespace ft
         public:
             typedef int size_type;
             typedef T value_type;
-            typedef T& reference;
-            typedef T* pointer;
-            typedef iter<T> iterator;
-            typedef reviter< T > reverse_iterator;
-            typedef iter< const T > const_iterator;
-            typedef reviter< const T > const_reverse_iterator;
+            typedef Alloc allocator_type;
+            typedef typename allocator_type::reference reference;
+            typedef typename allocator_type::const_reference const_reference;
+            typedef typename allocator_type::pointer pointer;
+            typedef typename allocator_type::const_pointer const_pointer;
+            typedef iter<pointer> iterator;
+            typedef reviter< iterator > reverse_iterator;
+            typedef iter< const_pointer > const_iterator;
+            typedef reviter< const_iterator > const_reverse_iterator;
 
             vector( void ) : _n(0), _p(0), _capacity(0)
             {
@@ -80,41 +83,41 @@ namespace ft
             }
             iterator begin()
             {
-                iterator ret(&_p[0]);
+                iterator ret(_p);
                 return ret;
             }
             iterator end()
             {
-                iterator ret(&_p[_n]);
+                iterator ret(_p + _n);
                 return ret;
             }
             reverse_iterator rbegin()
             {
-                reverse_iterator ret(&_p[_n - 1]);
+                reverse_iterator ret(end());
                 return ret;
             }
             reverse_iterator rend()
             {
-                reverse_iterator ret(&_p[0] - 1);
+                reverse_iterator ret(begin());
                 return ret;
             }
             const_iterator begin() const
             {
-                const_iterator ret(&_p[0]);
+                const_iterator ret(_p);
                 return ret;
             }
             const_iterator end() const
             {
-                return (const_iterator(&_p[_n]));
+                return (const_iterator(_p + _n));
             }
             const_reverse_iterator rbegin() const
             {
-                const_reverse_iterator ret(&_p[_n - 1]);
+                const_reverse_iterator ret(end());
                 return ret;
             }
             const_reverse_iterator rend() const
             {
-                const_reverse_iterator ret(&_p[0] - 1);
+                const_reverse_iterator ret(begin());
                 return ret;
             }
             bool operator==(const ft::vector< T >& rhs) const {return this->_p==rhs._p;}
