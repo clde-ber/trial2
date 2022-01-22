@@ -55,26 +55,19 @@ namespace ft
             iter(U const & rhs) : _it(&(*rhs)) {}
             template < typename U >
             iter& operator=(U const & rhs) {_it = &(*rhs); return *this;}
-            ~iter() {}
+            virtual ~iter() {}
             iter& operator++() {_it = _it + 1; return *this;}
             iter operator++(int) {iter retval = *this; ++(*this); return retval;}
             iter& operator--() {_it = _it - 1; return *this;}
             iter operator--(int) {iter retval = *this; --(*this); return retval;}
-            // bool operator==(const iter& rhs) const {return _it==rhs._it;}
-            // bool operator>(const iter& rhs) const {return _it>rhs._it;}
-            // bool operator>=(const iter& rhs) const {return _it>=rhs._it;}
-            // bool operator<(const iter& rhs) const {return _it<rhs._it;}
-            // bool operator<=(const iter& rhs) const {return _it<=rhs._it;}
-            iter operator-=(int const & rhs) {return _it = _it - rhs;}
-            iter operator-(int const & rhs) {return _it - rhs;}
-            long operator-(iter const & rhs) const {return _it - rhs._it;}
-            iter operator+=(int const & rhs) {return _it = _it + rhs;}
-            iter operator+(int const & rhs) const {return _it + rhs;}
+            iter& operator-=(difference_type rhs) {_it = _it - rhs; return *this;}
+            iter operator-(difference_type rhs) const {return iter(_it - rhs);}
+            iter& operator+=(difference_type rhs) {_it = _it + rhs; return *this;}
+            iter operator+(difference_type rhs) const {return iter(_it + rhs);}
             reference operator[](int rhs) {return *(_it + rhs);}
-            int operator=(int const rhs) {return rhs;}
-            pointer operator->() {return _it;}
+            T operator->() {return &operator*();}
             reference operator*() const {return *_it;}
-            T base() {return *_it;}
+            T base() const {return _it;}
 
             operator const iter<const value_type *>() const {
                 return (iter<const value_type *>(const_cast<const T>(_it)));
@@ -92,27 +85,25 @@ namespace ft
             typedef	typename iterator_traits<T>::reference			reference;
             typedef	typename iterator_traits<T>::iterator_category	iterator_category;
             typedef const value_type *			const_iterator_type;
-
             reviter() : _it(T()) {}
             reviter(T x) : _it(x) {}
-            //reviter(reviter const & rhs) {_it = rhs._it;}
             template < typename U >
             reviter(U const & rhs) : _it(&(*rhs)) {}
             template < typename U >
             reviter& operator=(U const & rhs) {_it = &(*rhs); return *this;}
             virtual ~reviter() {}
-            reviter& operator++() {--_it; return *this;}
-            reviter operator++(int) {reviter retval = *this; --_it; return retval;}
-            reviter& operator--() {++_it; return *this;}
-            reviter operator--(int) {reviter retval = *this; ++_it; return retval;}
-            reviter& operator-=(int rhs) {while (rhs) { _it++; rhs--;} return *this;}
-            reviter operator-(int rhs) {reviter tmp = *this; while (rhs) { tmp._it++; rhs--;}return tmp;}
-            reviter& operator+=(int rhs) {while (rhs) { _it--; rhs--;} return *this;}
-            reviter operator+(int rhs) const {reviter tmp = *this; while (rhs) { tmp._it--; rhs--;}return tmp;}
-            reference operator[](int rhs) {return base()[-rhs-1];}
+            reviter& operator++() {_it = _it - 1; return *this;}
+            reviter operator++(int) {reviter retval = *this; --(*this); return retval;}
+            reviter& operator--() {_it = _it + 1; return *this;}
+            reviter operator--(int) {reviter retval = *this; ++(*this); return retval;}
+            reviter& operator-=(difference_type rhs) {_it = _it + rhs; return *this;}
+            reviter operator-(difference_type rhs) const {return reviter(_it + rhs);}
+            reviter& operator+=(difference_type rhs) {_it = _it - rhs; return *this;}
+            reviter operator+(difference_type rhs) const {return reviter(_it - rhs);}
+            reference operator[](int rhs) {return base()[-rhs -1];}
             T operator->() {return &operator*();}
             reference operator*() const {T tmp = _it; return *--tmp;}
-            T base() {return _it;}
+            T base() const {return _it;}
 
             operator reviter<iter<const_iterator_type> >() {
                 return (reviter<iter<const_iterator_type> >(iter<const_iterator_type>(_it)));
@@ -124,84 +115,92 @@ namespace ft
     std::ostream & operator<<(std::ostream & o, reviter< T > const & rhs) {o << *rhs; return o;}
 
 
-    template<class T>
-	iter<T>	operator+(int n, iter<T> &it) { return (n + &(*it)); }
-    template<class T>
-	iter<T>	operator-(int n, iter<T> &it) { return (n - &(*it)); }
-    template<class T>
-	reviter< T > operator+(int n, reviter< T > &it) { return (n + &(*it)); }
-    template<class T>
-	reviter< T > operator-(int n, reviter< T > &it) { return (n - &(*it)); }
+    template< class Iterator1, class Iterator2 >
+    std::ptrdiff_t operator-( const reviter<Iterator1>& lhs, const reviter<Iterator2>& rhs ) 
+    {
+        return lhs.base() - rhs.base();
+    }
+    template< class Iterator1, class Iterator2 >
+    std::ptrdiff_t operator-( const iter<Iterator1>& lhs, const reviter<Iterator2>& rhs ) 
+    {
+        return lhs.base() - rhs.base();
+    }
+    template< class Iterator1, class Iterator2 >
+    std::ptrdiff_t operator-( const reviter<Iterator1>& lhs, const iter<Iterator2>& rhs ) 
+    {
+        return lhs.base() - rhs.base();
+    }
+    template< class Iterator1, class Iterator2 >
+    std::ptrdiff_t operator-( const iter<Iterator1>& lhs, const iter<Iterator2>& rhs ) 
+    {
+        return lhs.base() - rhs.base();
+    }
 
-    template<class T, class U>
-	long operator+(iter<T> &it, iter<U> &it2) { return (&(*it) + &(*it2)); }
-    template<class T, class U>
-	long	operator-(iter<T> &it, iter<U> &it2) { return (&(*it) - &(*it2)); }
-    template<class T, class U>
-	long operator+(reviter<T> &it, reviter< U > &it2) { return (&(*it) + &(*it2)); }
-    template<class T, class U>
-	long operator-(reviter<T> &it, reviter< U > &it2) { return (&(*it) - &(*it2)); }
+    // friend vectorConstIterator operator+(difference_type n,
+    //                                          const vectorConstIterator& rhs) {
+    //         return vectorConstIterator(rhs._node + n);
+    //     }
 
-     template<class T, class U>
-	long operator+(reviter<T> &it, iter<U> &it2) { return (&(*it) + &(*it2)); }
-    template<class T, class U>
-	long	operator-(reviter<T> &it, iter<U> &it2) { return (&(*it) - &(*it2)); }
-    template<class T, class U>
-	long operator+(iter<T> &it, reviter< U > &it2) { return (&(*it) + &(*it2)); }
-    template<class T, class U>
-	long operator-(iter<T> &it, reviter< U > &it2) { return (&(*it) - &(*it2)); }
+    template<class T>
+	reviter<T>	operator+(std::ptrdiff_t n, reviter<T> const &it) { return (reviter<T>(n + &(*it))); }
+    template<class T>
+	reviter<T>	operator-(std::ptrdiff_t n, reviter<T> const &it) { return (reviter<T>(n - &(*it))); }
+    template<class T>
+	iter<T> operator+(std::ptrdiff_t n, iter<T> const &it) { return (iter<T>(n + &(*it))); }
+    template<class T>
+	iter<T> operator-(std::ptrdiff_t n, iter<T> const &it) { return (iter<T>(n - &(*it))); }
 
-    template<class T, class U>
+    template<typename T, typename U>
 	bool			operator==(iter<T> const &lhs, iter<U> const &rhs) { return (&(*lhs) == &(*rhs)); }
-    template<class T, class U>
+    template<typename T, typename U>
     bool operator!=(iter<T> const &lhs, iter<U> const &rhs) {return !(&(*lhs) == &(*rhs));}
-    template<class T, class U>
+    template<typename T, typename U>
     bool operator>(iter<T> const &lhs, iter<U> const &rhs) {return (&(*lhs) > &(*rhs));}
-    template<class T, class U>
+    template<typename T, typename U>
     bool operator>=(iter<T> const &lhs, iter<U> const &rhs) {return (&(*lhs) >= &(*rhs));}
-    template<class T, class U>
+    template<typename T, typename U>
     bool operator<(iter<T> const &lhs, iter<U> const &rhs) {return (&(*lhs) < &(*rhs));}
-    template<class T, class U>
+    template<typename T, typename U>
     bool operator<=(iter<T> const &lhs, iter<U> const &rhs) {return (&(*lhs) <= &(*rhs));}
 
-    template<class T, class U>
-	bool			operator==(reviter< T > const &lhs, reviter< U > const &rhs) { return (&(*lhs) == &(*rhs)); }
-    template<class T, class U>
-    bool operator!=(reviter< T > const &lhs, reviter< U > const &rhs) {return !(&(*lhs) == &(*rhs));}
-    template<class T, class U>
-    bool operator>(reviter< T > const &lhs, reviter< U > const &rhs) {return (&(*lhs) > &(*rhs));}
-    template<class T, class U>
-    bool operator>=(reviter< T > const &lhs, reviter< U > const &rhs) {return (&(*lhs) >= &(*rhs));}
-    template<class T, class U>
-    bool operator<(reviter< T > const &lhs, reviter< U > const &rhs) {return (&(*lhs) < &(*rhs));}
-    template<class T, class U>
-    bool operator<=(reviter< T > const &lhs, reviter< U > const &rhs) {return (&(*lhs) <= &(*rhs));}
+    template<typename T, typename U>
+	bool			operator==(reviter<T> const &lhs, reviter<U> const &rhs) { return (&(*lhs) == &(*rhs)); }
+    template<typename T, typename U>
+    bool operator!=(reviter<T> const &lhs, reviter<U> const &rhs) {return !(&(*lhs) == &(*rhs));}
+    template<typename T, typename U>
+    bool operator>(reviter<T> const &lhs, reviter<U> const &rhs) {return (&(*lhs) > &(*rhs));}
+    template<typename T, typename U>
+    bool operator>=(reviter<T> const &lhs, reviter<U> const &rhs) {return (&(*lhs) >= &(*rhs));}
+    template<typename T, typename U>
+    bool operator<(reviter<T> const &lhs, reviter<U> const &rhs) {return (&(*lhs) < &(*rhs));}
+    template<typename T, typename U>
+    bool operator<=(reviter<T> const &lhs, reviter<U> const &rhs) {return (&(*lhs) <= &(*rhs));}
 
-    template<class T, class U>
+    template<typename T, typename U>
 	bool			operator==(iter<T> const &lhs, reviter<U> const &rhs) { return (&(*lhs) == &(*rhs)); }
-    template<class T, class U>
+    template<typename T, typename U>
     bool operator!=(iter<T> const &lhs, reviter<U> const &rhs) {return !(&(*lhs) == &(*rhs));}
-    template<class T, class U>
+    template<typename T, typename U>
     bool operator>(iter<T> const &lhs, reviter<U> const &rhs) {return (&(*lhs) > &(*rhs));}
-    template<class T, class U>
+    template<typename T, typename U>
     bool operator>=(iter<T> const &lhs, reviter<U> const &rhs) {return (&(*lhs) >= &(*rhs));}
-    template<class T, class U>
+    template<typename T, typename U>
     bool operator<(iter<T> const &lhs, reviter<U> const &rhs) {return (&(*lhs) < &(*rhs));}
-    template<class T, class U>
+    template<typename T, typename U>
     bool operator<=(iter<T> const &lhs, reviter<U> const &rhs) {return (&(*lhs) <= &(*rhs));}
 
-    template<class T, class U>
-	bool			operator==(reviter< T > const &lhs, iter< U > const &rhs) { return (&(*lhs) == &(*rhs)); }
-    template<class T, class U>
-    bool operator!=(reviter< T > const &lhs, iter< U > const &rhs) {return !(&(*lhs) == &(*rhs));}
-    template<class T, class U>
-    bool operator>(reviter< T > const &lhs, iter< U > const &rhs) {return (&(*lhs) > &(*rhs));}
-    template<class T, class U>
-    bool operator>=(reviter< T > const &lhs, iter< U > const &rhs) {return (&(*lhs) >= &(*rhs));}
-    template<class T, class U>
-    bool operator<(reviter< T > const &lhs, iter< U > const &rhs) {return (&(*lhs) < &(*rhs));}
-    template<class T, class U>
-    bool operator<=(reviter< T > const &lhs, iter< U > const &rhs) {return (&(*lhs) <= &(*rhs));}
+    template<typename T, typename U>
+	bool			operator==(reviter<T> const &lhs, iter<U> const &rhs) { return (&(*lhs) == &(*rhs)); }
+    template<typename T, typename U>
+    bool operator!=(reviter<T> const &lhs, iter<U> const &rhs) {return !(&(*lhs) == &(*rhs));}
+    template<typename T, typename U>
+    bool operator>(reviter<T> const &lhs, iter<U> const &rhs) {return (&(*lhs) > &(*rhs));}
+    template<typename T, typename U>
+    bool operator>=(reviter<T> const &lhs, iter<U> const &rhs) {return (&(*lhs) >= &(*rhs));}
+    template<typename T, typename U>
+    bool operator<(reviter<T> const &lhs, iter<U> const &rhs) {return (&(*lhs) < &(*rhs));}
+    template<typename T, typename U>
+    bool operator<=(reviter<T> const &lhs, iter<U> const &rhs) {return (&(*lhs) <= &(*rhs));}
 }
 
 #endif

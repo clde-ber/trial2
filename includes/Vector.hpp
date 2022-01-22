@@ -13,6 +13,35 @@
 namespace ft
 {
     // template< typename T, class It = iter< T > >
+    template <typename T, T val>
+	struct storage
+	{
+		static const T value = val;
+	};
+
+	struct false_type : public storage<bool, false> {};
+	struct true_type : public storage<bool, true> {};
+
+	template <class T> struct is_integral : public false_type {};
+	template <> struct is_integral<int> : public true_type {};
+	template <> struct is_integral<unsigned int> : public true_type {};
+	template <> struct is_integral<bool> : public true_type {};
+	template <> struct is_integral<char> : public true_type {};
+	template <> struct is_integral<unsigned char> : public true_type {};
+	template <> struct is_integral<signed char> : public true_type {};
+	template <> struct is_integral<short> : public true_type {};
+	template <> struct is_integral<unsigned short> : public true_type {};
+	template <> struct is_integral<long> : public true_type {};
+	template <> struct is_integral<unsigned long> : public true_type {};
+	template <> struct is_integral<long long> : public true_type {};
+	template <> struct is_integral<unsigned long long> : public true_type {};
+
+	template<bool B, typename T = void>
+		struct enable_if {};
+
+	template<typename T>
+		struct enable_if<true, T> { typedef T type; };
+
     template < class T, class Alloc = std::allocator<T> >
     class vector
     {
@@ -21,7 +50,7 @@ namespace ft
             T* _p;
             size_t _capacity;
         public:
-            typedef int size_type;
+            typedef size_t size_type;
             typedef T value_type;
             typedef Alloc allocator_type;
             typedef typename allocator_type::reference reference;
@@ -35,18 +64,18 @@ namespace ft
 
             vector( void ) : _n(0), _p(0), _capacity(0)
             {
-                //std::allocator< T > alloc;
-                //_p = alloc.allocate(_capacity, this);
+                std::allocator< T > alloc;
+                _p = alloc.allocate(1);
             }
-            vector( unsigned long n ) : _n(n), _p(0), _capacity(n)
+            vector( size_type n ) : _n(n), _p(0), _capacity(n)
             {
                 std::allocator< T > alloc;
-                _p = alloc.allocate(_capacity, this);
+                _p = alloc.allocate(_capacity);
             }
-            vector( unsigned long n, T const & value ) : _n(n), _p(0), _capacity(n)
+            vector( size_type n, T const & value ) : _n(n), _p(0), _capacity(n)
             {
                 std::allocator< T > alloc;
-                _p = alloc.allocate(_capacity, this);
+                _p = alloc.allocate(_capacity);
                 for (unsigned long i = 0; i < _capacity; i++)
                     _p[i] = value;
             }
@@ -65,7 +94,7 @@ namespace ft
                 _n = rhs._n;
                 _capacity = rhs._capacity;
                 std::allocator< T > alloc;
-                _p = alloc.allocate(rhs._capacity, this);
+                _p = alloc.allocate(rhs._capacity);
                 for (unsigned long i = 0; i < rhs._capacity; i++)
                     _p[i] = rhs._p[i];
                 return *this;
@@ -169,7 +198,7 @@ namespace ft
             void reserve( size_t new_cap )
             {
                 ft::vector< T > newV(new_cap);
-                this->~vector();
+                //this->~vector();
                 *this = newV;
                 newV.~vector();
             }
@@ -218,7 +247,7 @@ namespace ft
                 return (ft_pow(2, 32) / sizeof(T)) * ft_pow(2, 32) - 1;
             }
             template< typename U >
-            void assign(U first, U last)
+            void assign( U first, U last, typename ft::enable_if<!is_integral<U>::value>::type* = NULL )
             {
                size_t i = 0;
                size_t len = 0;
@@ -256,13 +285,13 @@ namespace ft
                     res._p[x++] = val;
                 while (i < len)
                     res._p[x++] = copy._p[i++];
-                this->~vector();
+                //this->~vector();
                 *this = res;
-                copy.~vector();
-                res.~vector();
+                //copy.~vector();
+                //res.~vector();
             }
             template< typename U >
-            void insert(iterator pos, U first, U last)
+            void insert(iterator pos, U first, U last, typename ft::enable_if<!is_integral<U>::value>::type* = NULL )
             {
                 size_type i = 0;
                 size_type ct = 0;
@@ -290,10 +319,10 @@ namespace ft
                     res._p[x++] = *(first++);
                 while (i < len)
                     res._p[x++] = copy._p[i++];
-                this->~vector();
+                //this->~vector();
                 *this = res;
-                copy.~vector();
-                res.~vector();
+                //copy.~vector();
+                //res.~vector();
             }
             iterator insert (iterator position, const T & val)
             {
@@ -314,10 +343,10 @@ namespace ft
                 res._p[x++] = val;
                 while (i < len)
                     res._p[x++] = copy._p[i++];
-                this->~vector();
+                //this->~vector();
                 *this = res;
-                copy.~vector();
-                res.~vector();
+                //copy.~vector();
+                //res.~vector();
                 return begin() + pos;
             }
             iterator erase(iterator position)
@@ -383,7 +412,7 @@ namespace ft
             }
             void clear()
             {
-                this->~vector();
+                //this->~vector();
                 vector< T > tmp;
                 *this = tmp;
             }

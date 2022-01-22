@@ -51,7 +51,7 @@ namespace ft
             stack & operator=( stack const & rhs )
             {
                 std::allocator< T > alloc;
-                this->~stack();
+                //this->~stack();
                 _p = alloc.allocate(rhs._n, this);
                 _n = rhs._n;
                 for (unsigned long i = 0; i < _n; i++)
@@ -94,7 +94,7 @@ namespace ft
                     tmp._p[i] = _p[i];
                 tmp._p[_n] = val;
                 tmp._n = _n + 1;
-                this->~stack();
+                //this->~stack();
                 *this = tmp;
             }
             void pop()
@@ -106,7 +106,7 @@ namespace ft
                 for (unsigned long i = 0; i < _n - 1; i++)
                     tmp._p[i] = _p[i];
                 tmp._n = _n - 1;
-                this->~stack();
+                //this->~stack();
                 *this = tmp;
             }
     };
