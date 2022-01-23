@@ -1,7 +1,7 @@
 .SUFFIXES:
 
 NAME	=	containers
-LIST	=	rite2 \
+LIST	=	rite_eq_ope \
 			
 HEADER	=	-I includes/
 CFLAGS	=	-Wall -Wextra -Werror -MMD -g3 -fsanitize=address
