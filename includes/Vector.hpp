@@ -64,18 +64,15 @@ namespace ft
 
             vector( void ) : _n(0), _p(0), _capacity(0)
             {
-                std::allocator< T > alloc;
-                _p = alloc.allocate(1);
+                _p = allocator_type().allocate(1);
             }
             vector( size_type n ) : _n(n), _p(0), _capacity(n)
             {
-                std::allocator< T > alloc;
-                _p = alloc.allocate(_capacity);
+                _p = allocator_type().allocate(_capacity);
             }
             vector( size_type n, T const & value ) : _n(n), _p(0), _capacity(n)
             {
-                std::allocator< T > alloc;
-                _p = alloc.allocate(_capacity);
+                _p = allocator_type().allocate(_capacity);
                 for (unsigned long i = 0; i < _capacity; i++)
                     _p[i] = value;
             }
@@ -93,8 +90,7 @@ namespace ft
                 _p = 0;
                 _n = rhs._n;
                 _capacity = rhs._capacity;
-                std::allocator< T > alloc;
-                _p = alloc.allocate(rhs._capacity);
+                _p = allocator_type().allocate(rhs._capacity);
                 for (unsigned long i = 0; i < rhs._capacity; i++)
                     _p[i] = rhs._p[i];
                 return *this;
@@ -149,12 +145,12 @@ namespace ft
                 const_reverse_iterator ret(begin());
                 return ret;
             }
-            bool operator==(const ft::vector< T >& rhs) const {return this->_p==rhs._p;}
-            bool operator!=(const ft::vector< T >& rhs) const {return this->_p!=rhs._p;}
-            bool operator>(const ft::vector< T >& rhs) const {return this->_p>rhs._p;}
-            bool operator>=(const ft::vector< T >& rhs) const {return this->_p>=rhs._p;}
-            bool operator<(const ft::vector< T >& rhs) const {return this->_p<rhs._p;}
-            bool operator<=(const ft::vector< T >& rhs) const {return this->_p<=rhs._p;}
+            bool operator==(const ft::vector< T >& rhs) const {return size() == rhs.size();}
+            bool operator!=(const ft::vector< T >& rhs) const {return !(*this == rhs);}
+            bool operator>(const ft::vector< T >& rhs) const {return rhs < *this;}
+            bool operator>=(const ft::vector< T >& rhs) const {return !(*this < rhs);}
+            bool operator<(const ft::vector< T >& rhs) const {return std::lexicographical_compare(begin(), end(), rhs.begin(), rhs.end());}
+            bool operator<=(const ft::vector< T >& rhs) const {return !(rhs < *this);}
             unsigned long size() const
             {
                 return _n;

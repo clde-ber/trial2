@@ -93,16 +93,16 @@ namespace ft
             reviter& operator=(U const & rhs) {_it = &(*rhs); return *this;}
             virtual ~reviter() {}
             reviter& operator++() {_it = _it - 1; return *this;}
-            reviter operator++(int) {reviter retval = *this; --(*this); return retval;}
+            reviter operator++(int) {reviter retval = *this; ++(*this); return retval;}
             reviter& operator--() {_it = _it + 1; return *this;}
-            reviter operator--(int) {reviter retval = *this; ++(*this); return retval;}
-            reviter& operator-=(difference_type rhs) {_it = _it + rhs; return *this;}
+            reviter operator--(int) {reviter retval = *this; --(*this); return retval;}
+            reviter& operator-=(difference_type rhs) {_it += rhs; return *this;}
             reviter operator-(difference_type rhs) const {return reviter(_it + rhs);}
-            reviter& operator+=(difference_type rhs) {_it = _it - rhs; return *this;}
+            reviter& operator+=(difference_type rhs) {_it -= rhs; return *this;}
             reviter operator+(difference_type rhs) const {return reviter(_it - rhs);}
-            reference operator[](int rhs) {return base()[-rhs -1];}
+            reference operator[](int rhs) {return *(_it - rhs);}
             T operator->() {return &operator*();}
-            reference operator*() const {T tmp = _it; return *--tmp;}
+            reference operator*() const {reviter tmp(*this); return *(--tmp._it);}
             T base() const {return _it;}
 
             operator reviter<iter<const_iterator_type> >() {
