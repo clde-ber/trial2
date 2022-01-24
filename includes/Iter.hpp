@@ -72,7 +72,7 @@ namespace ft
             reference operator*() const {return *_it;}
             iterator_type base() const {return _it;}
 
-            operator const iter<const_iterator_type>() const
+            operator const iter<const_iterator_type>()
             {
                 return (iter<const_iterator_type>(const_cast<const iterator_type>(_it)));
             }
