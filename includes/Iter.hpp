@@ -93,9 +93,9 @@ namespace ft
             reviter() : _it(T()) {}
             reviter(iterator_type x) : _it(x) {}
             template< class U >
-            reviter(U const & other) : _it(&(*other)) {}
+            reviter(U const & other) : _it(other.base()) {}
             template< class U >
-            reviter& operator=(U const & other) {_it = &(*other); return *this;}
+            reviter& operator=(U const & other) {_it = other.base(); return *this;}
             virtual ~reviter() {}
             reviter& operator++() {_it--; return *this;}
             reviter operator++(int) {reviter retval = *this; ++(*this); return retval;}
