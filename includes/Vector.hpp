@@ -5,7 +5,7 @@
 #include <iostream>
 #include <cstddef>
 #include <algorithm>
-#include <valarray>
+#include <cmath>
 #include "Iter.hpp"
 
 #define TRUE 1
@@ -231,10 +231,16 @@ namespace ft
             }
             void reserve( size_type n )
             {
-                ft::vector< T > newV(n);
-                //this->~vector();
-                *this = newV;
-                newV.~vector();
+                size_type len = size();
+                if (n > _capacity)
+                {
+                    resize(n);
+                    _n = len;
+                    //ft::vector< T > newV(n);
+                    //this->~vector();
+                    //*this = newV;
+                    //newV.~vector();
+                }
             }
             void resize (size_type n, value_type val = value_type())
             {
@@ -266,7 +272,7 @@ namespace ft
             }
             size_type max_size() const
             {
-                return (std::pow(2, 32) / sizeof(T)) * std::pow(2, 32) - 1;
+                return (std::pow(2, 32) / sizeof(T) * std::pow(2, 32)) - 1;
             }
             template <class InputIterator>
             void assign(InputIterator first, InputIterator last, typename ft::enable_if<!is_integral<InputIterator>::value>::type* = NULL)

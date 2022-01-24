@@ -97,17 +97,17 @@ namespace ft
             template< class U >
             reviter& operator=(U const & other) {_it = &(*other); return *this;}
             virtual ~reviter() {}
-            reviter& operator++() {_it = _it - 1; return *this;}
+            reviter& operator++() {_it--; return *this;}
             reviter operator++(int) {reviter retval = *this; ++(*this); return retval;}
-            reviter& operator--() {_it = _it + 1; return *this;}
+            reviter& operator--() {_it++; return *this;}
             reviter operator--(int) {reviter retval = *this; --(*this); return retval;}
             reviter& operator-=(difference_type n) {_it += n; return *this;}
             reviter operator-(difference_type n) const {return reviter(_it + n);}
             reviter& operator+=(difference_type n) {_it -= n; return *this;}
             reviter operator+(difference_type n) const {return reviter(_it - n);}
-            reference operator[](difference_type n) const {return base()[-n-1];}
+            reference operator[](difference_type n) const {return *(_it - n - 1);}
             pointer operator->() const {return &operator*();}
-            reference operator*() const {reviter tmp(*this); return *(--tmp._it);}
+            reference operator*() const {T tmp(_it); return *--tmp;}
             iterator_type base() const {return _it;}
 
             operator reviter<iter<const_iterator_type> >()
