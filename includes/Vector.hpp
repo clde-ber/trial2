@@ -169,12 +169,6 @@ namespace ft
                 const_reverse_iterator ret(begin());
                 return ret;
             }
-            bool operator==(const ft::vector< T >& rhs) const {return size() == rhs.size();}
-            bool operator!=(const ft::vector< T >& rhs) const {return !(*this == rhs);}
-            bool operator>(const ft::vector< T >& rhs) const {return rhs < *this;}
-            bool operator>=(const ft::vector< T >& rhs) const {return !(*this < rhs);}
-            bool operator<(const ft::vector< T >& rhs) const {return std::lexicographical_compare(begin(), end(), rhs.begin(), rhs.end());}
-            bool operator<=(const ft::vector< T >& rhs) const {return !(rhs < *this);}
             size_type size() const
             {
                 return _n;
@@ -192,6 +186,14 @@ namespace ft
             const_reference operator[] (size_type n) const
             {
                 return _p[n];
+            }
+            T* data()
+            {
+                return _p;
+            }
+            const T* data () const
+            {
+                return _p;
             }
             reference back()
             {
@@ -445,79 +447,36 @@ namespace ft
                 *this = tmp;
             }
     };
+    template< class T, class Alloc >
+    bool operator==(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
+    {
+        return lhs.size() == rhs.size();
+    }
+    template< class T, class Alloc >
+    bool operator!=(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
+    {
+        return !(lhs == rhs);
+    }
+    template< class T, class Alloc >
+    bool operator<(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
+    {
+        return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    }
+    template< class T, class Alloc >
+    bool operator<=(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)      
+    {
+        return !(rhs < lhs);
+    } 
+    template< class T, class Alloc >
+    bool operator>(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
+    {
+        return rhs < lhs;
+    }
+    template< class T, class Alloc >
+    bool operator>=(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
+    {
+        return !(lhs < rhs);
+    }
 }
-// this x
-// a    b
 
-// tmp = this
-// this = x
-// x = tmp
 #endif
-/*
-begin
-    Return iterator to beginning (public member function )
-
-end
-    Return iterator to end (public member function )
-
-rbegin
-    Return reverse iterator to reverse beginning (public member function )
-
-rend
-    Return reverse iterator to reverse end (public member function )
-
-size
-    Return size (public member function ) OK
-
-max_size
-    Return maximum size (public member function )
-
-resize
-    Change size (public member function )
-
-capacity
-    Return size of allocated storage capacity (public member function )
-
-empty
-    Test whether vector is empty (public member function ) OK
-
-reserve
-    Request a change in capacity (public member function )
-
-operator[]
-    Access element (public member function )
-
-at
-    Access element (public member function )
-
-front
-    Access first element (public member function )
-
-back
-    Access last element (public member function )
-
-assign
-    Assign vector content (public member function )
-
-push_back
-    Add element at the end (public member function )
-
-pop_back
-    Delete last element (public member function )
-
-insert
-    Insert elements (public member function )
-
-erase
-    Erase elements (public member function )
-
-swap
-    Swap content (public member function )
-
-clear
-    Clear content (public member function )
-
-get_allocator
-    Get allocator (public member function )
-
-*/

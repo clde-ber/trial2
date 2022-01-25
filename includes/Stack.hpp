@@ -1,127 +1,100 @@
 #ifndef STACK_H
 #define STACK_H
 
-#include <iostream>
-#include <string>
-#include <memory>
-#include <cstddef>
-
-#define TRUE 1
-#define FALSE 0
+#include "Vector.hpp"
 
 namespace ft
 {
-    template< typename T >
+    template< typename T, class Container = vector< T > >
     class stack
     {
         private:
-            unsigned long _n;
+            size_t _n;
+            size_t _capacity;
             T* _p;
-        class OutOfLimitsException : public std::exception
-        {
-            public:
-                virtual const char* what() const throw()
-                {
-                    return "Stack element exception: out of limits!";
-                }
-        };
-        class EmptyStackException : public std::exception
-        {
-            public:
-                virtual const char* what() const throw()
-                {
-                    return "Stack exception: empty stack!";
-                }
-        };
+        protected:
+            Container _c;
         public:
-            stack( void ) : _n(0), _p(0)
+            typedef Container container_type;
+            typedef typename Container::value_type value_type;
+            typedef typename Container::size_type size_type;
+            typedef typename Container::reference reference;
+            typedef typename Container::const_reference const_reference;
+
+            friend bool ft::operator==(const stack<T,Container>& lhs, const stack<T,Container>& rhs);
+            friend bool ft::operator!=(const stack<T,Container>& lhs, const stack<T,Container>& rhs);
+            friend bool ft::operator<(const stack<T,Container>& lhs, const stack<T,Container>& rhs);
+            friend bool ft::operator<=(const stack<T,Container>& lhs, const stack<T,Container>& rhs);
+            friend bool ft::operator>(const stack<T,Container>& lhs, const stack<T,Container>& rhs);
+            friend bool ft::operator>=(const stack<T,Container>& lhs, const stack<T,Container>& rhs);
+
+            explicit stack(const Container& cont = Container()) : _n(0), _capacity(0), _p(0), _c(cont) {}
+            stack(const stack& other) : _n(other._n), _capacity(other._capacity), _p(0), _c(other._c) {}
+            stack& operator=(const stack& other)
             {
-                //std::allocator< T > alloc;
-                //_p = alloc.allocate(_n, this);
-            }
-            stack( unsigned long n ) : _n(n), _p(0)
-            {
-                std::allocator< T > alloc;
-                _p = alloc.allocate(_n, this);
-            }
-            stack( const stack & rhs )
-            {
-                *this = rhs;
-            }
-            stack & operator=( stack const & rhs )
-            {
-                std::allocator< T > alloc;
-                //this->~stack();
-                _p = alloc.allocate(rhs._n, this);
-                _n = rhs._n;
-                for (unsigned long i = 0; i < _n; i++)
-                    _p[i] = rhs._p[i];
+                _n = other._n;
+                _capacity = other._capacity;
+                _p = 0;
+                _c = other._c;
                 return *this;
             }
-            virtual ~stack( void )
+            virtual ~stack() {}
+            size_type size() const
             {
-                std::allocator< T > alloc;
-                alloc.deallocate(_p, _n);
-                _n = 0;
-                _p = 0;
-            }
-            unsigned long size() const
-            {
-                return _n;
+                return _c.size();
             }
             bool empty() const
             {
-                if (!_n)
-                    return TRUE;
-                return FALSE;
+                return _c.empty();
             }
-            T & operator[](unsigned long n)
+            reference top()
             {
-                if (n < 0 or n >= _n)
-                    throw OutOfLimitsException();
-                return _p[n];
+                return _c.back();
             }
-            T & top()
+            const_reference top() const
             {
-                if (!empty())
-                    return _p[_n - 1];
-                throw EmptyStackException();
+                return _c.back();
             }
-            void push(T const & val)
+            void push(const value_type& value)
             {
-                stack< T > tmp(_n + 1);
-                for (unsigned long i = 0; i < _n; i++)
-                    tmp._p[i] = _p[i];
-                tmp._p[_n] = val;
-                tmp._n = _n + 1;
-                //this->~stack();
-                *this = tmp;
+                _c.push_back(value);
             }
             void pop()
             {
-                if (!_n)
-                    throw EmptyStackException();
-                std::allocator< T > alloc;
-                stack< T > tmp(_n - 1);
-                for (unsigned long i = 0; i < _n - 1; i++)
-                    tmp._p[i] = _p[i];
-                tmp._n = _n - 1;
-                //this->~stack();
-                *this = tmp;
+                _c.pop_back();
             }
     };
-};
+
+    template< class T, class Container >
+    bool operator==(const stack<T,Container>& lhs, const stack<T,Container>& rhs)
+    {
+        return lhs._c == rhs._c;
+    }
+    template< class T, class Container >
+    bool operator!=(const stack<T,Container>& lhs, const stack<T,Container>& rhs)
+    {
+        return lhs._c != rhs._c;
+    }
+    template< class T, class Container >
+    bool operator<(const stack<T,Container>& lhs, const stack<T,Container>& rhs)
+    {
+        return lhs._c < rhs._c;
+    }
+    template< class T, class Container >
+    bool operator<=(const stack<T,Container>& lhs, const stack<T,Container>& rhs)
+    {
+        return lhs._c <= rhs._c;
+    }
+    template< class T, class Container >
+    bool operator>(const stack<T,Container>& lhs, const stack<T,Container>& rhs)
+    {
+        return lhs._c > rhs._c;
+    }
+    template< class T, class Container >
+    bool operator>=(const stack<T,Container>& lhs, const stack<T,Container>& rhs)
+    {
+        return lhs._c >= rhs._c;
+    }
+}
 
 #endif
-
-
-    // empty : Test whether container is empty 
-    // size : Return size
-    // top : Access next element
-    // push_back
-    // pop_back
-    // push : Insert element
-    // pop : Remove top element 
-    // back
-    // push_back
-    // pop_back
