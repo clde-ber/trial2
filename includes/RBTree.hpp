@@ -160,12 +160,18 @@ namespace ft
                 }
                 if (key < root->data)
                 {
-                    leftRotate(found->parent);
+                    if (found->left || found->right)
+                        leftRotate(found->parent);
+                    else
+                        found->parent->right = NULL;
                     found->parent->left = found->left;
                 }
                 else
                 {
-                    rightRotate(found->parent);
+                    if (found->left || found->right)
+                        rightRotate(found->parent);
+                    else
+                        found->parent->left = NULL;
                     found->parent->right = found->right;
                 }
                 delete found;
@@ -207,6 +213,7 @@ namespace ft
                     freeNodes(root->right);
                 }
                 delete root;
+                root = NULL;
             }
             // If a node is red, both of its children are black. This means no two nodes on a path can be red nodes.
             // Every path from a root node to a NULL node has the same number of black nodes.
