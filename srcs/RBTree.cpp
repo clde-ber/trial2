@@ -13,7 +13,8 @@ int main()
 	bst.insert(80);
 	bst.insert(3);
 	bst.insert(10);
-	//bst.deleteNode(25);
+	bst.deleteNode(25);
+	bst.deleteNode(5);
 	bst.prettyPrint();
 	std::cout << "rooot :D" << bst.getRoot()->data << std::endl;
 	bst.freeNodes(bst.getRoot());

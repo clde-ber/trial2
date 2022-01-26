@@ -49,7 +49,6 @@ namespace ft
                 swap(&x, &y);
                 if (!x->parent)
                 {
-                    std::cout << "hehe" << std::endl;
                     root = y;
                     origin->parent = root;
                     root->left= origin;
@@ -67,7 +66,6 @@ namespace ft
                 swap(&x, &y);
                 if (!x->parent)
                 {
-                    std::cout << "haha" << std::endl;
                     root = y;
                     origin->parent = root;
                     root->right = origin;
@@ -148,12 +146,8 @@ namespace ft
                 NodePtr node = getRoot();
                 while (node)
                 {
-                    std::cout << node->data << std::endl;
                     if (node->data == key)
-                    {
-                        std::cout << node->data << std::endl;
                         found = node;
-                    }
                     if (key <= node->data)
                         node = node->left;
                     else
@@ -164,8 +158,18 @@ namespace ft
                     std::cout << "Couldn't find key in the tree"<< std::endl;
                         return ;
                 }
-                swap();
+                if (key < root->data)
+                {
+                    leftRotate(found->parent);
+                    found->parent->left = found->left;
+                }
+                else
+                {
+                    rightRotate(found->parent);
+                    found->parent->right = found->right;
+                }
                 delete found;
+                found = NULL;
                 recolor(getRoot());
             }
             void printHelper(NodePtr root, std::string indent, bool last)
@@ -208,5 +212,7 @@ namespace ft
             // Every path from a root node to a NULL node has the same number of black nodes.
     };
 }
+
+//https://algorithmtutor.com/Data-Structures/Tree/Red-Black-Trees/
 
 #endif
