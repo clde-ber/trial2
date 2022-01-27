@@ -6,6 +6,11 @@
 namespace ft
 {
     template< class Key >
+    struct Balance
+    {
+        int balance = 0;
+    };
+    template< class Key >
     struct Node
     {
         Key data; // holds the key
@@ -13,6 +18,7 @@ namespace ft
         Node *left; // pointer to left child
         Node *right; // pointer to right child
         int color; // 1 -> Red, 0 -> Black
+        Balance< Key > *blc = new Balance< Key >;
     };
 
     template< class Key, class T >
@@ -23,13 +29,13 @@ namespace ft
 
             // initializes the nodes with appropirate values
             // all the pointers are set to point to the null pointer
-            void initializeNode(Node< Key > *node)
+            void initializeNode(Node< Key > *node, Key data, int color)
             {
-                node->data = 0;
+                node->data = data;
                 node->parent = NULL;
                 node->left = NULL;
                 node->right = NULL;
-                node->color = 0;
+                node->color = color;
             }
             void swap(Node< Key > **x, Node< Key > **y)
             {
@@ -45,6 +51,7 @@ namespace ft
                 NodePtr y = x->right;
                 NodePtr origin = root;
 
+                x->blc->balance--;
                 swap(&y->left, &x->right);
                 swap(&x, &y);
                 if (!x->parent)
@@ -62,6 +69,7 @@ namespace ft
                 NodePtr y = x->left;
                 NodePtr origin = root;
 
+                x->blc->balance++;
                 swap(&y->right, &x->left);
                 swap(&x, &y);
                 if (!x->parent)
@@ -77,9 +85,7 @@ namespace ft
             void insert(int key)
             {
                 NodePtr node = new Node< Key >;
-                initializeNode(node);
-                node->data = key;
-                node->color = 1; // new node must be red
+                initializeNode(node, key, 1);
                 
                 NodePtr fromRoot = root;
                 NodePtr parentNode = NULL;
@@ -158,24 +164,35 @@ namespace ft
                     std::cout << "Couldn't find key in the tree"<< std::endl;
                         return ;
                 }
-                if (key < root->data)
+                if (found != root && key < found->parent->data)
                 {
                     if (found->left || found->right)
                         leftRotate(found->parent);
-                    else
-                        found->parent->right = NULL;
-                    found->parent->left = found->left;
+                    found->parent->left = found->left; 
                 }
-                else
+                else if (found != root)
                 {
                     if (found->left || found->right)
                         rightRotate(found->parent);
-                    else
-                        found->parent->left = NULL;
                     found->parent->right = found->right;
+                    
                 }
+                if (found == root)
+                {
+                    std::cout << found->data << std::endl;
+                    if (found->blc->balance < 0)
+                    {
+                        rightRotate(found);
+                        root = found->right;
+                    }
+                    else
+                    {
+                        leftRotate(found);
+                        root = found->left;
+                    }
+                }
+                initializeNode(found, 0, 0);
                 delete found;
-                found = NULL;
                 recolor(getRoot());
             }
             void printHelper(NodePtr root, std::string indent, bool last)
