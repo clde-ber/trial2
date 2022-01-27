@@ -6,11 +6,6 @@
 namespace ft
 {
     template< class Key >
-    struct Balance
-    {
-        int balance = 0;
-    };
-    template< class Key >
     struct Node
     {
         Key data; // holds the key
@@ -18,7 +13,6 @@ namespace ft
         Node *left; // pointer to left child
         Node *right; // pointer to right child
         int color; // 1 -> Red, 0 -> Black
-        Balance< Key > *blc = new Balance< Key >;
     };
 
     template< class Key, class T >
@@ -51,7 +45,6 @@ namespace ft
                 NodePtr y = x->right;
                 NodePtr origin = root;
 
-                x->blc->balance--;
                 swap(&y->left, &x->right);
                 swap(&x, &y);
                 if (!x->parent)
@@ -69,7 +62,6 @@ namespace ft
                 NodePtr y = x->left;
                 NodePtr origin = root;
 
-                x->blc->balance++;
                 swap(&y->right, &x->left);
                 swap(&x, &y);
                 if (!x->parent)
@@ -164,35 +156,23 @@ namespace ft
                     std::cout << "Couldn't find key in the tree"<< std::endl;
                         return ;
                 }
-                if (found != root && key < found->parent->data)
+                if (key < found->parent->data)
                 {
                     if (found->left || found->right)
                         leftRotate(found->parent);
-                    found->parent->left = found->left; 
+                    found->parent->left = found->left;
                 }
-                else if (found != root)
+                else
                 {
                     if (found->left || found->right)
                         rightRotate(found->parent);
-                    found->parent->right = found->right;
-                    
+                    found->parent->right = found->right;  
                 }
                 if (found == root)
-                {
-                    std::cout << found->data << std::endl;
-                    if (found->blc->balance < 0)
-                    {
-                        rightRotate(found);
-                        root = found->right;
-                    }
-                    else
-                    {
-                        leftRotate(found);
-                        root = found->left;
-                    }
-                }
+                    root = found->parent;
                 initializeNode(found, 0, 0);
                 delete found;
+                std::cout << getRoot()->data << std::endl;
                 recolor(getRoot());
             }
             void printHelper(NodePtr root, std::string indent, bool last)
