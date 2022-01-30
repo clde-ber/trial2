@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+static int end = 0;
+
 namespace ft
 {
     template< class Key >
@@ -169,10 +171,17 @@ namespace ft
             }
             int isDeletable(NodePtr found)
             {
-               /* if (found == root)
+                if (!found->parent && !found->left && !found->right)
                 {
+                    initializeNode(found);
+                    delete found;
+                    found = NULL;
+                    root = NULL;
+                    end = 1;
+                    return 1;
+                }
+                if (found == root)
                     return 0;
-                }*/
                 if (found->left && found->right && !found->left->left && !found->left->right && !found->right->left && !found->right->right)
                     {
                         std::cout << "FOUND1 " << found->data << std::endl;
@@ -292,10 +301,14 @@ namespace ft
                     if (!alreadydeleted)
                     {
                         std::cout << "founfound" << found->data << std::endl;
-                        while (found == root && !isDeletable(found))
+                        if (found == root)
                         {
-                            rightRotate(found);
-                            alreadydeleted2 = 1;
+                            while (found == root && root->left && !isDeletable(found))
+                            {rightRotate(found);
+                            alreadydeleted2 = 1;}
+                            while (found == root && root->right && !isDeletable(found))
+                            {leftRotate(root);
+                            alreadydeleted2 = 1;}
                         }
                     }
                 }
@@ -306,19 +319,26 @@ namespace ft
                         leftRotate(found);
                         alreadydeleted = 1;
                     }
-                    if (!alreadydeleted && found != root)
+                    if (!alreadydeleted)
                     {
                         std::cout << "founfound" << found->data << std::endl;
-                        while (found == root && !isDeletable(found))
+                        if (found == root)
                         {
-                            leftRotate(found);
-                            alreadydeleted2 = 1;
+                            while (found == root && root->right && !isDeletable(found))
+                            {leftRotate(root);
+                            alreadydeleted2 = 1;}
+                            while (found == root && root->left && !isDeletable(found))
+                            {rightRotate(found);
+                            alreadydeleted2 = 1;}
                         }
                     }
                 }
-                if (!alreadydeleted && !alreadydeleted2)
+                prettyPrint();
+                if (!alreadydeleted && end == 0)
                     isDeletable(found);
-                recolor(root);
+                if (root && end == 0)
+                    recolor(root);
+                prettyPrint();
             }
             void printHelper(NodePtr root, std::string indent, bool last)
             {

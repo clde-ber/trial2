@@ -23,8 +23,8 @@ int main()
 	bst.deleteNode(8);
 	bst.deleteNode(15);
 	bst.deleteNode(10);
+	std::cout << "print" << std::endl;
 	bst.prettyPrint();
-	std::cout << "rooot :D" << bst.getRoot()->data << std::endl;
 	bst.freeNodes(bst.getRoot());
 	return 0;
 }
