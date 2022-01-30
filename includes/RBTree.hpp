@@ -94,7 +94,7 @@ namespace ft
                 
                 NodePtr fromRoot = root;
                 NodePtr parentNode = NULL;
-                NodePtr child = NULL;
+                //NodePtr child = NULL;
                 while (fromRoot)
                 {
                     parentNode = fromRoot;
@@ -102,11 +102,11 @@ namespace ft
                         fromRoot = fromRoot->left;
                     else
                         fromRoot = fromRoot->right;
-                    if (fromRoot)
+                    /*if (fromRoot)
                     {
                         child = fromRoot;
                         child->parent = parentNode;
-                    }
+                    }*/
                 }
                 node->parent = parentNode;
                 if (!node->parent)
@@ -132,6 +132,9 @@ namespace ft
                         parentNode->right = node;
                     leftRotate(root);
                 }
+                std::cout << "node : " << node->data << std::endl;
+                if (node->parent)
+                std::cout << "parentnode : " << node->parent->data << std::endl;
                 recolor(getRoot());
             }
             NodePtr getRoot()
@@ -178,12 +181,16 @@ namespace ft
                         if (found == found->parent->right)
                         {
                             found->parent->right = found->right;
+                            found->right->parent = found->parent;
                             found->parent->right->left = found->left;
+                            found->left->parent = found->parent->right;
                         }
                         else
                         {
                             found->parent->left = found->right;
+                            found->right->parent = found->parent;
                             found->parent->left->left = found->left;
+                            found->left->parent = found->parent->left;
                         }
                         initializeNode(found);
                         delete found;
@@ -196,9 +203,15 @@ namespace ft
                         std::cout << "FOUND PARENT2 " << found->parent->data << std::endl;
                         prettyPrint();
                         if (found == found->parent->right)
+                        {
                             found->parent->right = found->left;
+                            found->left->parent = found->parent;
+                        }
                         else
+                        {
                             found->parent->left = found->left;
+                            found->left->parent = found->parent;
+                        }
                         initializeNode(found);
                         delete found;
                         found = NULL;
@@ -210,9 +223,15 @@ namespace ft
                         std::cout << "FOUND PARENT3 " << found->parent->data << std::endl;
                         prettyPrint();
                         if (found == found->parent->right)
+                        {
                             found->parent->right = found->right;
+                            found->right->parent = found->parent;
+                        }
                         else
+                        {
                             found->parent->left = found->right;
+                            found->right->parent = found->parent;
+                        }
                         initializeNode(found);
                         delete found;
                         found = NULL;
@@ -221,7 +240,7 @@ namespace ft
                     else if (!found->right && !found->left)
                     {
                         std::cout << "FOUND4 " << found->data << std::endl;
-                        std::cout << "FOUND PARENT4 " << root->data << std::endl;
+                        std::cout << "FOUND PARENT4 " << found->parent->data << std::endl;
                         prettyPrint();
                         if (found == found->parent->right)
                             found->parent->right = NULL;
