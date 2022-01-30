@@ -115,7 +115,6 @@ namespace ft
                 {
                     root = node;
                     node->color = 0;
-                    std::cout << "root" << root->data << std::endl;
                     return ;
                 }
                 if (node->data < root->data)
@@ -134,9 +133,7 @@ namespace ft
                         parentNode->right = node;
                     leftRotate(root);
                 }
-                std::cout << "node : " << node->data << std::endl;
                 if (node->parent)
-                std::cout << "parentnode : " << node->parent->data << std::endl;
                 recolor(getRoot());
             }
             NodePtr getRoot()
@@ -184,9 +181,6 @@ namespace ft
                     return 0;
                 if (found->left && found->right && !found->left->left && !found->left->right && !found->right->left && !found->right->right)
                     {
-                        std::cout << "FOUND1 " << found->data << std::endl;
-                        std::cout << "FOUND PARENT1 " << found->parent->data << std::endl;
-                        prettyPrint();
                         if (found == found->parent->right)
                         {
                             found->parent->right = found->right;
@@ -208,9 +202,6 @@ namespace ft
                     }
                     else if (found->left && !found->right)
                     {
-                        std::cout << "FOUND2 " << found->data << std::endl;
-                        std::cout << "FOUND PARENT2 " << found->parent->data << std::endl;
-                        prettyPrint();
                         if (found == found->parent->right)
                         {
                             found->parent->right = found->left;
@@ -228,9 +219,6 @@ namespace ft
                     }
                     else if (found->right && !found->left)
                     {
-                        std::cout << "FOUND3 " << found->data << std::endl;
-                        std::cout << "FOUND PARENT3 " << found->parent->data << std::endl;
-                        prettyPrint();
                         if (found == found->parent->right)
                         {
                             found->parent->right = found->right;
@@ -248,9 +236,6 @@ namespace ft
                     }
                     else if (!found->right && !found->left)
                     {
-                        std::cout << "FOUND4 " << found->data << std::endl;
-                        std::cout << "FOUND PARENT4 " << found->parent->data << std::endl;
-                        prettyPrint();
                         if (found == found->parent->right)
                         {
                             found->parent->right = NULL;
@@ -260,7 +245,6 @@ namespace ft
                             found->parent->left = NULL;
                         }
                         initializeNode(found);
-                        std::cout << "found" << found->data << std::endl;
                         delete found;
                         found = NULL;
                         return 1;
@@ -285,10 +269,7 @@ namespace ft
                 }
                 count = i;
                 if (!found)
-                {
-                    std::cout << "Couldn't find key in the tree"<< std::endl;
-                        return ;
-                }
+                    return ;
                 int alreadydeleted = 0;
                 int alreadydeleted2 = 0;
                 if (key > root->data)
@@ -300,7 +281,6 @@ namespace ft
                     }
                     if (!alreadydeleted)
                     {
-                        std::cout << "founfound" << found->data << std::endl;
                         if (found == root)
                         {
                             while (found == root && root->left && !isDeletable(found))
@@ -321,7 +301,6 @@ namespace ft
                     }
                     if (!alreadydeleted)
                     {
-                        std::cout << "founfound" << found->data << std::endl;
                         if (found == root)
                         {
                             while (found == root && root->right && !isDeletable(found))
@@ -333,12 +312,10 @@ namespace ft
                         }
                     }
                 }
-                prettyPrint();
                 if (!alreadydeleted && end == 0)
                     isDeletable(found);
                 if (root && end == 0)
                     recolor(root);
-                prettyPrint();
             }
             void printHelper(NodePtr root, std::string indent, bool last)
             {
