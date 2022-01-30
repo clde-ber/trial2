@@ -16,7 +16,7 @@ int main()
 	bst.deleteNode(25);
 	bst.deleteNode(5);
 	bst.deleteNode(17);
-	//bst.deleteNode(18);
+	bst.deleteNode(18);
 	bst.deleteNode(80);
 	bst.deleteNode(3);
 	bst.deleteNode(40);
