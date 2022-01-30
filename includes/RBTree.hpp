@@ -94,7 +94,7 @@ namespace ft
                 
                 NodePtr fromRoot = root;
                 NodePtr parentNode = NULL;
-                //NodePtr child = NULL;
+                NodePtr child = NULL;
                 while (fromRoot)
                 {
                     parentNode = fromRoot;
@@ -102,11 +102,11 @@ namespace ft
                         fromRoot = fromRoot->left;
                     else
                         fromRoot = fromRoot->right;
-                    /*if (fromRoot)
+                    if (fromRoot)
                     {
                         child = fromRoot;
                         child->parent = parentNode;
-                    }*/
+                    }
                 }
                 node->parent = parentNode;
                 if (!node->parent)
@@ -169,11 +169,11 @@ namespace ft
             }
             int isDeletable(NodePtr found)
             {
-                if (found == root || found->parent == root)
+               /* if (found == root)
                 {
                     return 0;
-                }
-                else if (found->left && found->right && !found->left->left && !found->left->right && !found->right->left && !found->right->right)
+                }*/
+                if (found->left && found->right && !found->left->left && !found->left->right && !found->right->left && !found->right->right)
                     {
                         std::cout << "FOUND1 " << found->data << std::endl;
                         std::cout << "FOUND PARENT1 " << found->parent->data << std::endl;
@@ -243,9 +243,13 @@ namespace ft
                         std::cout << "FOUND PARENT4 " << found->parent->data << std::endl;
                         prettyPrint();
                         if (found == found->parent->right)
+                        {
                             found->parent->right = NULL;
+                        }
                         else
+                        {
                             found->parent->left = NULL;
+                        }
                         initializeNode(found);
                         std::cout << "found" << found->data << std::endl;
                         delete found;
@@ -276,19 +280,26 @@ namespace ft
                     std::cout << "Couldn't find key in the tree"<< std::endl;
                         return ;
                 }
-                if (key >= root->data)
+                int alreadydeleted = 0;
+                if (key > found->parent->data)
                 {
-                    while (found && found->left && !isDeletable(found))
+                    while (found && found->left && found->left->left && found->left->right && !isDeletable(found))
+                    {
                         rightRotate(found);
-                    if (found && !found->left)
+                        alreadydeleted = 1;
+                    }
+                    if (!alreadydeleted)
                         isDeletable(found);
                     recolor(root);
                 }
                 else
                 {
-                    while (found && found->right && !isDeletable(found))
+                    while (found && found->right && found->right->left && found->right->right && !isDeletable(found))
+                    {
                         leftRotate(found);
-                    if (found && !found->right)
+                        alreadydeleted = 1;
+                    }
+                    if (!alreadydeleted)
                         isDeletable(found);
                     recolor(root);
                 }
