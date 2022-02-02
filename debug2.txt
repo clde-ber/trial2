@@ -1,0 +1,11 @@
+R----18(BLACK)
+     L----8(BLACK)
+     |    L----5(BLACK)
+     |    |    L----3(RED)
+     |    R----15(RED)
+     |         L----10(BLACK)
+     |         R----17(BLACK)
+     R----25(BLACK)
+          R----40(BLACK)
+               R----80(BLACK)
+********

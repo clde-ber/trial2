@@ -72,7 +72,7 @@ namespace ft
             reference operator*() const {return *_it;}
             iterator_type base() const {return _it;}
 
-            operator const iter<const_iterator_type>()
+            operator iter<const_iterator_type>()
             {
                 return (iter<const_iterator_type>(const_cast<const iterator_type>(_it)));
             }
@@ -115,10 +115,6 @@ namespace ft
                 return (reviter<iter<const_iterator_type> >(iter<const_iterator_type>(_it)));
             }
     };
-    template< typename T >
-    std::ostream & operator<<(std::ostream & o, iter< T > const & rhs) {o << *rhs; return o;}
-    template< typename T >
-    std::ostream & operator<<(std::ostream & o, reviter< T > const & rhs) {o << *rhs; return o;}
 
     template< class Iter>
     iter<Iter> operator+( typename iter<Iter>::difference_type n, const iter<Iter>& it )

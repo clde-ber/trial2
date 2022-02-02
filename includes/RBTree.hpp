@@ -7,92 +7,135 @@ static int end = 0;
 
 namespace ft
 {
-    template< class Key >
-    struct Node
-    {
-        Key data; // holds the key
-        Node *parent; // pointer to the parent
-        Node *left; // pointer to left child
-        Node *right; // pointer to right child
-        int color; // 1 -> Red, 0 -> Black
-    };
-
+    template< class Key, class T >
+    class Node
+        {
+            private:
+                Key data; // holds the key
+                T val;
+                Node *parent; // pointer to the parent
+                Node *left; // pointer to left child
+                Node *right; // pointer to right child
+                int color; // 1 -> Red, 0 -> Black
+            public:
+                Node() : data(0), val(0), parent(0), left(0), right(0), color(0) {}
+                Node(Key key, T value) : data(key), val(value), parent(0), left(0), right(0), color(0) {}
+                Node(Node const & rhs) : data(rhs.data), val(rhs.val), parent(rhs.parent), left(rhs.left), right(rhs.right), color(0) {}
+                Node & operator=(Node const & rhs) {new(this) Node(rhs); return *this;}
+                virtual ~Node() { data = 0; val = 0; parent = NULL; left = NULL; right = NULL; color = 0; }
+                Key getData() const {return data;}
+                T getVal() const {return val;}
+                Node *getParent() const {return parent;}
+                Node *getLeft() const {return left;}
+                Node *getRight() const {return right;}
+                int getColor() const {return color;}
+                void setData(Key key) {data = key;}
+                void setVal(T value) {val = value;}
+                void setParent(Node *rhs) {parent = rhs;}
+                void setLeft(Node *rhs) {left = rhs;}
+                void setRight(Node *rhs) {right = rhs;}
+                void setColor(int col) {color = col;}
+        };
     template< class Key, class T >
     class RBTree
     {
         private:
-            Node< Key > *root = NULL;
+            Node< Key, T > *root = NULL;
 
             // initializes the nodes with appropirate values
             // all the pointers are set to point to the null pointer
-            void initializeNode(Node< Key > *node)
+            void initializeNode(Node< Key, T > *node)
             {
-                node->data = 0;
-                node->parent = NULL;
-                node->left = NULL;
-                node->right = NULL;
-                node->color = 0;
+                node->setData(0);
+                node->setVal(0);
+                node->setParent(NULL);
+                node->setLeft(NULL);
+                node->setRight(NULL);
+                node->setColor(0);
             }
-            void swap(Node< Key > **x, Node< Key > **y)
+            void swap(Node< Key, T  > **x, Node< Key, T > **y)
             {
-                Node< T > **tmp = x;
+                Node< Key, T > **tmp = x;
                 x = y;
                 y = tmp;
             }
         public:
-            typedef Node< Key >* NodePtr;
+            typedef Node< Key, T >* NodePtr;
 
+            RBTree() : root(0) {}
+            template< typename U >
+            RBTree(const Node< Key, T >& value) : root(0) { insert(value); }
+            RBTree(RBTree const & rhs) : root(0) { (void)rhs; }
+            //template< class InputIt >
+            //RBTree(InputIt first, InputIt last, typename ft::enable_if<!is_integral<InputIt>::value>::type* = NULL) : root(0) { while (first != last) { insert(*first); first++; } }
+            RBTree & operator=(RBTree const & rhs) { root = 0; new(this) RBTree(rhs); return *this; }
+            virtual ~RBTree() {}
+            NodePtr find(Node<Key, T> const& toFind) const
+            {
+                NodePtr fromRoot = root;
+                while (fromRoot)
+                {
+                    if (toFind.getData() < fromRoot->getData() && toFind.getVal() != fromRoot->getVal())
+                        fromRoot = fromRoot->getLeft();
+                    else if (toFind.getData() > fromRoot->getData() && toFind.getVal() != fromRoot->getVal())
+                        fromRoot = fromRoot->getRight();
+                    else
+                        break ;
+                }
+                return fromRoot;
+            }
             void leftRotate(NodePtr x)
             {
-                NodePtr y = x->right;
+                NodePtr y = x->getRight();
 
                 NodePtr tmpY = y;
                 NodePtr tmpX = x;
-                NodePtr rightY = y->right;
-                NodePtr leftX = x->left;
-                NodePtr leftY = y->left;
-                NodePtr parentX = x->parent;
+                NodePtr rightY = y->getRight();
+                NodePtr leftX = x->getLeft();
+                NodePtr leftY = y->getLeft();
+                NodePtr parentX = x->getParent();
 
-                y->parent = parentX;
-                y->right = rightY;
-                y->left = tmpX;
-                x->parent = tmpY;
-                x->right = leftY;
-                x->left = leftX;
-                if (!x->parent)
+                y->setParent(parentX);
+                y->setRight(rightY);
+                y->setLeft(tmpX);
+                x->setParent(tmpY);
+                x->setRight(leftY);
+                x->setLeft(leftX);
+                if (!x->getParent())
                     root = x;
-                if (!y->parent)
+                if (!y->getParent())
                     root = y;
-                root->color = 0;
+                root->setColor(0);
             }
             void rightRotate(NodePtr y)
             {
-                NodePtr x = y->left;
+                NodePtr x = y->getLeft();
                 NodePtr tmpY = y;
                 NodePtr tmpX = x;
-                NodePtr rightX = x->right;
-                NodePtr rightY = y->right;
-                NodePtr leftX = x->left;
-                NodePtr parentY = y->parent;
+                NodePtr rightX = x->getRight();
+                NodePtr rightY = y->getRight();
+                NodePtr leftX = x->getLeft();
+                NodePtr parentY = y->getParent();
 
-                y->parent = tmpX;
-                y->left = rightX;
-                y->right = rightY;
-                x->left = leftX;
-                x->right = tmpY;
-                x->parent = parentY;
-                if (!x->parent)
+                y->setParent(tmpX);
+                y->setLeft(rightX);
+                y->setRight(rightY);
+                x->setLeft(leftX);
+                x->setRight(tmpY);
+                x->setParent(parentY);
+                if (!x->getParent())
                     root = x;
-                if (!y->parent)
+                if (!y->getParent())
                     root = y;
-                root->color = 0;
+                root->setColor(0);
             }
-            void insert(int key)
+            void insert(Node< Key, T > const &toInsert)
             {
-                NodePtr node = new Node< Key >;
+                NodePtr node = new Node< Key, T >(toInsert);
                 initializeNode(node);
-                node->data = key;
-                node->color = 1; // new node must be red
+                node->setData(toInsert.getData());
+                node->setVal(toInsert.getVal());
+                node->setColor(1); // new node must be red
                 
                 NodePtr fromRoot = root;
                 NodePtr parentNode = NULL;
@@ -100,40 +143,40 @@ namespace ft
                 while (fromRoot)
                 {
                     parentNode = fromRoot;
-                    if (node->data < fromRoot->data)
-                        fromRoot = fromRoot->left;
+                    if (node->getVal() < fromRoot->getVal())
+                        fromRoot = fromRoot->getLeft();
                     else
-                        fromRoot = fromRoot->right;
+                        fromRoot = fromRoot->getRight();
                     if (fromRoot)
                     {
                         child = fromRoot;
-                        child->parent = parentNode;
+                        child->setParent(parentNode);
                     }
                 }
-                node->parent = parentNode;
-                if (!node->parent)
+                node->setParent(parentNode);
+                if (!node->getParent())
                 {
                     root = node;
-                    node->color = 0;
+                    node->setColor(0);
                     return ;
                 }
-                if (node->data < root->data)
+                if (node->getVal() < root->getVal())
                 {
-                    if (node->data < parentNode->data)
-                        parentNode->left = node;
+                    if (node->getVal() < parentNode->getVal())
+                        parentNode->setLeft(node);
                     else
-                        parentNode->right = node;
+                        parentNode->setRight(node);
                     rightRotate(root);
                 }
                 else
                 {
-                    if (node->data < parentNode->data)
-                        parentNode->left = node;
+                    if (node->getVal() < parentNode->getVal())
+                        parentNode->setLeft(node);
                     else
-                        parentNode->right = node;
+                        parentNode->setRight(node);
                     leftRotate(root);
                 }
-                if (node->parent)
+                if (node->getParent())
                 recolor(getRoot());
             }
             NodePtr getRoot()
@@ -144,105 +187,108 @@ namespace ft
             {
                 if (node != NULL)
                 {
-                    if (node->left && node->left->color)
+                    if (node->getLeft() && node->getLeft()->getColor())
                     {
-                        if (node->left->right)
-                            node->left->right->color = 0;
-                        if (node->left->left)
-                            node->left->left->color = 0;
+                        if (node->getLeft()->getRight())
+                            node->getLeft()->getRight()->setColor(0);
+                        if (node->getLeft()->getLeft())
+                            node->getLeft()->getLeft()->setColor(0);
                     }
-                    if (node->right && node->right->color)
+                    if (node->getRight() && node->getRight()->getColor())
                     {
-                        if (node->right->right)
-                            node->right->right->color = 0;
-                        if (node->right->left)
-                            node->right->left->color = 0;
+                        if (node->getRight()->getRight())
+                            node->getRight()->getRight()->setColor(0);
+                        if (node->getRight()->getLeft())
+                            node->getRight()->getLeft()->setColor(0);
                     }
-                    recolor(node->left);
-                    recolor(node->right);
+                    recolor(node->getLeft());
+                    recolor(node->getRight());
                 }
-                if (root->right)
-                    root->right->color = 0;
-                if (root->left)
-                    root->left->color = 0;
+                if (root->getRight())
+                    root->getRight()->setColor(0);
+                if (root->getLeft())
+                    root->getLeft()->setColor(0);
             }
             int isDeletable(NodePtr found)
             {
-                if (!found->parent && !found->left && !found->right)
+                //if (found->getParent())
+                //std::cout << found->getVal() << found->getParent()->getVal() << " " << found->getRight() << " " << found->getLeft() << std::endl;
+                if (!found->getParent() && !found->getLeft() && !found->getRight())
                 {
                     initializeNode(found);
+                    initializeNode(root);
                     delete found;
                     found = NULL;
                     root = NULL;
                     end = 1;
                     return 1;
                 }
-                if (found == root)
+                if (found->getVal() == root->getVal())
                     return 0;
-                if (found->left && found->right && !found->left->left && !found->left->right && !found->right->left && !found->right->right)
+                if (found->getLeft() && found->getRight() && !found->getLeft()->getLeft() && !found->getLeft()->getRight() && !found->getRight()->getLeft() && !found->getRight()->getRight())
                     {
-                        if (found == found->parent->right)
+                        if (found == found->getParent()->getRight())
                         {
-                            found->parent->right = found->right;
-                            found->right->parent = found->parent;
-                            found->parent->right->left = found->left;
-                            found->left->parent = found->parent->right;
+                            found->getParent()->setRight(found->getRight());
+                            found->getRight()->setParent(found->getParent());
+                            found->getParent()->getRight()->setLeft(found->getLeft());
+                            found->getLeft()->setParent(found->getParent()->getRight());
                         }
                         else
                         {
-                            found->parent->left = found->right;
-                            found->right->parent = found->parent;
-                            found->parent->left->left = found->left;
-                            found->left->parent = found->parent->left;
+                            found->getParent()->setLeft(found->getRight());
+                            found->getRight()->setParent(found->getParent());
+                            found->getParent()->getLeft()->setLeft(found->getLeft());
+                            found->getLeft()->setParent(found->getParent()->getLeft());
                         }
                         initializeNode(found);
                         delete found;
                         found = NULL;
                         return 1;
                     }
-                    else if (found->left && !found->right)
+                    if (found->getLeft() && !found->getRight())
                     {
-                        if (found == found->parent->right)
+                        if (found == found->getParent()->getRight())
                         {
-                            found->parent->right = found->left;
-                            found->left->parent = found->parent;
+                            found->getParent()->setRight(found->getLeft());
+                            found->getLeft()->setParent(found->getParent());
                         }
                         else
                         {
-                            found->parent->left = found->left;
-                            found->left->parent = found->parent;
+                            found->getParent()->setLeft(found->getLeft());
+                            found->getLeft()->setParent(found->getParent());
                         }
                         initializeNode(found);
                         delete found;
                         found = NULL;
                         return 1;
                     }
-                    else if (found->right && !found->left)
+                    if (found->getRight() && !found->getLeft())
                     {
-                        if (found == found->parent->right)
+                        if (found == found->getParent()->getRight())
                         {
-                            found->parent->right = found->right;
-                            found->right->parent = found->parent;
+                            found->getParent()->setRight(found->getRight());
+                            found->getRight()->setParent(found->getParent());
                         }
                         else
                         {
-                            found->parent->left = found->right;
-                            found->right->parent = found->parent;
+                            found->getParent()->setLeft(found->getRight());
+                            found->getRight()->setParent(found->getParent());
                         }
                         initializeNode(found);
                         delete found;
                         found = NULL;
                         return 1;
                     }
-                    else if (!found->right && !found->left)
+                    if (!found->getRight() && !found->getLeft())
                     {
-                        if (found == found->parent->right)
+                        if (found == found->getParent()->getRight())
                         {
-                            found->parent->right = NULL;
+                            found->getParent()->setRight(NULL);
                         }
                         else
                         {
-                            found->parent->left = NULL;
+                            found->getParent()->setLeft(NULL);
                         }
                         initializeNode(found);
                         delete found;
@@ -251,69 +297,78 @@ namespace ft
                     }
                     return 0;
             }
-            void deleteNode(int key)
+            void deleteNode(T value)
             {
                 NodePtr found = NULL;
                 NodePtr node = getRoot();
-                int i = 0;
-                int count = i;
                 while (node)
                 {
-                    if (node->data == key)
+                    if (node->getVal() == value)
                         found = node;
-                    if (key <= node->data)
-                        node = node->left;
+                    if (value <= node->getVal())
+                        node = node->getLeft();
                     else
-                        node = node->right;
-                    i++;
+                        node = node->getRight();
                 }
-                count = i;
-                if (!found)
-                    return ;
                 int alreadydeleted = 0;
                 int alreadydeleted2 = 0;
-                if (key > root->data)
+                if (found)
+                    std::cout << "found key " << found->getData() << "| found value " << found->getVal() << "| value " << value << std::endl;
+                if (!found)
+                    return ;
+                if (value >= root->getVal())
                 {
-                    while (found && found->left && found->left->left && found->left->right && !isDeletable(found))
+                    while (found && found->getLeft() && found->getLeft()->getLeft() && found->getLeft()->getRight())
                     {
+                        if (isDeletable(found))
+                            alreadydeleted = 1;
                         rightRotate(found);
-                        alreadydeleted = 1;
                     }
                     if (!alreadydeleted)
                     {
                         if (found == root)
                         {
-                            while (found == root && root->left && !isDeletable(found))
-                            {rightRotate(found);
-                            alreadydeleted2 = 1;}
-                            while (found == root && root->right && !isDeletable(found))
+                            while (root->getLeft() && !alreadydeleted2)
+                            {rightRotate(root);
+                            if (isDeletable(found))
+                            alreadydeleted2 = 1;
+                            prettyPrint();}
+                            while (root->getRight() && !alreadydeleted2)
                             {leftRotate(root);
-                            alreadydeleted2 = 1;}
+                            if (isDeletable(found))
+                            alreadydeleted2 = 1;
+                            prettyPrint();}
                         }
                     }
                 }
                 else
                 {
-                    while (found && found->right && found->right->left && found->right->right && !isDeletable(found))
+                    while (found && found->getRight() && found->getRight()->getLeft() && found->getRight()->getRight())
                     {
+                        if (isDeletable(found))
+                            alreadydeleted = 1;
                         leftRotate(found);
-                        alreadydeleted = 1;
                     }
                     if (!alreadydeleted)
                     {
                         if (found == root)
                         {
-                            while (found == root && root->right && !isDeletable(found))
+                            while (root->getRight() && !alreadydeleted2)
                             {leftRotate(root);
-                            alreadydeleted2 = 1;}
-                            while (found == root && root->left && !isDeletable(found))
-                            {rightRotate(found);
-                            alreadydeleted2 = 1;}
+                            if (isDeletable(found))
+                            alreadydeleted2 = 1;
+                            prettyPrint();}
+                            while (root->getLeft() && !alreadydeleted2)
+                            {rightRotate(root);
+                            if (isDeletable(found))
+                            alreadydeleted2 = 1;
+                            prettyPrint();}
                         }
                     }
                 }
-                if (!alreadydeleted && end == 0)
+                if (!alreadydeleted && !alreadydeleted2 && end == 0)
                     isDeletable(found);
+                prettyPrint();
                 if (root && end == 0)
                     recolor(root);
             }
@@ -333,23 +388,23 @@ namespace ft
                         std::cout<<"L----";
                         indent += "|    ";
                     }
-                    std::string sColor = root->color?"RED":"BLACK";
-                    std::cout<<root->data<<"("<<sColor<<")"<<std::endl;
-                    printHelper(root->left, indent, false);
-                    printHelper(root->right, indent, true);
+                    std::string sColor = root->getColor()?"RED":"BLACK";
+                    std::cout<<root->getVal()<<"("<<sColor<<")"<<std::endl;
+                    printHelper(root->getLeft(), indent, false);
+                    printHelper(root->getRight(), indent, true);
                 }
             }
             void prettyPrint()
             {
                 if (root)
-                    printHelper(this->root, "", true);
+                    printHelper(getRoot(), "", true);
 	        }
             void freeNodes(NodePtr node)
             {
                 if (node != NULL)
                 {
-                    freeNodes(node->left);
-                    freeNodes(node->right);
+                    freeNodes(node->getLeft());
+                    freeNodes(node->getRight());
                 }
                 delete node;
                 node = NULL;

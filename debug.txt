@@ -1,0 +1,219 @@
+R----18(BLACK)
+     L----8(BLACK)
+     |    L----5(BLACK)
+     |    |    L----3(RED)
+     |    R----15(RED)
+     |         L----10(BLACK)
+     |         R----17(BLACK)
+     R----25(BLACK)
+          R----40(BLACK)
+               R----80(BLACK)
+left->rotate
+8
+parent18
+R----18(BLACK)
+     L----8(BLACK)
+     |    L----5(BLACK)
+     |    |    L----3(RED)
+     |    R----10(BLACK)
+     R----25(BLACK)
+          R----40(BLACK)
+               R----80(BLACK)
+left->rotate root
+8
+parent15
+R----25(BLACK)
+     L----18(BLACK)
+     |    L----8(BLACK)
+     |    |    L----5(BLACK)
+     |    |    |    L----3(RED)
+     |    |    R----10(BLACK)
+     R----40(BLACK)
+          R----80(BLACK)
+left->rotate root
+8
+parent15
+R----40(BLACK)
+     L----25(BLACK)
+     |    L----18(BLACK)
+     |    |    L----8(BLACK)
+     |    |    |    L----5(BLACK)
+     |    |    |    |    L----3(RED)
+     |    |    |    R----10(BLACK)
+     R----80(BLACK)
+left->rotate root
+8
+parent15
+R----80(BLACK)
+     L----40(BLACK)
+     |    L----25(BLACK)
+     |    |    L----18(BLACK)
+     |    |    |    L----8(BLACK)
+     |    |    |    |    L----5(BLACK)
+     |    |    |    |    |    L----3(RED)
+     |    |    |    |    R----10(BLACK)
+right->rotate root
+8
+parent15
+R----40(BLACK)
+     L----25(BLACK)
+     |    L----18(BLACK)
+     |    |    L----8(BLACK)
+     |    |    |    L----5(BLACK)
+     |    |    |    |    L----3(RED)
+     |    |    |    R----10(BLACK)
+     R----80(BLACK)
+right->rotate root
+8
+parent15
+R----25(BLACK)
+     L----18(BLACK)
+     |    L----8(BLACK)
+     |    |    L----5(BLACK)
+     |    |    |    L----3(RED)
+     |    |    R----10(BLACK)
+     R----40(BLACK)
+          R----80(BLACK)
+right->rotate root
+8
+parent15
+R----18(BLACK)
+     L----8(BLACK)
+     |    L----5(BLACK)
+     |    |    L----3(RED)
+     |    R----10(BLACK)
+     R----25(BLACK)
+          R----40(BLACK)
+               R----80(BLACK)
+right->rotate root
+8
+parent15
+R----8(BLACK)
+     L----5(BLACK)
+     |    L----3(RED)
+     R----18(BLACK)
+          L----10(BLACK)
+          R----25(BLACK)
+               R----40(BLACK)
+                    R----80(BLACK)
+right->rotate root
+8
+R----5(BLACK)
+     L----3(RED)
+     R----8(BLACK)
+          R----18(BLACK)
+               L----10(BLACK)
+               R----25(BLACK)
+                    R----40(BLACK)
+                         R----80(BLACK)
+right->rotate root
+8
+parent5
+R----5(BLACK)
+     L----3(RED)
+     R----18(BLACK)
+          L----10(BLACK)
+          R----25(BLACK)
+               R----40(BLACK)
+                    R----80(BLACK)
+left->rotate root
+18
+parent5
+R----3(BLACK)
+     R----5(BLACK)
+          R----18(BLACK)
+               L----10(BLACK)
+               R----25(BLACK)
+                    R----40(BLACK)
+                         R----80(BLACK)
+right->rotate root
+18
+parent5
+R----5(BLACK)
+     L----3(BLACK)
+     R----18(BLACK)
+          L----10(BLACK)
+          R----25(BLACK)
+               R----40(BLACK)
+                    R----80(BLACK)
+right->rotate root
+18
+parent5
+R----18(BLACK)
+     L----5(BLACK)
+     |    L----3(BLACK)
+     |    R----10(BLACK)
+     R----25(BLACK)
+          R----40(BLACK)
+               R----80(BLACK)
+right->rotate root
+18
+R----25(BLACK)
+     L----18(BLACK)
+     |    L----5(BLACK)
+     |    |    L----3(BLACK)
+     |    |    R----10(BLACK)
+     R----40(BLACK)
+          R----80(BLACK)
+right->rotate root
+18
+parent25
+R----25(BLACK)
+     L----5(BLACK)
+     |    L----3(BLACK)
+     |    R----10(BLACK)
+     R----40(BLACK)
+          R----80(BLACK)
+left->rotate root
+5
+parent25
+R----25(BLACK)
+     L----10(BLACK)
+     |    L----3(BLACK)
+     R----40(BLACK)
+          R----80(BLACK)
+couldn't find key in the tree
+couldn't find key in the tree
+left->rotate root
+25
+R----40(BLACK)
+     L----25(BLACK)
+     |    L----10(BLACK)
+     |    |    L----3(BLACK)
+     R----80(BLACK)
+left->rotate root
+25
+parent40
+R----40(BLACK)
+     L----10(BLACK)
+     |    L----3(BLACK)
+     R----80(BLACK)
+left->rotate root
+40
+R----80(BLACK)
+     L----40(BLACK)
+     |    L----10(BLACK)
+     |    |    L----3(BLACK)
+right->rotate root
+40
+parent80
+R----80(BLACK)
+     L----10(BLACK)
+     |    L----3(BLACK)
+right->rotate root
+80
+R----10(BLACK)
+     L----3(BLACK)
+     R----80(BLACK)
+right->rotate root
+80
+parent10
+R----10(BLACK)
+     L----3(BLACK)
+right->rotate root
+3
+parent10
+R----10(BLACK)
+10
+couldn't find key in the tree
+*****
