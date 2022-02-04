@@ -191,20 +191,26 @@ int main( void )
         std::cout << "*************" << std::endl;
         std::for_each(listV.begin(), listV.end(), printInt);
         ft::map<int, int > maps;
-        ft::Node< int, int > pair1(2, 80);
+        ft::Node< int, int > pair1(4, 80);
         ft::Node< int, int > pair2(7, 50);
         ft::map< int, int > mapp;
-        ft::Node< int, int > pair3(0, 10);
+        ft::Node< int, int > pair3(5, 10);
         ft::Node< int, int > pair4(1, 20);
         ft::Node< int, int > pair5(2, 30);
         ft::Node< int, int > pair6(3, 40);
-        maps.insert(pair1);
         mapp.insert(pair1);
-        mapp.insert(pair1);
-        mapp.insert(pair1);
-        mapp.insert(pair1);
-        maps.insert(maps.begin()++, pair2);
-        maps.insert(mapp.rbegin(), mapp.rend());
+        mapp.print();
+        mapp.insert(pair3);
+        mapp.print();
+        mapp.insert(pair4);
+        mapp.print();
+        mapp.insert(pair5);
+        mapp.print();
+        mapp.insert(pair6);
+        mapp.print();
+        mapp.insert(mapp.begin()++, pair2);
+        maps.print();
+        maps.insert(mapp.begin(), mapp.end());
         maps.print();
     }
     catch(const std::exception& e)

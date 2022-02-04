@@ -26,15 +26,91 @@ namespace ft
             template< class U >
             biIter& operator=(U & other) {_it = &(*other); return *this;}
             virtual ~biIter() {}
-            biIter& operator++() {_it = _it + 1; return *this;}
-            biIter operator++(int) {biIter retval = *this; ++(*this); return retval;}
-            biIter& operator--() {_it = _it - 1; return *this;}
-            biIter operator--(int) {biIter retval = *this; --(*this); return retval;}
-            biIter& operator-=(difference_type n) {_it -= n; return *this;}
-            biIter operator-(difference_type n) const {return biIter(_it - n);}
-            biIter& operator+=(difference_type n) {_it += n; return *this;}
-            biIter operator+(difference_type n) const {return biIter(_it + n);}
-            reference operator[](difference_type n) const {return *(_it + n);}
+            biIter& operator++()
+            {
+                T current = this->_it;
+                if (current->right != NULL){
+                    current = current->right;
+                    while (current->left != NULL)
+                        current = current->left;
+                    this->_it = current;
+                }
+                else{
+                    T temp = current;
+                    current = current->parent;
+                    while (current->left != temp){
+                        temp = current;
+                        current = current->parent;
+                    }
+                    this->_it = current;
+                }
+                return *this;
+            }
+            biIter operator++(int)
+            {
+                std::cout << "VALUE ->" << _it->val << std::endl;
+                T tmp = 0;
+                if (_it->left)
+                {
+                    std::cout << "la3" << std::endl;
+                    while (_it->left)
+                        _it = _it->left;
+                    tmp = _it;
+                    return tmp;
+                }
+                if (_it->right && _it->right->right)
+                {
+                    std::cout << "la1" << std::endl;
+                    _it = _it->right;
+                    tmp = _it;
+                    return tmp;
+                }
+                if (_it->parent)
+                {
+                    std::cout << "la2" << std::endl;
+                    while (_it->parent)
+                        _it = _it->parent;
+                    tmp = _it;
+                    std::cout << "it val" << _it->val << std::endl;
+                    std::cout << "it parent right val " << _it->right->right->val << std::endl;
+                    if (!_it->right->right->right)
+                        return _it = _it->right->right;
+                }
+                std::cout << "it val" << _it->right->val << std::endl;
+                std::cout << "la4" << std::endl;
+                return tmp;
+            }
+            biIter& operator--()
+            {
+                T current = this->_it;
+                if (current->left != NULL){
+                    current = current->left;
+                    while (current->right != NULL)
+                        current = current->right;
+                    this->_it = current;
+                }
+                else{
+                    current = current->parent;
+                    this->_it = current;
+                }
+                return *this;
+            }
+            biIter operator--(int)
+            {
+                T temp = this->_it;
+                T current = this->_it;
+                if (current->left != NULL){
+                    current = current->left;
+                    while (current->right != NULL)
+                        current = current->right;
+                    this->_it = current;
+                }
+                else{
+                    current = current->parent;
+                    this->_it = current;
+                }
+                return temp;
+            }
             pointer operator->() const {return &operator*();}
             reference operator*() const {return *_it;}
             iterator_type base() const {return _it;}
@@ -64,15 +140,42 @@ namespace ft
             template< class U >
             biReviter& operator=(U & other) {_it = other.base(); return *this;}
             virtual ~biReviter() {}
-            biReviter& operator++() {_it--; return *this;}
-            biReviter operator++(int) {biReviter retval = *this; ++(*this); return retval;}
-            biReviter& operator--() {_it++; return *this;}
-            biReviter operator--(int) {biReviter retval = *this; --(*this); return retval;}
-            biReviter& operator-=(difference_type n) {_it += n; return *this;}
-            biReviter operator-(difference_type n) const {return biReviter(_it + n);}
-            biReviter& operator+=(difference_type n) {_it -= n; return *this;}
-            biReviter operator+(difference_type n) const {return biReviter(_it - n);}
-            reference operator[](difference_type n) const {return *(_it - n - 1);}
+            biReviter& operator--()
+            {
+                if (_it->right)
+                    _it = _it->right;
+                else if (_it->parent)
+                    _it = _it->parent;
+                else if (_it->left)
+                    _it = _it->left;
+                else
+                    _it = _it.getLast();
+                return *this;
+            }
+            biReviter operator--(int)
+            {
+                T ret = _it;
+                --_it;
+                return ret;
+            }
+            biReviter& operator++()
+            {
+                if (_it->left)
+                    _it = _it->left;
+                else if (_it->parent)
+                    _it = _it->parent;
+                else if (_it->right)
+                    _it = _it->right;
+                else
+                    _it = _it.getLast();
+                return *this;
+            }
+            biReviter operator++(int)
+            {
+               T ret = _it;
+                ++_it;
+                return ret;
+            }
             pointer operator->() const {return &operator*();}
             reference operator*() const {T tmp(_it); return *--tmp;}
             iterator_type base() const {return _it;}

@@ -1,5 +1,5 @@
-#ifndef PAIR_H
-#define PAIR_H
+#ifndef PAIR2_H
+#define PAIR2_H
 
 #include <iostream>
 
@@ -46,29 +46,25 @@ namespace ft
             }
         public:
             typedef Node< Key, T >* NodePtr;
-
-            RBTree() : root(NULL), last(NULL) {}
-            RBTree(RBTree const & rhs) : root(NULL), last(NULL) { (void)rhs; }
-            RBTree operator=(RBTree const & rhs) { (void)rhs; root = NULL, last = NULL; }
-            virtual ~RBTree() {}
+        
             NodePtr find(Node<Key, T> const& toFind) const
             {
                 NodePtr fromRoot = root;
-                while (fromRoot && fromRoot != last)
+                while (fromRoot)
                 {
-                    if (toFind.val < fromRoot->val)
+                    if (toFind.data < fromRoot->data && toFind.val != fromRoot->val)
                         fromRoot = fromRoot->left;
-                    else if (toFind.val > fromRoot->val)
+                    else if (toFind.data > fromRoot->data && toFind.val != fromRoot->val)
                         fromRoot = fromRoot->right;
                     else
-                        break ;
+                        return fromRoot;
                 }
-                return fromRoot;
+                return last;
             }
             NodePtr findMinimum(NodePtr node) const
             {
                 NodePtr origin = node;
-                while (origin && origin != last)
+                while (origin->left && origin->left)
                     origin = origin->left;
                 std::cout << "or val" << origin->val << std::endl;
                 return origin;
@@ -76,12 +72,53 @@ namespace ft
             NodePtr findMaximum(NodePtr node) const
             {
                 NodePtr origin = node;
-                while (origin && origin != last)
+                while (origin->right && origin->right)
                     origin = origin->right;
                 std::cout << "or val" << origin->val << std::endl;
                 return origin;
             }
             void leftRotate(NodePtr x)
+            {
+                NodePtr y = x->right;
+                NodePtr tmpY = y;
+                NodePtr tmpX = x;
+                //NodePtr rightX = x->right;
+                //NodePtr rightY = y->right;
+                NodePtr leftY = y->left;
+                NodePtr parentX = x->parent;
+
+                x->right = leftY;
+                y->left =  tmpX;
+                x->parent = tmpY;
+                y->parent = parentX;
+                if (!parentX)
+                    root = y;
+                else
+                    y->parent->right = y;  
+                root->color = 0;
+            }
+            void rightRotate(NodePtr y)
+            {
+                NodePtr x = y->left;
+                NodePtr tmpY = y;
+                NodePtr tmpX = x;
+                NodePtr rightX = x->right;
+                //NodePtr rightY = y->right;
+                //NodePtr leftX = x->left;
+                NodePtr parentY = y->parent;
+
+                x->right = tmpY;
+                y->left =  rightX;
+                x->parent = parentY;
+                y->parent = tmpX;
+               //x->parent->left = x;
+                if (!parentY)
+                    root = x;
+                else
+                  x->parent->left = x;  
+                root->color = 0;
+            }
+         /*   void leftRotate(NodePtr x)
             {
                 NodePtr y = x->right;
                 NodePtr tmpY = y;
@@ -107,10 +144,6 @@ namespace ft
                     y->parent = parentX;
                 else
                     y->parent = NULL;
-                /*if (!x->parent)
-                    root = x;
-                if (!y->parent)
-                    root = y;*/
                 if (!parentX)
                 {
                     root = y;
@@ -119,10 +152,11 @@ namespace ft
                 }
                 else
                     y->parent->right = y; 
-                NodePtr max = findMaximum(root);
+               NodePtr max = findMaximum(root);
+                initializeNode(last);
                 max->right = last;
                 last->parent = max;
-                prettyPrint(); 
+                prettyPrint();
                 root->color = 0;
             }
             void rightRotate(NodePtr y)
@@ -160,16 +194,13 @@ namespace ft
                 }
                 else
                   x->parent->left = x;    
-                /*if (!x->parent)
-                    root = x;
-                if (!y->parent)
-                    root = y;*/
                 NodePtr max = findMaximum(root);
+                initializeNode(last);
                 max->right = last;
                 last->parent = max;  
                 prettyPrint();
                 root->color = 0;
-            }
+            }*/
             void insert(Node< Key, T > const &toInsert)
             {
                 NodePtr node = new Node< Key, T >;
@@ -177,11 +208,17 @@ namespace ft
                 node->val = toInsert.val;
                 node->data = toInsert.data;
                 node->color = 1; // new node must be red
-                
-                NodePtr fromRoot = root;
+                std::cout << "node = " << node->val << std::endl;
+                if (!last)
+                {
+                    last = node;
+                    std::cout << "last" << last->val << std::endl;
+                    return ;
+                }
+                NodePtr fromRoot = (root == last) ? node : root;
                 NodePtr parentNode = NULL;
                 NodePtr child = NULL;
-                while (fromRoot && fromRoot != last)
+                while (fromRoot)
                 {
                     parentNode = fromRoot;
                     if (node->val < fromRoot->val)
@@ -195,19 +232,21 @@ namespace ft
                     }
                 }
                 node->parent = parentNode;
-                /*if (last && last == root)
+              /*  if (!node->parent && last)
                 {
                     root = node;
-                    root->right = last;
-                    last->parent = root;
+                    root->parent = last;
+                    last->right = root;
                     node->color = 0;
+                    prettyPrint();
                     return ;
                 }*/
                 if (!node->parent)
                 {
-                    last = node;
-                    root = last;
+                    root = node;
                     node->color = 0;
+                    prettyPrint();
+                    std::cout << "node" << node->val << std::endl;
                     return ;
                 }
                 if (node->val < root->val)
@@ -216,7 +255,8 @@ namespace ft
                         parentNode->left = node;
                     else
                         parentNode->right = node;
-                    rightRotate(root);
+                    if (node->parent != last)
+                    rightRotate(node);
                 }
                 else
                 {
@@ -224,18 +264,19 @@ namespace ft
                         parentNode->left = node;
                     else
                         parentNode->right = node;
-                    leftRotate(root);
+                    if (node->parent != last)
+                    leftRotate(node);
                 }
-                //NodePtr max = findMaximum(root);
-                //max->right = last;
-                //last->parent = max;
-                if (last)
-                    std::cout << "last value" << last->val << std::endl;
-                std::cout << "node value" << node->val << std::endl;
+                initializeNode(last);
+                root->parent = last;
+                last->right = root;
+                std::cout << "to add node" << node->val << std::endl;
+                std::cout << "to add root" << root->val << std::endl;
+                std::cout << "to add last" << last->val << std::endl;
                 if (node->parent)
-                    recolor(root);
+                recolor(getRoot());
             }
-            NodePtr getRoot() const
+            NodePtr getRoot()
             {
                 return root;
             }
@@ -243,13 +284,9 @@ namespace ft
             {
                 return last;
             }
-            void setLast(Node< Key, T > const &final) const
-            {
-                last = final;
-            }
             void recolor (NodePtr node)
             {
-                if (node != NULL && node != last)
+                if (node != NULL && node)
                 {
                     if (node->left && node->left->color)
                     {
@@ -275,29 +312,22 @@ namespace ft
             }
             int isDeletable(NodePtr found)
             {
-                if (!found->parent && !found->left && found->right == last)
+                if (!found->parent && !found->left && !found->right)
                 {
                     initializeNode(found);
-                    initializeNode(last);
                     delete found;
-                    delete last;
                     found = NULL;
                     root = NULL;
-                    last = NULL;
                     end = 1;
                     return 1;
                 }
-                if (!found->parent && found->right == last && found->left)
+                if (!found->parent && !found->right && found->left)
                 {
                     found->left->parent = NULL;
                     root = found->left;
                     initializeNode(found);
                     delete found;
                     found = NULL;
-                    NodePtr max = findMaximum(root);
-                    max->right = last;
-                    last->parent = max;  
-                    prettyPrint();
                     return 1;
                 }
                 if (!found->parent && !found->left && found->right)
@@ -309,7 +339,7 @@ namespace ft
                     found = NULL;
                     return 1;
                 }
-                if (found->left && found->right && !found->left->left && !found->left->right && !found->right->left && found->right->right == last)
+                if (found->left && found->right && !found->left->left && !found->left->right && !found->right->left && !found->right->right)
                     {
                         if (found == found->parent->right)
                         {
@@ -330,7 +360,7 @@ namespace ft
                         found = NULL;
                         return 1;
                     }
-                    if (found->left && found->right == last)
+                    if (found->left && !found->right)
                     {
                         if (found == found->parent->right)
                         {
@@ -347,7 +377,7 @@ namespace ft
                         found = NULL;
                         return 1;
                     }
-                    if (found->right && found->right != last && !found->left)
+                    if (found->right && !found->left)
                     {
                         if (found == found->parent->right)
                         {
@@ -388,7 +418,7 @@ namespace ft
                 NodePtr found = NULL;
                 NodePtr node = getRoot();
                 int i = 0;
-                while (node && node != last)
+                while (node && node)
                 {
                     if (node->val == value)
                         found = node;
@@ -397,34 +427,21 @@ namespace ft
                     else
                         node = node->right;
                 }
-                std::cout << found->val << std::endl;
-                prettyPrint();
-               /* if (found->right == last)
-                {
-                    NodePtr max;
-                    root = root->left;
-                    root->parent = NULL;
-                    max = findMaximum(root);
-                    max->right = last;
-                    last->parent = max;
-                    delete found;
-                    return ;
-                }*/
-                if ((!found || (found && !found->parent)) && found != last)
+                if (!found || (found && !found->parent))
                 {
                     if (!found)
                         return ;
                     else
                     {
                         i = isDeletable(found);
-                        while (root && root->left && root->left != last && !i)
+                        while (root && root->left && !i)
                         {
                             i = isDeletable(found);
                             if (i)
                                 return ;
                             rightRotate(root);
                         }
-                        while (root && root->right && root->right != last && !i)
+                        while (root && root->right && !i)
                         {
                             i = isDeletable(found);
                             if (i)
@@ -436,7 +453,7 @@ namespace ft
                 }
                 if (value < found->parent->val)
                 {
-                    while (found && found->left && found->right != last)
+                    while (found && found->left)
                     {
                         i = isDeletable(found);
                         if (i)
@@ -450,7 +467,7 @@ namespace ft
                 }
                 else
                 {
-                    while (found && found->right && found->right != last)
+                    while (found && found->right)
                     {
                         i = isDeletable(found);
                         if (i)
@@ -462,16 +479,19 @@ namespace ft
                         leftRotate(found);
                     }
                 }
-              if ((!i || found == root) && found != last)
-                isDeletable(found);
+                if (!i || found == root)
+                    isDeletable(found);
+                initializeNode(last);
+                root->parent = last;
+                last->right = root;
             }
-            void printHelper(NodePtr root, std::string indent, bool last)
+            void printHelper(NodePtr root, std::string indent, bool lastNode)
             {
                 // print the tree structure on the screen
                 if (root != NULL)
                 {
                     std::cout<<indent;
-                    if (last)
+                    if (lastNode)
                     {
                         std::cout<<"R----";
                         indent += "     ";
@@ -489,8 +509,8 @@ namespace ft
             }
             void prettyPrint()
             {
-                //if (root)
-                //    printHelper(this->root, "", true);
+                if (root)
+                    printHelper(this->root, "", true);
 	        }
             void freeNodes(NodePtr node)
             {

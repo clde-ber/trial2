@@ -1,12 +1,12 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "pair.hpp"
+#include "pair3.hpp"
 #include "bidirectionalIt.hpp"
 
 namespace ft
 {
-    template< class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<ft::RBTree<Key, T> > >
+    template< class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<ft::Node<Key, T> > >
     class map
     {
         class value_compare
@@ -27,7 +27,7 @@ namespace ft
         private:
             value_compare _value_compare;
             Compare _key_compare;
-            RBTree<Key, T> *_p;
+            RBTree<Key, T> _p;
             size_t _n;
             size_t _capacity;
             Allocator _alloc;
@@ -47,15 +47,25 @@ namespace ft
             typedef biIter< const_pointer > const_iterator;
             typedef biReviter<iterator> reverse_iterator;
             typedef biReviter<const_iterator> const_reverse_iterator;
-            explicit map(const Compare& comp = key_compare(), const Allocator& alloc = Allocator()) : _value_compare(comp), _key_compare(comp), _p(0), _n(0), _capacity(0), _alloc(alloc)
+            explicit map(const Compare& comp = key_compare(), const Allocator& alloc = Allocator()) : _value_compare(comp), _key_compare(comp), _p(RBTree< Key, T >()), _n(0), _capacity(0), _alloc(alloc)
+            {
+                Node< Key, T > *end = new Node< Key, T >(value_type(key_type(), mapped_type()));
+                _p.setLast(end);
+            }
+            template< class InputIt > map(InputIt first, InputIt last, const Compare& comp = key_compare(), const Allocator& alloc = Allocator(), typename ft::enable_if<!is_integral<InputIt>::value>::type* = NULL) : _value_compare(comp), _key_compare(comp), _p(RBTree< Key, T >()), _n(0), _capacity(0), _alloc(alloc)
+            {
+                Node< Key, T > *end = new Node< Key, T >(value_type(key_type(), mapped_type()));
+                _p.setLast(end);
+                insert(first, last);
+            }
+            map(const map& other)
+            {
+                *this = other;
+            }
+            ~map()
             {
 
             }
-            template< class InputIt > map(InputIt first, InputIt last, const Compare& comp = key_compare(), const Allocator& alloc = Allocator(), typename ft::enable_if<!is_integral<InputIt>::value>::type* = NULL) : _value_compare(comp), _key_compare(comp), _p(0), _n(0), _capacity(0), _alloc(alloc)
-            {
-                insert(first, last);
-            }
-            ~map() {}
             map& operator=(const map& other)
             {
                 value_compare(other.value_type());
@@ -63,7 +73,14 @@ namespace ft
                 _n = other._n;
                 _capacity = other._capacity;
                 _alloc = other._alloc;
-                insert(other.begin(), other.end());
+                iterator it = other.begin();
+                iterator ite = other.end();
+
+                _p = RBTree< Key, T >();
+                Node< Key, T > *end = new Node< Key, T >(value_type(key_type(), mapped_type()));
+                _p.setLast(end);
+                insert(it, ite);
+                return *this;
             }
             allocator_type get_allocator() const
             {
@@ -75,35 +92,35 @@ namespace ft
             }
             iterator begin()
             {
-                return iterator(_p);
+                return iterator(_p.findMinimum(_p.getRoot()));
             }
             const_iterator begin() const
             {
-                return const_iterator(_p);
+                return const_iterator(_p.findMinimum(_p.getRoot()));
             }
             iterator end()
             {
-                return iterator(_p + _n);
+                return iterator(_p.getLast());
             }
             const_iterator end() const
             {
-                return const_iterator(_p + _n);
+                return const_iterator(_p.getLast());
             }
-            iterator rbegin()
+            reverse_iterator rbegin()
             {
-                return iterator(end());
+                return reverse_iterator(end());
             }
-            const_iterator rbegin() const
+            const_reverse_iterator rbegin() const
             {
-                return const_iterator(end());
+                return const_reverse_iterator(end());
             }
-            iterator rend()
+            reverse_iterator rend()
             {
-                return iterator(begin());
+                return reverse_iterator(begin());
             }
-            const_iterator rend() const
+            const_reverse_iterator rend() const
             {
-                return const_iterator(begin());
+                return const_reverse_iterator(begin());
             }
             bool empty() const
             {
@@ -125,34 +142,29 @@ namespace ft
             }
             Node<iterator, bool> insert(const value_type& value)
             {
-                bool	exists;
-				Node<iterator, bool> it;
-				if ((it = _p->find(value)) == end().getRoot())
+                iterator it;
+                int found = 1;
+				if ((it = iterator(_p.find(value))) == end())
                 {
-					_p->insert(value.data, value.val);
-                    exists = 1;
+                    found = 0;
+					_p.insert(value);
                 }
-				return (Node<iterator, bool>(find(value.data), exists));
+				return Node<iterator, bool>(it, found);
             }
             iterator insert(iterator hint, const value_type& value)
             {
-                iterator it = begin();
-                iterator ite = end();
-
-                while (it != ite)
-                {
-                    if (it != hint && _p->find(value))
-                        _p->insert(value);
-                }
-                return it;
+                if (iterator(_p.find(value)) == end())
+                    _p.insert(value);
+                return hint;
             }
             template< class InputIt >
             void insert(InputIt first, InputIt last, typename ft::enable_if<!is_integral<InputIt>::value>::type* = NULL)
             {
                 while (first != last)
                 {
-                    if (_p->find(*(first->getRoot())) == end()->getRoot())
-                        _p->insert(*(first->getRoot()));
+                    std::cout << "base" << (*first.base()).val << std::endl;
+                    if (iterator(_p.find((*first.base()))) == end())
+                        _p.insert(*first.base());
                     first++;
                 }
             }
@@ -161,23 +173,38 @@ namespace ft
                 iterator it = begin();
                 iterator ite = end();
 
+                if (!_p.getRoot())
+                    return ;
                 while (it != ite)
                 {
                     if (it == pos)
-                        _p->deleteNode(*it);
+                        _p.deleteNode(*it);
                 }
             }
             void erase(iterator first, iterator last)
             {
+                if (!_p.getRoot())
+                    return ;
                 while (first != last)
                 {
-                    _p->deleteNode(*first);
+                    _p.deleteNode(*first);
                     first++;
                 }
             }
             size_type erase(const Key& key)
             {
-                _p->deleteNode(key);
+                iterator it = begin();
+                iterator ite = end();
+
+                if (!_p.getRoot())
+                    return 0;
+                while (it != ite)
+                {
+                    if (it.base().data == key)
+                        _p.deleteNode(*it);
+                }
+                _p.deleteNode(key);
+                return 1;
             }
             void swap(map& x)
             {
@@ -193,17 +220,17 @@ namespace ft
             }
             size_type count(const Key& key) const
             {
-                if (_p->find(key))
+                if (_p.find(key))
                     return TRUE;
                 return FALSE;
             }
             iterator find(const Key& key)
             {
-                return _p->find(key);
+                return _p.find(key);
             }	
             const_iterator find(const Key& key) const
             {
-                return _p->find(key);
+                return _p.find(key);
             }
             RBTree<iterator,iterator> equal_range(const Key& key)
             {
@@ -259,7 +286,7 @@ namespace ft
             }
             void print()
             {
-                _p->prettyPrint();
+                _p.prettyPrint();
             }
         //template < class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<ft::RBTree<const Key, T> > >
     };

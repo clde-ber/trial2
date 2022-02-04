@@ -1,4 +1,4 @@
-#include "pair.hpp"
+#include "pair2.hpp"
 
 int main()
 {
@@ -34,9 +34,9 @@ int main()
 	bst.deleteNode(node0.val);
 	bst.deleteNode(node3.val);
 	bst.deleteNode(node9.val);
-	bst.deleteNode(node9.val);
+	//bst.deleteNode(node9.val);
     std::cout << "********" << std::endl;
 	bst.prettyPrint();
-	bst.freeNodes(bst.getRoot());
+	//bst.freeNodes(bst.getRoot());
 	return 0;
 }
