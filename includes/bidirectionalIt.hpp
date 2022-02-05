@@ -71,14 +71,15 @@ namespace ft
                     while (_it->parent)
                         _it = _it->parent;
                     tmp = _it;
-                    std::cout << "it val" << _it->val << std::endl;
-                    std::cout << "it parent right val " << _it->right->right->val << std::endl;
-                    if (!_it->right->right->right)
-                        return _it = _it->right->right;
                 }
+                    std::cout << "it val" << _it->val << std::endl;
+                    if (!_it->right->right->right && _it->right->right)
+                        _it = _it->right->right;
+                    std::cout << "tmp->right val" << tmp->right->val << std::endl;
+                    return tmp;
                 std::cout << "it val" << _it->right->val << std::endl;
                 std::cout << "la4" << std::endl;
-                return tmp;
+                return _it;
             }
             biIter& operator--()
             {

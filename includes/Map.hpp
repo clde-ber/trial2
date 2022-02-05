@@ -178,18 +178,40 @@ namespace ft
                 while (it != ite)
                 {
                     if (it == pos)
-                        _p.deleteNode(*it);
+                        _p.deleteNode((*it.base()).val);
                 }
             }
-            void erase(iterator first, iterator last)
+            void erase(iterator first, iterator last, typename ft::enable_if<!is_integral<iterator>::value>::type* = NULL)
             {
-                if (!_p.getRoot())
+                /*if (!_p.getRoot())
                     return ;
+                iterator tmp(first);
                 while (first != last)
                 {
-                    _p.deleteNode(*first);
-                    first++;
-                }
+                    tmp = first++;
+                    std::cout << "first base " << (*first.base()).val << std::endl;
+                    if (iterator(_p.find((*first.base()))) != end())
+                        _p.deleteNode((*first.base()).val);
+                    
+                }*/
+                iterator 	it = first;
+				iterator	tmp;
+				size_type	difference = 0;
+				for (iterator ite = first; ite != last; ite++)
+					difference++;
+
+				for (size_type i = 0; i < difference; i++)
+				{
+					tmp = it;
+					if (i != difference)
+						it++;
+                    std::cout << "base -> " << (*it.base()).val << std::endl;
+					_p.deleteNode((*tmp.base()).val);
+					if (i != difference - 1)
+						it = iterator(_p.find((*it.base())));
+				}
+				_n -= difference;
+                _p.deleteNode((*it.base()).val);
             }
             size_type erase(const Key& key)
             {
@@ -200,10 +222,10 @@ namespace ft
                     return 0;
                 while (it != ite)
                 {
-                    if (it.base().data == key)
-                        _p.deleteNode(*it);
+                    if ((*it.base()).data == key)
+                        _p.deleteNode((*it.base()).val);
+                    it++;
                 }
-                _p.deleteNode(key);
                 return 1;
             }
             void swap(map& x)

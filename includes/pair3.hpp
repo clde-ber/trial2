@@ -237,6 +237,8 @@ namespace ft
                 if (!node->parent)
                 {
                     root = node;
+                    root->right = last;
+                    last->parent = root;
                     node->color = 0;
                     return ;
                 }
@@ -303,9 +305,11 @@ namespace ft
             }
             int isDeletable(NodePtr found)
             {
+                std::cout << "la00 " << found->val << std::endl;
+                std::cout << "FOUND" << found->val << std::endl;
                 if (!found->parent && !found->left && found->right && found->right == last)
                 {
-                    std::cout << "la1 " << std::endl;
+                    std::cout << "la11 " << std::endl;
                     initializeNode(found);
                     initializeNode(last);
                     delete found;
@@ -316,27 +320,36 @@ namespace ft
                 }
                 if (!found->parent && found->right && found->right == last && found->left)
                 {
-                    std::cout << "la2 " << std::endl;
-                    found->left->parent = NULL;
+                    std::cout << "la22 " << std::endl;
                     root = found->left;
+                    root->parent = NULL;
                     initializeNode(found);
                     delete found;
                     found = NULL;
+                    NodePtr max = findMaximum(root);
+                    max->right = last;
+                    last->parent = max;
                     return 1;
                 }
                 if (!found->parent && !found->left && found->right && found->right != last)
                 {
-                    std::cout << "la3 " << std::endl;
+                    prettyPrint();
+                    std::cout << "la33 " << found->val << std::endl;
                     found->right->parent = NULL;
                     root = found->right;
+                    root->parent = NULL;
                     initializeNode(found);
                     delete found;
                     found = NULL;
+                    prettyPrint();
+                    NodePtr max = findMaximum(root);
+                    max->right = last;
+                    last->parent = max;
                     return 1;
                 }
                 if (found->left && found->right && found->right != last && !found->left->left && !found->left->right && !found->right->left && found->right->right == last)
                     {
-                        std::cout << "la4 " << std::endl;
+                        std::cout << "la44 " << std::endl;
                         if (found == found->parent->right)
                         {
                             found->parent->right = found->right;
@@ -354,11 +367,14 @@ namespace ft
                         initializeNode(found);
                         delete found;
                         found = NULL;
+                        NodePtr max = findMaximum(root);
+                        max->right = last;
+                        last->parent = max;
                         return 1;
                     }
                     if (found->left && found->right && found->right == last)
                     {
-                        std::cout << "la5 " << std::endl;
+                        std::cout << "la55 " << std::endl;
                         if (found == found->parent->right)
                         {
                             found->parent->right = found->left;
@@ -372,11 +388,14 @@ namespace ft
                         initializeNode(found);
                         delete found;
                         found = NULL;
+                        NodePtr max = findMaximum(root);
+                        max->right = last;
+                        last->parent = max;
                         return 1;
                     }
                     if (found->right && found->right != last && !found->left)
                     {
-                        std::cout << "la6 " << std::endl;
+                        std::cout << "la66 " << std::endl;
                         if (found == found->parent->right)
                         {
                             found->parent->right = found->right;
@@ -390,11 +409,14 @@ namespace ft
                         initializeNode(found);
                         delete found;
                         found = NULL;
+                        NodePtr max = findMaximum(root);
+                        max->right = last;
+                        last->parent = max;
                         return 1;
                     }
                     if (found->right && found->right == last && !found->left)
                     {
-                        std::cout << "la7 " << std::endl;
+                        std::cout << "la77 " << std::endl;
                         if (found == found->parent->right)
                         {
                             found->parent->right = NULL;
@@ -408,12 +430,16 @@ namespace ft
                         initializeNode(found);
                         delete found;
                         found = NULL;
+                        NodePtr max = findMaximum(root);
+                        max->right = last;
+                        last->parent = max;
                         return 1;
                     }
                     return 0;
             }
             void deleteNode(T value)
             {
+                std::cout << "valueeeeeeeeeeeeeee " << value << std::endl;
                 NodePtr found = NULL;
                 NodePtr node = getRoot();
                 int i = 0;
@@ -426,6 +452,7 @@ namespace ft
                     else
                         node = node->right;
                 }
+                std::cout << "FOUND" << found->val << std::endl;
                 if (!found || (found && !found->parent))
                 {
                     if (!found)

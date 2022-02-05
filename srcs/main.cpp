@@ -212,6 +212,9 @@ int main( void )
         maps.print();
         maps.insert(mapp.begin(), mapp.end());
         maps.print();
+        maps.erase(maps.begin(), maps.end());
+        std::cout << "****" << std::endl;
+        maps.print();
     }
     catch(const std::exception& e)
     {
