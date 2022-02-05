@@ -315,6 +315,8 @@ namespace ft
                 if (!found->parent && !found->left && !found->right)
                 {
                     initializeNode(found);
+                    initializeNode(root);
+                    initializeNode(last);
                     delete found;
                     found = NULL;
                     root = NULL;

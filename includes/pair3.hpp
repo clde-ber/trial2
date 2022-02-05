@@ -2,63 +2,84 @@
 #define PAIR_H
 
 #include <iostream>
+#include <memory>
 
 static int end = 0;
 
 namespace ft
 {
     template< class Key, class T >
-    struct Node
+    struct pair
     {
-        Key data; // holds the key
-        T val;
-        Node *parent; // pointer to the parent
-        Node *left; // pointer to left child
-        Node *right; // pointer to right child
+        typedef Key key_type;
+        typedef T mapped_type;
+        Key first; // holds the key
+        T second;
+        pair *parent; // pointer to the parent
+        pair *left; // pointer to left child
+        pair *right; // pointer to right child
         int color; // 1 -> Red, 0 -> Black
-        Node() : data(0), val(0), parent(NULL), left(NULL), right(NULL), color(0) {}
-        Node(Key key, T value) : data(key), val(value), parent(NULL), left(NULL), right(NULL), color(0) {}
-        Node(Node const & rhs) : data(rhs.data), val(rhs.val), parent(rhs.parent), left(rhs.left), right(rhs.right), color(rhs.color) {}
-        Node & operator=(Node const & rhs) { data = rhs.data; val = rhs.val; parent = rhs.parent; left = rhs.left; right = rhs.right; return *this; }
+        pair() : first(key_type()), second(mapped_type()), parent(NULL), left(NULL), right(NULL), color(0) {}
+        pair(Key key, T value) : first(key), second(value), parent(NULL), left(NULL), right(NULL), color(0) {}
+        pair(pair const & rhs) : first(rhs.first), second(rhs.second), parent(NULL), left(NULL), right(NULL), color(rhs.color) {}
+        pair & operator=(pair const & rhs) { first = rhs.first; second = rhs.second; parent = NULL; left = NULL; right = NULL; return *this; }
     };
-
-    template< class Key, class T >
+    template< class Key, class T, class Compare, class alloc = std::allocator<pair< Key, T > > >
     class RBTree
     {
         private:
-            Node< Key, T > *root = NULL;
-            Node< Key, T > *last = NULL;
+            pair< Key, T > *root = NULL;
+            pair< Key, T > *last = NULL;
+            typedef Key key_type;
+            typedef T mapped_type;
 
             // initializes the nodes with appropirate values
             // all the pointers are set to point to the null pointer
-            void initializeNode(Node< Key, T > *node)
+            void initializeNode(pair< Key, T > *node)
             {
-                node->data = 0;
-                node->val = 0;
+                node->first = key_type();
+                node->second = mapped_type();
                 node->parent = NULL;
                 node->left = NULL;
                 node->right = NULL;
                 node->color = 0;
             }
-            void swap(Node< Key, T > **x, Node< Key, T > **y)
+            void swap(pair< Key, T > **x, pair< Key, T > **y)
             {
-                Node< Key, T > **tmp = x;
+                pair< Key, T > **tmp = x;
                 x = y;
                 y = tmp;
             }
         public:
-            typedef Node< Key, T >* NodePtr;
+            typedef Compare                                         key_compare;
+            class value_compare: public std::binary_function<T,T,bool> {
+                friend class RBTree;
+                protected:
+                    Compare comp;
+                    value_compare	(Compare c): comp(c) {};
 
-            NodePtr find(Node<Key, T> const& toFind) const
+                public:
+                    typedef	bool result_type;
+                    typedef T	first_argument_type;
+                    typedef T	second_argument_type;
+                    value_compare	(value_compare const & c): comp(c.comp) {};
+                    bool	operator() (const T &x, const T &y) const
+                    {
+                        return comp(x.first, y.first);
+                    }
+            };
+            typedef pair< Key, T >* NodePtr;
+
+            NodePtr find(pair<Key, T> const& toFind) const
             {
                 NodePtr fromRoot = root;
                 while (fromRoot)
                 {
                     if (fromRoot == last)
                         return last;
-                    if (toFind.val < fromRoot->val)
+                    if (toFind.second < fromRoot->second)
                         fromRoot = fromRoot->left;
-                    else if (toFind.val > fromRoot->val)
+                    else if (toFind.second > fromRoot->second)
                         fromRoot = fromRoot->right;
                     else
                         return fromRoot;
@@ -203,12 +224,11 @@ namespace ft
                 prettyPrint();
                 root->color = 0;
             }*/
-            void insert(Node< Key, T > const &toInsert)
+            void insert(pair< Key, T > const &toInsert)
             {
-                NodePtr node = new Node< Key, T >;
-                initializeNode(node);
-                node->val = toInsert.val;
-                node->data = toInsert.data;
+                NodePtr node = new pair< Key, T >;
+                node->second = toInsert.second;
+                node->first = toInsert.first;
                 node->color = 1; // new node must be red
                 
                 NodePtr fromRoot = root;
@@ -217,7 +237,7 @@ namespace ft
                 while (fromRoot && fromRoot != last)
                 {
                     parentNode = fromRoot;
-                    if (node->val < fromRoot->val)
+                    if (node->second < fromRoot->second)
                         fromRoot = fromRoot->left;
                     else
                         fromRoot = fromRoot->right;
@@ -236,9 +256,9 @@ namespace ft
                     node->color = 0;
                     return ;
                 }
-                if (node->val < root->val)
+                if (node->second < root->second)
                 {
-                    if (node->val < parentNode->val)
+                    if (node->second < parentNode->second)
                         parentNode->left = node;
                     else
                         parentNode->right = node;
@@ -246,7 +266,7 @@ namespace ft
                 }
                 else
                 {
-                    if (node->val < parentNode->val)
+                    if (node->second < parentNode->second)
                         parentNode->left = node;
                     else
                         parentNode->right = node;
@@ -258,7 +278,7 @@ namespace ft
                 if (node->parent)
                     recolor(root);
             }
-            NodePtr getRoot()
+            NodePtr getRoot() const
             {
                 return root;
             }
@@ -302,6 +322,7 @@ namespace ft
                 {
                     initializeNode(found);
                     initializeNode(last);
+                    initializeNode(root);
                     delete found;
                     found = NULL;
                     root = NULL;
@@ -426,9 +447,9 @@ namespace ft
                 int i = 0;
                 while (node)
                 {
-                    if (node->val == value)
+                    if (node->second == value)
                         found = node;
-                    if (value <= node->val)
+                    if (value <= node->second)
                         node = node->left;
                     else
                         node = node->right;
@@ -457,7 +478,7 @@ namespace ft
                     }
                     return ;
                 }
-                if (value < found->parent->val)
+                if (value < found->parent->second)
                 {
                     while (found && found->left)
                     {
@@ -505,7 +526,7 @@ namespace ft
                         indent += "|    ";
                     }
                     std::string sColor = root->color?"RED":"BLACK";
-                    std::cout<<root->val<<"("<<sColor<<")"<<std::endl;
+                    std::cout<<root->second<<"("<<sColor<<")"<<std::endl;
                     printHelper(root->left, indent, false);
                     printHelper(root->right, indent, true);
                 }

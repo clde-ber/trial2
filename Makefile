@@ -1,7 +1,7 @@
 .SUFFIXES:
 
 NAME	=	containers
-LIST	=	main \
+LIST	=	insert \
 			
 HEADER	=	-I includes/
 CFLAGS	=	-Wall -Wextra -Werror -MMD -fsanitize=address

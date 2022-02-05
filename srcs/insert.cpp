@@ -1,45 +1,54 @@
 #include "common.hpp"
 
-/*
-single element (1)
-	iterator insert (iterator position, const value_type& val);
+#define T1 int
+#define T2 std::string
+typedef TESTED_NAMESPACE::map<T1, T2>::value_type T3;
+typedef TESTED_NAMESPACE::map<T1, T2>::iterator iterator;
 
-fill (2)
-    void insert (iterator position, size_type n, const value_type& val);
+static int iter = 0;
 
-range (3)
-	template <class InputIterator>
-		void insert (iterator position, InputIterator first, InputIterator last);
-*/
+template <typename MAP, typename U>
+void	ft_insert(MAP &mp, U param)
+{
+	_pair<iterator, bool> tmp;
 
-#define TESTED_TYPE int
+	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+	tmp = mp.insert(param);
+	std::cout << "insert return: " << printPair(tmp.first);
+	std::cout << "Created new node: " << tmp.second << std::endl;
+	printSize(mp);
+}
+
+template <typename MAP, typename U, typename V>
+void	ft_insert(MAP &mp, U param, V param2)
+{
+	iterator tmp;
+
+	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+	tmp = mp.insert(param, param2);
+	std::cout << "insert return: " << printPair(tmp);
+	printSize(mp);
+}
 
 int		main(void)
 {
-	TESTED_NAMESPACE::vector<TESTED_TYPE> vct(10);
-	TESTED_NAMESPACE::vector<TESTED_TYPE> vct2;
+	TESTED_NAMESPACE::map<T1, T2> mp, mp2;
 
-	for (unsigned long int i = 0; i < vct.size(); ++i)
-		vct[i] = (vct.size() - i) * 3;
-	printSize(vct);
+	ft_insert(mp, T3(42, "lol"));
+	ft_insert(mp, T3(42, "mdr"));
 
-	vct2.insert(vct2.end(), 42);
-	vct2.insert(vct2.begin(), 2, 21);
-	printSize(vct2);
+	ft_insert(mp, T3(50, "mdr"));
+	ft_insert(mp, T3(35, "funny"));
 
-	vct2.insert(vct2.end() - 2, 42);
-	printSize(vct2);
+	ft_insert(mp, T3(45, "bunny"));
+	ft_insert(mp, T3(21, "fizz"));
+	ft_insert(mp, T3(38, "buzz"));
 
-	vct2.insert(vct2.end(), 2, 84);
-	printSize(vct2);
+	ft_insert(mp, mp.begin(), T3(55, "fuzzy"));
 
-	vct2.resize(4);
-	printSize(vct2);
+	ft_insert(mp2, mp2.begin(), T3(1337, "beauty"));
+	ft_insert(mp2, mp2.end(), T3(1000, "Hello"));
+	ft_insert(mp2, mp2.end(), T3(1500, "World"));
 
-	vct2.insert(vct2.begin() + 2, vct.begin(), vct.end());
-	vct.clear();
-	printSize(vct2);
-
-	printSize(vct);
 	return (0);
 }

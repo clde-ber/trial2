@@ -8,28 +8,28 @@ static int end = 0;
 namespace ft
 {
     template< class Key, class T >
-    struct Node
+    struct pair
     {
         Key data; // holds the key
         T val;
-        Node *parent; // pointer to the parent
-        Node *left; // pointer to left child
-        Node *right; // pointer to right child
+        pair *parent; // pointer to the parent
+        pair *left; // pointer to left child
+        pair *right; // pointer to right child
         int color; // 1 -> Red, 0 -> Black
-        Node() : data(0), val(0), parent(NULL), left(NULL), right(NULL), color(0) {}
-        Node(Key key, T value) : data(key), val(value), parent(NULL), left(NULL), right(NULL), color(0) {}
+        pair() : data(0), val(0), parent(NULL), left(NULL), right(NULL), color(0) {}
+        pair(Key key, T value) : data(key), val(value), parent(NULL), left(NULL), right(NULL), color(0) {}
     };
 
     template< class Key, class T >
     class RBTree
     {
         private:
-            Node< Key, T > *root = NULL;
-            Node< Key, T > *last = NULL;
+            pair< Key, T > *root = NULL;
+            pair< Key, T > *last = NULL;
 
             // initializes the nodes with appropirate values
             // all the pointers are set to point to the null pointer
-            void initializeNode(Node< Key, T > *node)
+            void initializeNode(pair< Key, T > *node)
             {
                 node->data = 0;
                 node->val = 0;
@@ -38,20 +38,20 @@ namespace ft
                 node->right = NULL;
                 node->color = 0;
             }
-            void swap(Node< Key, T > **x, Node< Key, T > **y)
+            void swap(pair< Key, T > **x, pair< Key, T > **y)
             {
-                Node< Key, T > **tmp = x;
+                pair< Key, T > **tmp = x;
                 x = y;
                 y = tmp;
             }
         public:
-            typedef Node< Key, T >* NodePtr;
+            typedef pair< Key, T >* NodePtr;
 
             RBTree() : root(NULL), last(NULL) {}
             RBTree(RBTree const & rhs) : root(NULL), last(NULL) { (void)rhs; }
             RBTree operator=(RBTree const & rhs) { (void)rhs; root = NULL, last = NULL; }
             virtual ~RBTree() {}
-            NodePtr find(Node<Key, T> const& toFind) const
+            NodePtr find(pair<Key, T> const& toFind) const
             {
                 NodePtr fromRoot = root;
                 while (fromRoot && fromRoot != last)
@@ -170,9 +170,9 @@ namespace ft
                 prettyPrint();
                 root->color = 0;
             }
-            void insert(Node< Key, T > const &toInsert)
+            void insert(pair< Key, T > const &toInsert)
             {
-                NodePtr node = new Node< Key, T >;
+                NodePtr node = new pair< Key, T >;
                 initializeNode(node);
                 node->val = toInsert.val;
                 node->data = toInsert.data;
@@ -243,7 +243,7 @@ namespace ft
             {
                 return last;
             }
-            void setLast(Node< Key, T > const &final) const
+            void setLast(pair< Key, T > const &final) const
             {
                 last = final;
             }
@@ -397,8 +397,6 @@ namespace ft
                     else
                         node = node->right;
                 }
-                std::cout << found->val << std::endl;
-                prettyPrint();
                /* if (found->right == last)
                 {
                     NodePtr max;

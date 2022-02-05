@@ -2,6 +2,7 @@
 #define BIDIRECTIONALITER_H
 
 #include <iostream>
+#include "Iter.hpp"
 
 namespace ft
 {
@@ -28,50 +29,68 @@ namespace ft
             virtual ~biIter() {}
             biIter& operator++()
             {
-                T current = this->_it;
-                if (current->right != NULL){
-                    current = current->right;
-                    while (current->left != NULL)
-                        current = current->left;
-                    this->_it = current;
-                }
-                else{
-                    T temp = current;
-                    current = current->parent;
-                    while (current->left != temp){
-                        temp = current;
-                        current = current->parent;
-                    }
-                    this->_it = current;
-                }
+                (*this)++;
                 return *this;
             }
             biIter operator++(int)
             {
-                T tmp = 0;
-                if (_it->left)
+                T tmp = _it;
+
+                while (_it)
                 {
-                    while (_it->left)
-                        _it = _it->left;
-                    tmp = _it;
-                    return tmp;
+                    if (_it->parent && !_it->right)
+                    {
+                        _it = _it->parent;
+                        return tmp;
+                    }
+                    if (_it->right && !_it->left)
+                    {
+                        _it = _it->right;
+                        return tmp;
+                    }
+                    if (_it->right && _it->right->left)
+                    {
+                        _it = _it->right;
+                        while (_it->left)
+                            _it = _it->left;
+                        return tmp;
+                    }
+                    if (_it->right)
+                    {
+                        _it = _it->right;
+                        return tmp;
+                    }
                 }
+                    //std::cout << "current" << current->second << std::endl;
+                return tmp;
+            }
+                /*T tmp = _it;
                 if (_it->right && _it->right->right)
                 {
+                    std::cout << "right" << std::endl;
                     _it = _it->right;
                     tmp = _it;
+                    if (_it->parent)
+                        _it = _it->parent;
+                    return tmp;
+                }
+                if (_it->left)
+                {
+                    _it = _it->left;
+                    std::cout << "left" << std::endl;
+                    tmp = _it;
+                    if (_it->parent)
+                        _it = _it->parent;
                     return tmp;
                 }
                 if (_it->parent)
                 {
-                    while (_it->parent)
-                        _it = _it->parent;
-                    tmp = _it;
+                    std::cout << "parent" << std::endl;
+                    _it = _it->parent;
+                    return tmp;
                 }
-                if (!_it->right->right->right && _it->right->right)
-                    _it = _it->right->right;
-                return tmp;
-            }
+                _it = _it->right;
+                return tmp;*/
             biIter& operator--()
             {
                 T current = this->_it;

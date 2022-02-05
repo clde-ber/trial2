@@ -3,10 +3,18 @@
 
 #include "pair3.hpp"
 #include "bidirectionalIt.hpp"
+#include "EnableIf.hpp"
+#include <stdexcept>
+#include <iostream>
+#include <cstddef>
+#include <algorithm>
+#include <cmath>
+#define TRUE 1
+#define FALSE 0
 
 namespace ft
 {
-    template< class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<ft::Node<Key, T> > >
+    template< class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<ft::pair<Key, T> > >
     class map
     {
         class value_compare
@@ -17,9 +25,9 @@ namespace ft
                     value_compare (Compare c) : comp(c) {}  // constructed with map's comparison object
                 public:
                     typedef bool result_type;
-                    typedef RBTree< Key, T > first_argument_type;
-                    typedef RBTree< Key, T > second_argument_type;
-                    bool operator() (const RBTree< Key, T >& x, const RBTree< Key, T >& y) const
+                    typedef RBTree< Key, T, Compare, Allocator > first_argument_type;
+                    typedef RBTree< Key, T, Compare, Allocator > second_argument_type;
+                    bool operator() (const RBTree< Key, T, Compare, Allocator >& x, const RBTree< Key, T, Compare, Allocator >& y) const
                     {
                         return comp(x.first, y.first);
                     };
@@ -27,14 +35,14 @@ namespace ft
         private:
             value_compare _value_compare;
             Compare _key_compare;
-            RBTree<Key, T> _p;
+            RBTree<Key, T, Compare, Allocator > _p;
             size_t _n;
             size_t _capacity;
             Allocator _alloc;
         public:
             typedef Key key_type;
             typedef T mapped_type;
-            typedef Node< Key, T > value_type;
+            typedef pair< Key, T > value_type;
             typedef size_t size_type;
             typedef ptrdiff_t difference_type;
             typedef Compare key_compare;
@@ -47,14 +55,14 @@ namespace ft
             typedef biIter< const_pointer > const_iterator;
             typedef biReviter<iterator> reverse_iterator;
             typedef biReviter<const_iterator> const_reverse_iterator;
-            explicit map(const Compare& comp = key_compare(), const Allocator& alloc = Allocator()) : _value_compare(comp), _key_compare(comp), _p(RBTree< Key, T >()), _n(0), _capacity(0), _alloc(alloc)
+            explicit map(const Compare& comp = key_compare(), const Allocator& alloc = Allocator()) : _value_compare(comp), _key_compare(comp), _p(RBTree< Key, T, Compare, Allocator >()), _n(0), _capacity(0), _alloc(alloc)
             {
-                Node< Key, T > *end = new Node< Key, T >(value_type(key_type(), mapped_type()));
+                pair< Key, T > *end = new pair< Key, T >(value_type(key_type(), mapped_type()));
                 _p.setLast(end);
             }
-            template< class InputIt > map(InputIt first, InputIt last, const Compare& comp = key_compare(), const Allocator& alloc = Allocator(), typename ft::enable_if<!is_integral<InputIt>::value>::type* = NULL) : _value_compare(comp), _key_compare(comp), _p(RBTree< Key, T >()), _n(0), _capacity(0), _alloc(alloc)
+            template< class InputIt > map(InputIt first, InputIt last, const Compare& comp = key_compare(), const Allocator& alloc = Allocator(), typename ft::enable_if<!is_integral<InputIt>::value>::type* = NULL) : _value_compare(comp), _key_compare(comp), _p(RBTree< Key, T, Compare, Allocator >()), _n(0), _capacity(0), _alloc(alloc)
             {
-                Node< Key, T > *end = new Node< Key, T >(value_type(key_type(), mapped_type()));
+                pair< Key, T > *end = new pair< Key, T >(value_type(key_type(), mapped_type()));
                 _p.setLast(end);
                 insert(first, last);
             }
@@ -68,7 +76,8 @@ namespace ft
             }
             map& operator=(const map& other)
             {
-                value_compare(other.value_type());
+                _value_compare = value_compare();
+                _key_compare = key_compare();
                 _p = 0;
                 _n = other._n;
                 _capacity = other._capacity;
@@ -76,8 +85,8 @@ namespace ft
                 iterator it = other.begin();
                 iterator ite = other.end();
 
-                _p = RBTree< Key, T >();
-                Node< Key, T > *end = new Node< Key, T >(value_type(key_type(), mapped_type()));
+                _p = RBTree< Key, T, Compare, Allocator >();
+                pair< Key, T > *end = new pair< Key, T >(value_type(key_type(), mapped_type()));
                 _p.setLast(end);
                 insert(it, ite);
                 return *this;
@@ -140,16 +149,17 @@ namespace ft
             {
                 erase(begin(), end());
             }
-            Node<iterator, bool> insert(const value_type& value)
+            pair<iterator, bool> insert(const value_type& value)
             {
                 iterator it;
                 int found = 1;
-				if ((it = iterator(_p.find(value))) == end())
+				if ((it = iterator(_p.find(value))) == end() && (*it.base()).first != value.first)
                 {
                     found = 0;
 					_p.insert(value);
+                    _p.prettyPrint();
                 }
-				return Node<iterator, bool>(it, found);
+				return pair<iterator, bool>(it, found);
             }
             iterator insert(iterator hint, const value_type& value)
             {
@@ -175,7 +185,7 @@ namespace ft
                 if (!_p.getRoot())
                     return ;
                 if (iterator(_p.find((*pos.base()))) != end())
-                    _p.deleteNode((*pos.base()).val);
+                    _p.deleteNode((*pos.base()).second);
             }
             void erase(iterator first, iterator last, typename ft::enable_if<!is_integral<iterator>::value>::type* = NULL)
             {
@@ -201,12 +211,12 @@ namespace ft
 					tmp = it;
 					if (i != difference)
 						it++;
-					_p.deleteNode((*tmp.base()).val);
+					_p.deleteNode((*tmp.base()).second);
 					if (i != difference - 1)
 						it = iterator(_p.find((*it.base())));
 				}
 				_n -= difference;
-                _p.deleteNode((*it.base()).val);
+                _p.deleteNode((*it.base()).second);
             }
             size_type erase(const Key& key)
             {
@@ -217,9 +227,9 @@ namespace ft
                     return 0;
                 while (it != ite)
                 {
-                    if ((*it.base()).data == key)
+                    if ((*it.base()).first == key)
                     {
-                        _p.deleteNode((*it.base()).val);
+                        _p.deleteNode((*it.base()).second);
                         break ;
                     }
                     it++;
@@ -252,13 +262,13 @@ namespace ft
             {
                 return _p.find(key);
             }
-            RBTree<iterator,iterator> equal_range(const Key& key)
+            RBTree< iterator,iterator, Compare, Allocator > equal_range(const Key& key)
             {
-                return RBTree< Key, T >(lower_bound(key), upper_bound(key));
+                return RBTree< Key, T, Compare, Allocator >(lower_bound(key), upper_bound(key));
             }
-            RBTree<const_iterator,const_iterator> equal_range(const Key& key) const
+            RBTree< const_iterator,const_iterator, Compare, Allocator > equal_range(const Key& key) const
             {
-                return RBTree< Key, T >(lower_bound(key), upper_bound(key));
+                return RBTree< Key, T, Compare, Allocator >(lower_bound(key), upper_bound(key));
             }
             iterator lower_bound(const Key& key)
             {
@@ -326,3 +336,35 @@ namespace ft
 }
 
 #endif
+
+/*
+if (_it->parent && !_it->right)
+                    {
+                        _it = _it->parent;
+                        return tmp;
+                    }
+                    if (_it->right && !_it->right->left)
+                    {
+                        std::cout << "lalala" << std::endl;
+                        _it = _it->right;
+                        return tmp;
+                    }
+                    if (_it->right && _it->right->left)
+                    {
+                        _it = _it->right;
+                        while (_it->left)
+                            _it = _it->left;
+                        return tmp;
+                    }
+                    if (_it->right)
+                    {
+                        _it = _it->right;
+                        return tmp;
+                    }
+                    if (_it->parent && _it->parent->second < _it->second)
+                    {
+                        while (_it->parent->second < tmp->second)
+                            _it = _it->parent;
+                        return tmp;
+                    }
+                    */
