@@ -146,198 +146,35 @@ b
 1
 2
 3
-node80
 R----80(BLACK)
      R----0(BLACK)
-node10
-R----80(BLACK)
-     R----0(BLACK)
-node80
-or val80
-roooooot 10
 R----10(BLACK)
      R----80(BLACK)
           R----0(BLACK)
-node20
-R----10(BLACK)
-     R----80(BLACK)
-          R----0(BLACK)
-node10
-or val80
-roooooot 80
 R----80(BLACK)
      L----10(BLACK)
      |    R----20(RED)
      R----0(BLACK)
-node30
-R----80(BLACK)
-     L----10(BLACK)
-     |    R----20(RED)
-     R----0(BLACK)
-node80
-or val80
-roooooot 10
 R----10(BLACK)
      R----80(BLACK)
           L----20(RED)
           |    R----30(BLACK)
           R----0(BLACK)
-node40
-R----10(BLACK)
-     R----80(BLACK)
-          L----20(RED)
-          |    R----30(BLACK)
-          R----0(BLACK)
-node10
-or val80
-roooooot 80
 R----80(BLACK)
      L----10(BLACK)
      |    R----20(RED)
      |         R----30(BLACK)
      |              R----40(RED)
      R----0(BLACK)
-or val10
-VALUE ->10
-la1
-node50
-R----80(BLACK)
-     L----10(BLACK)
-     |    R----20(RED)
-     |         R----30(BLACK)
-     |              R----40(RED)
-     R----0(BLACK)
-node80
-or val80
-roooooot 10
-or val10
-base10
-node10
-VALUE ->10
-la1
-base80
-node80
-R----10(BLACK)
-     R----0(BLACK)
-node10
-or val80
-roooooot 80
-VALUE ->80
-la3
-base20
-node20
-R----80(BLACK)
-     L----10(BLACK)
-     R----0(BLACK)
-node80
-or val80
-roooooot 10
-VALUE ->20
-la1
-base30
-node30
-R----10(BLACK)
-     R----80(BLACK)
-          L----20(RED)
-          R----0(BLACK)
-node10
-or val80
-roooooot 80
-VALUE ->30
-la1
-base40
-node40
-R----80(BLACK)
-     L----10(BLACK)
-     |    R----20(RED)
-     |         R----30(BLACK)
-     R----0(BLACK)
-node80
-or val80
-roooooot 10
-VALUE ->40
-la2
-it val10
-tmp->right val80
 R----10(BLACK)
      R----80(BLACK)
           L----20(RED)
           |    R----30(BLACK)
           |         R----40(RED)
           R----0(BLACK)
-or val10
-VALUE ->10
-la1
-VALUE ->80
-la3
-VALUE ->20
-la1
-VALUE ->30
-la2
-it val10
-tmp->right val80
-VALUE ->10
-la1
-base -> 80
-valueeeeeeeeeeeeeee 10
-FOUND10
-la00 10
-FOUND10
-R----10(BLACK)
-     R----80(BLACK)
-          L----20(RED)
-          |    R----30(BLACK)
-          |         R----40(RED)
-          R----0(BLACK)
-la33 10
 R----80(BLACK)
      L----20(RED)
      |    R----30(BLACK)
-     |         R----40(RED)
+     |         R----50(BLACK)
      R----0(BLACK)
-or val80
-VALUE ->80
-la3
-base -> 20
-valueeeeeeeeeeeeeee 80
-FOUND80
-la00 80
-FOUND80
-la22 
-or val40
-VALUE ->20
-la1
-base -> 30
-valueeeeeeeeeeeeeee 20
-FOUND20
-la00 20
-FOUND20
-R----20(RED)
-     R----30(BLACK)
-          R----40(RED)
-               R----0(BLACK)
-la33 20
-R----30(BLACK)
-     R----40(RED)
-          R----0(BLACK)
-or val40
-VALUE ->30
-la1
-base -> 40
-valueeeeeeeeeeeeeee 30
-FOUND30
-la00 30
-FOUND30
-R----30(BLACK)
-     R----40(RED)
-          R----0(BLACK)
-la33 30
-R----40(RED)
-     R----0(BLACK)
-or val40
-valueeeeeeeeeeeeeee 40
-FOUND40
-la00 40
-FOUND40
-la11 
 ****

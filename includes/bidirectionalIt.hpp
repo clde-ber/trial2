@@ -48,11 +48,9 @@ namespace ft
             }
             biIter operator++(int)
             {
-                std::cout << "VALUE ->" << _it->val << std::endl;
                 T tmp = 0;
                 if (_it->left)
                 {
-                    std::cout << "la3" << std::endl;
                     while (_it->left)
                         _it = _it->left;
                     tmp = _it;
@@ -60,26 +58,19 @@ namespace ft
                 }
                 if (_it->right && _it->right->right)
                 {
-                    std::cout << "la1" << std::endl;
                     _it = _it->right;
                     tmp = _it;
                     return tmp;
                 }
                 if (_it->parent)
                 {
-                    std::cout << "la2" << std::endl;
                     while (_it->parent)
                         _it = _it->parent;
                     tmp = _it;
                 }
-                    std::cout << "it val" << _it->val << std::endl;
-                    if (!_it->right->right->right && _it->right->right)
-                        _it = _it->right->right;
-                    std::cout << "tmp->right val" << tmp->right->val << std::endl;
-                    return tmp;
-                std::cout << "it val" << _it->right->val << std::endl;
-                std::cout << "la4" << std::endl;
-                return _it;
+                if (!_it->right->right->right && _it->right->right)
+                    _it = _it->right->right;
+                return tmp;
             }
             biIter& operator--()
             {

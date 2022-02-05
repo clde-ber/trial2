@@ -162,24 +162,20 @@ namespace ft
             {
                 while (first != last)
                 {
-                    std::cout << "base" << (*first.base()).val << std::endl;
                     if (iterator(_p.find((*first.base()))) == end())
                         _p.insert(*first.base());
                     first++;
                 }
             }
-            void erase(iterator pos)
+            void erase(iterator pos, typename ft::enable_if<!is_integral<iterator>::value>::type* = NULL)
             {
                 iterator it = begin();
                 iterator ite = end();
 
                 if (!_p.getRoot())
                     return ;
-                while (it != ite)
-                {
-                    if (it == pos)
-                        _p.deleteNode((*it.base()).val);
-                }
+                if (iterator(_p.find((*pos.base()))) != end())
+                    _p.deleteNode((*pos.base()).val);
             }
             void erase(iterator first, iterator last, typename ft::enable_if<!is_integral<iterator>::value>::type* = NULL)
             {
@@ -205,7 +201,6 @@ namespace ft
 					tmp = it;
 					if (i != difference)
 						it++;
-                    std::cout << "base -> " << (*it.base()).val << std::endl;
 					_p.deleteNode((*tmp.base()).val);
 					if (i != difference - 1)
 						it = iterator(_p.find((*it.base())));
@@ -223,7 +218,10 @@ namespace ft
                 while (it != ite)
                 {
                     if ((*it.base()).data == key)
+                    {
                         _p.deleteNode((*it.base()).val);
+                        break ;
+                    }
                     it++;
                 }
                 return 1;

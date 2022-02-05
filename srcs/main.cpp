@@ -213,6 +213,9 @@ int main( void )
         maps.insert(mapp.begin(), mapp.end());
         maps.print();
         maps.erase(maps.begin(), maps.end());
+        mapp.erase(3);
+        mapp.erase(mapp.begin());
+        mapp.print();
         std::cout << "****" << std::endl;
         maps.print();
     }
