@@ -101,11 +101,15 @@ namespace ft
             }
             iterator begin()
             {
-                return iterator(_p.findMinimum(_p.getRoot()));
+                if ((_p.getRoot()))
+                    return iterator(_p.findMinimum(_p.getRoot()));
+                return iterator(_p.getLast());
             }
             const_iterator begin() const
             {
-                return const_iterator(_p.findMinimum(_p.getRoot()));
+                if ((_p.getRoot()))
+                    return const_iterator(_p.findMinimum(_p.getRoot()));
+                return const_iterator(_p.getLast());
             }
             iterator end()
             {
@@ -152,14 +156,13 @@ namespace ft
             pair<iterator, bool> insert(const value_type& value)
             {
                 iterator it;
-                int found = 1;
+                int exists = 0;
 				if ((it = iterator(_p.find(value))) == end() && (*it.base()).first != value.first)
                 {
-                    found = 0;
+                    exists = 1;
 					_p.insert(value);
-                    _p.prettyPrint();
                 }
-				return pair<iterator, bool>(it, found);
+				return pair<iterator, bool>(iterator(_p.find(value)), exists);
             }
             iterator insert(iterator hint, const value_type& value)
             {

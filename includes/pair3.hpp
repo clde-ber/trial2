@@ -1,5 +1,5 @@
-#ifndef PAIR_H
-#define PAIR_H
+#ifndef PAIR3_H
+#define PAIR3_H
 
 #include <iostream>
 #include <memory>
@@ -28,8 +28,8 @@ namespace ft
     class RBTree
     {
         private:
-            pair< Key, T > *root = NULL;
-            pair< Key, T > *last = NULL;
+            pair< Key, T > *root;
+            pair< Key, T > *last;
             typedef Key key_type;
             typedef T mapped_type;
 
@@ -70,6 +70,10 @@ namespace ft
             };
             typedef pair< Key, T >* NodePtr;
 
+            RBTree() : root(NULL), last(NULL) {}
+            RBTree(RBTree const & rhs) : root(NULL), last(NULL) { (void)rhs; }
+            RBTree operator=(RBTree const & rhs) { root = NULL; last = NULL; (void)rhs; }
+            virtual ~RBTree() {}
             NodePtr find(pair<Key, T> const& toFind) const
             {
                 NodePtr fromRoot = root;

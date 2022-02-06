@@ -17,6 +17,8 @@ insert return: key: 0 | value:
 Created new node: 0
 size: 0
 max_size: 576460752303423488
+-------------test------value=
+0x607000000170
 
 Content is:
 - key: 42 | value: lol
@@ -27,6 +29,8 @@ insert return: key: 42 | value: mdr
 Created new node: 1
 size: 0
 max_size: 576460752303423488
+-------------test------value=
+0x607000000170
 
 Content is:
 - key: 42 | value: lol
@@ -41,6 +45,8 @@ insert return: key: 0 | value:
 Created new node: 0
 size: 0
 max_size: 576460752303423488
+-------------test------value=
+0x607000000100
 
 Content is:
 - key: 35 | value: funny
@@ -57,6 +63,8 @@ insert return: key: 0 | value:
 Created new node: 0
 size: 0
 max_size: 576460752303423488
+-------------test------value=
+0x6070000001e0
 
 Content is:
 - key: 45 | value: bunny
@@ -94,6 +102,8 @@ insert return: key: 0 | value:
 Created new node: 0
 size: 0
 max_size: 576460752303423488
+-------------test------value=
+0x6070000001e0
 
 Content is:
 - key: 45 | value: bunny
@@ -102,10 +112,16 @@ Content is:
 - key: 42 | value: lol
 - key: 42 | value: mdr
 ###############################################
+-------------test------value=
+0x6070000001e0
 	-- [7] --
 insert return: key: 45 | value: bunny
 size: 0
 max_size: 576460752303423488
+-------------test------value=
+0x607000000100
+-------------test------value=
+0x607000000100
 
 Content is:
 - key: 45 | value: bunny
