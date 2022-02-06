@@ -20,8 +20,10 @@ namespace ft
         pair *right; // pointer to right child
         int color; // 1 -> Red, 0 -> Black
         pair() : first(key_type()), second(mapped_type()), parent(NULL), left(NULL), right(NULL), color(0) {}
-        pair(Key key, T value) : first(key), second(value), parent(NULL), left(NULL), right(NULL), color(0) {}
+        pair(Key const & key, T const & value) : first(key), second(value), parent(NULL), left(NULL), right(NULL), color(0) {}
         pair(pair const & rhs) : first(rhs.first), second(rhs.second), parent(NULL), left(NULL), right(NULL), color(rhs.color) {}
+        template<class U, class V>
+        pair (const pair<U,V>& pr) : first(pr.first), second(pr.second), parent(NULL), left(NULL), right(NULL), color(0) {}
         pair & operator=(pair const & rhs) { first = rhs.first; second = rhs.second; parent = NULL; left = NULL; right = NULL; return *this; }
     };
     template< class Key, class T, class Compare, class alloc = std::allocator<pair< Key, T > > >
@@ -72,9 +74,9 @@ namespace ft
 
             RBTree() : root(NULL), last(NULL) {}
             RBTree(RBTree const & rhs) : root(NULL), last(NULL) { (void)rhs; }
-            RBTree operator=(RBTree const & rhs) { root = NULL; last = NULL; (void)rhs; }
+            RBTree & operator=(RBTree const & rhs) { root = NULL; last = NULL; (void)rhs; }
             virtual ~RBTree() {}
-            NodePtr find(pair<Key, T> const& toFind) const
+            NodePtr find(pair< Key, T> const & toFind) const
             {
                 NodePtr fromRoot = root;
                 while (fromRoot)
@@ -444,7 +446,7 @@ namespace ft
                     }
                     return 0;
             }
-            void deleteNode(T value)
+            void deleteNode(Key value)
             {
                 NodePtr found = NULL;
                 NodePtr node = getRoot();

@@ -37,7 +37,7 @@ namespace ft
                 T tmp = _it;
                 //int boolean = 0;
 
-                    if (!_it->parent)
+                    if (!_it->parent && _it->right)
                     {
                         _it = _it->right;
                         while (_it->left)
@@ -55,7 +55,7 @@ namespace ft
                             _it = _it->left;
                         return tmp;
                     }
-                    if (_it->parent && _it == _it->parent->right)
+                    if (_it->parent && _it->parent->parent && _it == _it->parent->right)
                     {
                         _it = _it->parent->parent;
                         return tmp;
@@ -69,34 +69,38 @@ namespace ft
             }
             biIter& operator--()
             {
-                T current = this->_it;
-                if (current->left != NULL){
-                    current = current->left;
-                    while (current->right != NULL)
-                        current = current->right;
-                    this->_it = current;
-                }
-                else{
-                    current = current->parent;
-                    this->_it = current;
-                }
+                (*this)--;
                 return *this;
             }
             biIter operator--(int)
             {
-                T temp = this->_it;
-                T current = this->_it;
-                if (current->left != NULL){
-                    current = current->left;
-                    while (current->right != NULL)
-                        current = current->right;
-                    this->_it = current;
-                }
-                else{
-                    current = current->parent;
-                    this->_it = current;
-                }
-                return temp;
+                T tmp = _it;
+                //int boolean = 0;
+
+                    if (!_it->parent && _it->left)
+                    {
+                        _it = _it->left;
+                        while (_it->right)
+                            _it = _it->right;
+                        return tmp;
+                    }
+                    if (_it->right && _it->parent && _it->parent->parent && _it->parent->first < _it->parent->parent->first)
+                    {
+                        while (_it->right)
+                            _it = _it->right;
+                        return tmp;
+                    }
+                    if (_it->parent)
+                    {
+                        _it = _it->parent;
+                        return tmp;
+                    }
+                    if (_it->left)
+                    {
+                        _it = _it->left;
+                        return tmp;
+                    }
+                return tmp;
             }
             pointer operator->() const {return &operator*();}
             reference operator*() const {return *_it;}

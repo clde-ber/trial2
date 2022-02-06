@@ -60,7 +60,8 @@ namespace ft
                 pair< Key, T > *end = new pair< Key, T >(value_type(key_type(), mapped_type()));
                 _p.setLast(end);
             }
-            template< class InputIt > map(InputIt first, InputIt last, const Compare& comp = key_compare(), const Allocator& alloc = Allocator(), typename ft::enable_if<!is_integral<InputIt>::value>::type* = NULL) : _value_compare(comp), _key_compare(comp), _p(RBTree< Key, T, Compare, Allocator >()), _n(0), _capacity(0), _alloc(alloc)
+            template< class InputIt >
+            map(InputIt first, InputIt last, const Compare& comp = key_compare(), const Allocator& alloc = Allocator(), typename ft::enable_if<!is_integral<InputIt>::value>::type* = NULL) : _value_compare(comp), _key_compare(comp), _p(RBTree< Key, T, Compare, Allocator >()), _n(0), _capacity(0), _alloc(alloc)
             {
                 pair< Key, T > *end = new pair< Key, T >(value_type(key_type(), mapped_type()));
                 _p.setLast(end);
@@ -97,7 +98,7 @@ namespace ft
             }
             T& operator[](const Key& key)
             {
-                return _p[key];
+                return (*((insert(pair< Key, T >(key ,mapped_type()))).first)).second;
             }
             iterator begin()
             {
@@ -176,8 +177,8 @@ namespace ft
             {
                 while (first != last)
                 {
-                    if (iterator(_p.find((*first.base()))) == end())
-                        _p.insert(*first.base());
+                    if (iterator(_p.find(ft::pair< Key, T >(*first))) == end())
+                        _p.insert(*first);
                     first++;
                 }
             }
@@ -188,8 +189,9 @@ namespace ft
 
                 if (!_p.getRoot())
                     return ;
-                if (iterator(_p.find((*pos.base()))) != end())
+                if (iterator(_p.find(*it)) != end())
                     _p.deleteNode((*pos.base()).first);
+                print();
             }
             void erase(iterator first, iterator last, typename ft::enable_if<!is_integral<iterator>::value>::type* = NULL)
             {
@@ -217,10 +219,11 @@ namespace ft
 						it++;
 					_p.deleteNode((*tmp.base()).first);
 					if (i != difference - 1)
-						it = iterator(_p.find((*it.base())));
+						it = iterator(_p.find(*it));
 				}
 				_n -= difference;
                 _p.deleteNode((*it.base()).first);
+                print();
             }
             size_type erase(const Key& key)
             {
@@ -238,6 +241,7 @@ namespace ft
                     }
                     it++;
                 }
+                print();
                 return 1;
             }
             void swap(map& x)
@@ -260,7 +264,16 @@ namespace ft
             }
             iterator find(const Key& key)
             {
-                return _p.find(key);
+                iterator it = begin();
+                iterator ite = end();
+
+                while (it != ite)
+                {
+                    if (it->first == key)
+                        return _p.find(*it);
+                    it++;
+                }
+                return end();
             }	
             const_iterator find(const Key& key) const
             {

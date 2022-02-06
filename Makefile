@@ -1,10 +1,10 @@
 .SUFFIXES:
 
 NAME	=	containers
-LIST	=	insert \
+LIST	=	erase \
 			
 HEADER	=	-I includes/
-CFLAGS	=	-Wall -Wextra -Werror
+CFLAGS	=	-Wall -Wextra -Werror -MMD -fsanitize=address
 CC		=	clang++
 
 S_DIR	=	srcs/
