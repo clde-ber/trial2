@@ -77,7 +77,6 @@ namespace ft
             NodePtr find(pair<Key, T> const& toFind) const
             {
                 NodePtr fromRoot = root;
-                prettyPrint();
                 while (fromRoot)
                 {
                     if (fromRoot == last)

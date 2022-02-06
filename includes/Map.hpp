@@ -169,7 +169,6 @@ namespace ft
                 (void)hint;
                 if (iterator(_p.find(value)) == end())
                     _p.insert(value);
-                print();
                 return iterator(_p.find(value));
             }
             template< class InputIt >

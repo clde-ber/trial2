@@ -1,6 +1,4 @@
 	-- [0] --
-R----42(BLACK)
-     R----0(BLACK)
 insert return: key: 42 | value: lol
 Created new node: 1
 size: 0
@@ -10,10 +8,6 @@ Content is:
 - key: 42 | value: lol
 ###############################################
 	-- [1] --
-R----42(BLACK)
-     R----0(BLACK)
-R----42(BLACK)
-     R----0(BLACK)
 insert return: key: 42 | value: lol
 Created new node: 1
 size: 0
@@ -23,11 +17,6 @@ Content is:
 - key: 42 | value: lol
 ###############################################
 	-- [2] --
-R----42(BLACK)
-     R----0(BLACK)
-R----42(BLACK)
-     R----50(BLACK)
-          R----0(BLACK)
 insert return: key: 50 | value: mdr
 Created new node: 1
 size: 0
@@ -38,13 +27,6 @@ Content is:
 - key: 50 | value: mdr
 ###############################################
 	-- [3] --
-R----42(BLACK)
-     R----50(BLACK)
-          R----0(BLACK)
-R----42(BLACK)
-     L----35(BLACK)
-     R----50(BLACK)
-          R----0(BLACK)
 insert return: key: 35 | value: funny
 Created new node: 1
 size: 0
@@ -56,15 +38,6 @@ Content is:
 - key: 50 | value: mdr
 ###############################################
 	-- [4] --
-R----42(BLACK)
-     L----35(BLACK)
-     R----50(BLACK)
-          R----0(BLACK)
-R----42(BLACK)
-     L----35(BLACK)
-     R----50(BLACK)
-          L----45(RED)
-          R----0(BLACK)
 insert return: key: 45 | value: bunny
 Created new node: 1
 size: 0
@@ -76,17 +49,6 @@ Content is:
 - key: 50 | value: mdr
 ###############################################
 	-- [5] --
-R----42(BLACK)
-     L----35(BLACK)
-     R----50(BLACK)
-          L----45(RED)
-          R----0(BLACK)
-R----42(BLACK)
-     L----35(BLACK)
-     |    L----21(RED)
-     R----50(BLACK)
-          L----45(RED)
-          R----0(BLACK)
 insert return: key: 21 | value: fizz
 Created new node: 1
 size: 0
@@ -99,19 +61,6 @@ Content is:
 - key: 50 | value: mdr
 ###############################################
 	-- [6] --
-R----42(BLACK)
-     L----35(BLACK)
-     |    L----21(RED)
-     R----50(BLACK)
-          L----45(RED)
-          R----0(BLACK)
-R----42(BLACK)
-     L----35(BLACK)
-     |    L----21(RED)
-     |    R----38(RED)
-     R----50(BLACK)
-          L----45(RED)
-          R----0(BLACK)
 insert return: key: 38 | value: buzz
 Created new node: 1
 size: 0
@@ -125,21 +74,6 @@ Content is:
 - key: 50 | value: mdr
 ###############################################
 	-- [7] --
-R----42(BLACK)
-     L----35(BLACK)
-     |    L----21(RED)
-     |    R----38(RED)
-     R----50(BLACK)
-          L----45(RED)
-          R----0(BLACK)
-R----42(BLACK)
-     L----35(BLACK)
-     |    L----21(RED)
-     |    R----38(RED)
-     R----50(BLACK)
-          L----45(RED)
-          R----55(RED)
-               R----0(BLACK)
 R----42(BLACK)
      L----35(BLACK)
      |    L----21(RED)
@@ -163,8 +97,6 @@ Content is:
 	-- [8] --
 R----1337(BLACK)
      R----0(BLACK)
-R----1337(BLACK)
-     R----0(BLACK)
 insert return: key: 1337 | value: beauty
 size: 0
 max_size: 576460752303423488
@@ -173,11 +105,6 @@ Content is:
 - key: 1337 | value: beauty
 ###############################################
 	-- [9] --
-R----1337(BLACK)
-     R----0(BLACK)
-R----1337(BLACK)
-     L----1000(BLACK)
-     R----0(BLACK)
 R----1337(BLACK)
      L----1000(BLACK)
      R----0(BLACK)
@@ -190,13 +117,6 @@ Content is:
 - key: 1337 | value: beauty
 ###############################################
 	-- [10] --
-R----1337(BLACK)
-     L----1000(BLACK)
-     R----0(BLACK)
-R----1337(BLACK)
-     L----1000(BLACK)
-     R----1500(BLACK)
-          R----0(BLACK)
 R----1337(BLACK)
      L----1000(BLACK)
      R----1500(BLACK)

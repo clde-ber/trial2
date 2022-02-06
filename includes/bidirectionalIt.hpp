@@ -37,12 +37,19 @@ namespace ft
                 T tmp = _it;
                 //int boolean = 0;
 
+                    if (!_it->parent)
+                    {
+                        _it = _it->right;
+                        while (_it->left)
+                            _it = _it->left;
+                        return tmp;
+                    }
                     if (_it->right)
                     {
                         _it = _it->right;
                         return tmp;
                     }
-                    if (_it->left && _it->left->first > _it->first)
+                    if (_it->left && _it->parent && _it->parent->parent && _it->parent->first > _it->parent->parent->first)
                     {
                         while (_it->left)
                             _it = _it->left;
@@ -58,44 +65,6 @@ namespace ft
                         _it = _it->parent;
                         return tmp;
                     }
-                    /*while (_it->parent && _it->first > _it->parent->first)
-                    {
-                        if (_it->parent && _it->parent->right && _it->parent->right->first != _it->first)
-                        {
-                            _it = _it->parent->parent;
-                            //return tmp;
-                        }
-                        if (_it->parent && !_it->parent->right)
-                        {
-                            //boolean = 1;
-                            _it = _it->parent;
-                            //return tmp;
-                        }
-                        //return tmp;
-                    }
-                    if (_it->parent && !_it->right)
-                    {
-                        _it = _it->parent;
-                        return tmp;
-                    }
-                    if (_it->right && !_it->left)
-                    {
-                        _it = _it->right;
-                        return tmp;
-                    }
-                    if (_it->right && _it->right->left)
-                    {
-                        _it = _it->right;
-                        while (_it->left)
-                            _it = _it->left;
-                        return tmp;
-                    }
-                    if (_it->right)
-                    {
-                        _it = _it->right;
-                        return tmp;
-                    }*/
-                    //std::cout << "current" << current->second << std::endl;
                 return tmp;
             }
             biIter& operator--()
