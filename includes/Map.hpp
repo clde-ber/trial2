@@ -147,7 +147,7 @@ namespace ft
             }
             size_type max_size() const
             {
-                return (std::pow(2, 32) / sizeof(T) * std::pow(2, 32)) - 1;
+                return (std::pow(2, 32) / sizeof(T) * std::pow(2, 32) - 1);
             }
             void clear()
             {
@@ -156,8 +156,8 @@ namespace ft
             pair<iterator, bool> insert(const value_type& value)
             {
                 iterator it;
-                int exists = 0;
-				if ((it = iterator(_p.find(value))) == end() && (*it.base()).first != value.first)
+                int exists = 1;
+				if ((it = iterator(_p.find(value))) == end())
                 {
                     exists = 1;
 					_p.insert(value);
@@ -166,9 +166,11 @@ namespace ft
             }
             iterator insert(iterator hint, const value_type& value)
             {
+                (void)hint;
                 if (iterator(_p.find(value)) == end())
                     _p.insert(value);
-                return hint;
+                print();
+                return iterator(_p.find(value));
             }
             template< class InputIt >
             void insert(InputIt first, InputIt last, typename ft::enable_if<!is_integral<InputIt>::value>::type* = NULL)
@@ -188,7 +190,7 @@ namespace ft
                 if (!_p.getRoot())
                     return ;
                 if (iterator(_p.find((*pos.base()))) != end())
-                    _p.deleteNode((*pos.base()).second);
+                    _p.deleteNode((*pos.base()).first);
             }
             void erase(iterator first, iterator last, typename ft::enable_if<!is_integral<iterator>::value>::type* = NULL)
             {
@@ -214,12 +216,12 @@ namespace ft
 					tmp = it;
 					if (i != difference)
 						it++;
-					_p.deleteNode((*tmp.base()).second);
+					_p.deleteNode((*tmp.base()).first);
 					if (i != difference - 1)
 						it = iterator(_p.find((*it.base())));
 				}
 				_n -= difference;
-                _p.deleteNode((*it.base()).second);
+                _p.deleteNode((*it.base()).first);
             }
             size_type erase(const Key& key)
             {
@@ -232,7 +234,7 @@ namespace ft
                 {
                     if ((*it.base()).first == key)
                     {
-                        _p.deleteNode((*it.base()).second);
+                        _p.deleteNode((*it.base()).first);
                         break ;
                     }
                     it++;

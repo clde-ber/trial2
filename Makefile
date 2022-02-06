@@ -4,7 +4,7 @@ NAME	=	containers
 LIST	=	insert \
 			
 HEADER	=	-I includes/
-CFLAGS	=	-Wall -Wextra -Werror -MMD -fsanitize=address
+CFLAGS	=	-Wall -Wextra -Werror
 CC		=	clang++
 
 S_DIR	=	srcs/

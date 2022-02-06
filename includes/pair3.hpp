@@ -77,13 +77,14 @@ namespace ft
             NodePtr find(pair<Key, T> const& toFind) const
             {
                 NodePtr fromRoot = root;
+                prettyPrint();
                 while (fromRoot)
                 {
                     if (fromRoot == last)
                         return last;
-                    if (toFind.second < fromRoot->second)
+                    if (toFind.first < fromRoot->first)
                         fromRoot = fromRoot->left;
-                    else if (toFind.second > fromRoot->second)
+                    else if (toFind.first > fromRoot->first)
                         fromRoot = fromRoot->right;
                     else
                         return fromRoot;
@@ -93,7 +94,7 @@ namespace ft
             NodePtr findMinimum(NodePtr node) const
             {
                 NodePtr origin = node;
-                while (origin->left && origin->left != last)
+                while (origin->left)
                     origin = origin->left;
                 return origin;
             }
@@ -241,7 +242,7 @@ namespace ft
                 while (fromRoot && fromRoot != last)
                 {
                     parentNode = fromRoot;
-                    if (node->second < fromRoot->second)
+                    if (node->first < fromRoot->first)
                         fromRoot = fromRoot->left;
                     else
                         fromRoot = fromRoot->right;
@@ -260,21 +261,21 @@ namespace ft
                     node->color = 0;
                     return ;
                 }
-                if (node->second < root->second)
+                if (node->first < root->first)
                 {
-                    if (node->second < parentNode->second)
+                    if (node->first < parentNode->first)
                         parentNode->left = node;
                     else
                         parentNode->right = node;
-                    rightRotate(root);
+                    //rightRotate(root);
                 }
                 else
                 {
-                    if (node->second < parentNode->second)
+                    if (node->first < parentNode->first)
                         parentNode->left = node;
                     else
                         parentNode->right = node;
-                    leftRotate(root);
+                    //leftRotate(root);
                 }
                 NodePtr max = findMaximum(root);
                 max->right = last;
@@ -451,9 +452,9 @@ namespace ft
                 int i = 0;
                 while (node)
                 {
-                    if (node->second == value)
+                    if (node->first == value)
                         found = node;
-                    if (value <= node->second)
+                    if (value <= node->first)
                         node = node->left;
                     else
                         node = node->right;
@@ -482,7 +483,7 @@ namespace ft
                     }
                     return ;
                 }
-                if (value < found->parent->second)
+                if (value < found->parent->first)
                 {
                     while (found && found->left)
                     {
@@ -513,7 +514,7 @@ namespace ft
               if (!i || found == root)
                 isDeletable(found);
             }
-            void printHelper(NodePtr root, std::string indent, bool last)
+            void printHelper(NodePtr root, std::string indent, bool last) const
             {
                 // print the tree structure on the screen
                 if (root != NULL)
@@ -530,12 +531,12 @@ namespace ft
                         indent += "|    ";
                     }
                     std::string sColor = root->color?"RED":"BLACK";
-                    std::cout<<root->second<<"("<<sColor<<")"<<std::endl;
+                    std::cout<<root->first<<"("<<sColor<<")"<<std::endl;
                     printHelper(root->left, indent, false);
                     printHelper(root->right, indent, true);
                 }
             }
-            void prettyPrint()
+            void prettyPrint() const
             {
                 if (root)
                     printHelper(this->root, "", true);
@@ -558,3 +559,26 @@ namespace ft
 //https://algorithmtutor.com/Data-Structures/Tree/Red-Black-Trees/
 
 #endif
+
+/*T current = _it;
+
+                if (_it->right && !_it->right->right)
+                {
+                    current = _it->parent;
+                    while (current && current->first < _it->first)
+                        current = current->parent;
+                    _it = current;
+                }
+                else
+                {
+                    current = _it->right;
+                    if (current->right && !current->right->right)
+                        _it = current;
+                    else
+                    {
+                        while (current->left && current->left->right && current->left->right->right)
+                            current = current->left;
+                    }
+                    _it = current;
+                }
+                return _it;*/

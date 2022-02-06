@@ -35,9 +35,44 @@ namespace ft
             biIter operator++(int)
             {
                 T tmp = _it;
+                //int boolean = 0;
 
-                while (_it)
-                {
+                    if (_it->right)
+                    {
+                        _it = _it->right;
+                        return tmp;
+                    }
+                    if (_it->left && _it->left->first > _it->first)
+                    {
+                        while (_it->left)
+                            _it = _it->left;
+                        return tmp;
+                    }
+                    if (_it->parent && _it == _it->parent->right)
+                    {
+                        _it = _it->parent->parent;
+                        return tmp;
+                    }
+                    if (_it->parent)
+                    {
+                        _it = _it->parent;
+                        return tmp;
+                    }
+                    /*while (_it->parent && _it->first > _it->parent->first)
+                    {
+                        if (_it->parent && _it->parent->right && _it->parent->right->first != _it->first)
+                        {
+                            _it = _it->parent->parent;
+                            //return tmp;
+                        }
+                        if (_it->parent && !_it->parent->right)
+                        {
+                            //boolean = 1;
+                            _it = _it->parent;
+                            //return tmp;
+                        }
+                        //return tmp;
+                    }
                     if (_it->parent && !_it->right)
                     {
                         _it = _it->parent;
@@ -59,38 +94,10 @@ namespace ft
                     {
                         _it = _it->right;
                         return tmp;
-                    }
-                }
+                    }*/
                     //std::cout << "current" << current->second << std::endl;
                 return tmp;
             }
-                /*T tmp = _it;
-                if (_it->right && _it->right->right)
-                {
-                    std::cout << "right" << std::endl;
-                    _it = _it->right;
-                    tmp = _it;
-                    if (_it->parent)
-                        _it = _it->parent;
-                    return tmp;
-                }
-                if (_it->left)
-                {
-                    _it = _it->left;
-                    std::cout << "left" << std::endl;
-                    tmp = _it;
-                    if (_it->parent)
-                        _it = _it->parent;
-                    return tmp;
-                }
-                if (_it->parent)
-                {
-                    std::cout << "parent" << std::endl;
-                    _it = _it->parent;
-                    return tmp;
-                }
-                _it = _it->right;
-                return tmp;*/
             biIter& operator--()
             {
                 T current = this->_it;
