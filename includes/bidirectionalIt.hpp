@@ -35,36 +35,25 @@ namespace ft
             biIter operator++(int)
             {
                 T tmp = _it;
-                //int boolean = 0;
-
-                    if (!_it->parent && _it->right)
+                
+                if (_it && _it->right)
+                {
+                    _it = _it->right;
+                    while (_it->left)
+                        _it = _it->left;
+                }
+                else if (_it)
+                {
+                    // std::cout << "++" << std::endl;
+                    while (_it->parent && _it == _it->parent->right)
                     {
-                        _it = _it->right;
-                        while (_it->left)
-                            _it = _it->left;
-                        return tmp;
-                    }
-                    if (_it->right)
-                    {
-                        _it = _it->right;
-                        return tmp;
-                    }
-                    if (_it->left && _it->parent && _it->parent->parent && _it->parent->first > _it->parent->parent->first)
-                    {
-                        while (_it->left)
-                            _it = _it->left;
-                        return tmp;
-                    }
-                    if (_it->parent && _it->parent->parent && _it == _it->parent->right)
-                    {
-                        _it = _it->parent->parent;
-                        return tmp;
-                    }
-                    if (_it->parent)
-                    {
+                        // std::cout << "it parent right" << std::endl;
                         _it = _it->parent;
-                        return tmp;
                     }
+                    // if (_it->parent)
+                    // std::cout << "it parent = " << _it->parent->first << std::endl;
+                    _it = _it->parent;
+                }
                 return tmp;
             }
             biIter& operator--()
@@ -75,34 +64,19 @@ namespace ft
             biIter operator--(int)
             {
                 T tmp = _it;
-                if (!_it->parent && _it->left)
+                if (_it && _it->left)
                     {
                         _it = _it->left;
                         while (_it->right)
                             _it = _it->right;
-                        return tmp;
                     }
-                    if (_it->parent)
-                    {
+                else if (_it)
+                {
+                    while (_it->parent && _it == _it->parent->left)
                         _it = _it->parent;
-                        return tmp;
-                    }
-                    if (_it->right && _it->parent && _it->parent->parent && _it->parent->first > _it->parent->parent->first)
-                    {
-                        while (_it->right)
-                            _it = _it->right;
-                        return tmp;
-                    }
-                    if (_it->parent && _it->parent->parent && _it == _it->parent->left)
-                    {
-                        _it = _it->parent->parent;
-                        return tmp;
-                    }
-                    if (_it->left)
-                    {
-                        _it = _it->left;
-                        return tmp;
-                    }
+                    if (_it->parent)
+                        _it = _it->parent;
+                }
                 return tmp;
             }
             pointer operator->() const {return &operator*();}
@@ -142,36 +116,19 @@ namespace ft
             biReviter operator--(int)
             {
                  T tmp = _it;
-                //int boolean = 0;
-
-                    if (!_it->parent && _it->right)
-                    {
-                        _it = _it->right;
-                        while (_it->left)
-                            _it = _it->left;
-                        return tmp;
-                    }
-                    if (_it->right)
-                    {
-                        _it = _it->right;
-                        return tmp;
-                    }
-                    if (_it->left && _it->parent && _it->parent->parent && _it->parent->first > _it->parent->parent->first)
-                    {
-                        while (_it->left)
-                            _it = _it->left;
-                        return tmp;
-                    }
-                    /*if (_it->parent && _it->parent->parent && _it == _it->parent->right)
-                    {
-                        _it = _it->parent->parent;
-                        return tmp;
-                    }*/
-                    if (_it->parent)
-                    {
+                
+                if (_it && _it->right)
+                {
+                    _it = _it->right;
+                    while (_it->left)
+                        _it = _it->left;
+                }
+                else if (_it)
+                {
+                    while (_it->parent && _it == _it->parent->right)
                         _it = _it->parent;
-                        return tmp;
-                    }
+                    _it = _it->parent;
+                }
                 return tmp;
             }
             biReviter& operator++()
@@ -182,34 +139,18 @@ namespace ft
             biReviter operator++(int)
             {
                T tmp = _it;
-                if (!_it->parent && _it->left)
+                if (_it && _it->left)
                     {
                         _it = _it->left;
                         while (_it->right)
                             _it = _it->right;
-                        return tmp;
                     }
-                    if (_it->parent)
-                    {
+                else if (_it)
+                {
+                    while (_it->parent && _it == _it->parent->left)
                         _it = _it->parent;
-                        return tmp;
-                    }
-                    if (_it->right && _it->parent && _it->parent->parent && _it->parent->first > _it->parent->parent->first)
-                    {
-                        while (_it->right)
-                            _it = _it->right;
-                        return tmp;
-                    }
-                   /* if (_it->parent && _it->parent->parent && _it == _it->parent->left)
-                    {
-                        _it = _it->parent->parent;
-                        return tmp;
-                    }*/
-                    if (_it->left)
-                    {
-                        _it = _it->left;
-                        return tmp;
-                    }
+                     _it = _it->parent;
+                }
                 return tmp;
             }
             pointer operator->() const {return &operator*();}

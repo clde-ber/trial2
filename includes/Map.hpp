@@ -55,19 +55,19 @@ namespace ft
             typedef biIter< const_pointer > const_iterator;
             typedef biReviter<iterator> reverse_iterator;
             typedef biReviter<const_iterator> const_reverse_iterator;
-            explicit map(const Compare& comp = key_compare(), const Allocator& alloc = Allocator()) : _value_compare(comp), _key_compare(comp), _p(RBTree< Key, T, Compare, Allocator >()), _n(0), _capacity(0), _alloc(alloc)
+            explicit map(const Compare& comp = key_compare(), const Allocator& alloc = Allocator()) : _value_compare(comp), _key_compare(comp), _p(RBTree< Key, T, Compare, Allocator >(comp)), _n(0), _capacity(0), _alloc(alloc)
             {
                 pair< Key, T > *end = new pair< Key, T >(value_type(key_type(), mapped_type()));
                 _p.setLast(end);
             }
             template< class InputIt >
-            map(InputIt first, InputIt last, const Compare& comp = key_compare(), const Allocator& alloc = Allocator(), typename ft::enable_if<!is_integral<InputIt>::value>::type* = NULL) : _value_compare(comp), _key_compare(comp), _p(RBTree< Key, T, Compare, Allocator >()), _n(0), _capacity(0), _alloc(alloc)
+            map(InputIt first, InputIt last, const Compare& comp = key_compare(), const Allocator& alloc = Allocator(), typename ft::enable_if<!is_integral<InputIt>::value>::type* = NULL) : _value_compare(comp), _key_compare(comp), _p(RBTree< Key, T, Compare, Allocator >(comp)), _n(0), _capacity(0), _alloc(alloc)
             {
                 pair< Key, T > *end = new pair< Key, T >(value_type(key_type(), mapped_type()));
                 _p.setLast(end);
                 insert(first, last);
             }
-            map(const map& other) : _value_compare(other._value_compare), _key_compare(other._key_compare), _p(RBTree< Key, T, Compare, Allocator >()), _n(other._n), _capacity(other._capacity), _alloc(other._alloc)
+            map(const map& other) : _value_compare(other._value_compare), _key_compare(other._key_compare), _p(RBTree< Key, T, Compare, Allocator >(other._key_compare)), _n(other._n), _capacity(other._capacity), _alloc(other._alloc)
             {
                 pair< Key, T > *end = new pair< Key, T >(value_type(key_type(), mapped_type()));
                 _p.setLast(end);
@@ -85,7 +85,7 @@ namespace ft
                 _capacity = other._capacity;
                 _alloc = other._alloc;
 
-                _p = RBTree< Key, T, Compare, Allocator >();
+                _p = RBTree< Key, T, Compare, Allocator >(_key_compare);
                 pair< Key, T > *end = new pair< Key, T >(value_type(key_type(), mapped_type()));
                 _p.setLast(end);
                 insert(other.begin(), other.end());
@@ -111,13 +111,13 @@ namespace ft
             }
             iterator begin()
             {
-                if ((_p.getRoot()))
+                if (_p.getRoot())
                     return iterator(_p.findMinimum(_p.getRoot()));
                 return iterator(_p.getLast());
             }
             const_iterator begin() const
             {
-                if ((_p.getRoot()))
+                if (_p.getRoot())
                     return const_iterator(_p.findMinimum(_p.getRoot()));
                 return const_iterator(_p.getLast());
             }
@@ -200,21 +200,9 @@ namespace ft
                 if (!_p.getRoot())
                     return ;
                 _p.deleteNode(pos->first);
-                print();
             }
             void erase(iterator first, iterator last, typename ft::enable_if<!is_integral<iterator>::value>::type* = NULL)
             {
-                /*if (!_p.getRoot())
-                    return ;
-                iterator tmp(first);
-                while (first != last)
-                {
-                    tmp = first++;
-                    std::cout << "first base " << (*first.base()).val << std::endl;
-                    if (iterator(_p.find((*first.base()))) != end())
-                        _p.deleteNode((*first.base()).val);
-                    
-                }*/
                 iterator 	it = first;
 				iterator	tmp;
 				size_type	difference = 0;
@@ -231,7 +219,6 @@ namespace ft
 						it = iterator(_p.find(*it));
 				}
 				_n -= difference;
-                print();
             }
             size_type erase(const Key& key)
             {
@@ -240,17 +227,12 @@ namespace ft
 
                 if (!_p.getRoot())
                     return 0;
-                while (it != ite)
+                if (find(key) != end())
                 {
-                    if (it->first == key)
-                    {
-                        _p.deleteNode((*it.base()).first);
-                        break ;
-                    }
-                    it++;
+                    erase(find(key));
+                    return 1;
                 }
-                print();
-                return 1;
+                return 0;
             }
             void swap(map& x)
             {
@@ -275,12 +257,16 @@ namespace ft
                 iterator it = begin();
                 iterator ite = end();
 
+                std::cout << "init find map (" << key << ")" << std::endl;
+                _p.prettyPrint();
                 while (it != ite)
                 {
                     if (it->first == key)
                         return _p.find(*it);
+                    // std::cout << "it = " << it->first << std::endl;
                     it++;
                 }
+                std::cout << "end find map (" << key << ")" << std::endl;
                 return it;
             }	
             const_iterator find(const Key& key) const

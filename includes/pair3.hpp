@@ -33,11 +33,25 @@ namespace ft
     template< class Key, class T, class Compare, class alloc = std::allocator<pair< Key, T > > >
     class RBTree
     {
+        public:
+        typedef Compare                                         key_compare;
+            class value_compare: public std::binary_function<T,T,bool> {
+                friend class RBTree;
+                protected:
+                    Compare comp;
+                    value_compare	(Compare c): comp(c) {};
+
+                public:
+                    typedef	bool result_type;
+                    typedef T	first_argument_type;
+                    typedef T	second_argument_type;
+                    value_compare	(value_compare const & c): comp(c.comp) {};
+                    bool	operator() (const pair<Key, T> &x, const pair< Key, T> &y) const
+                    {
+                        return comp(x.first, y.first);
+                    }
+            };
         private:
-            pair< Key, T > *root;
-            pair< Key, T > *last;
-            typedef Key key_type;
-            typedef T mapped_type;
 
             // initializes the nodes with appropirate values
             // all the pointers are set to point to the null pointer
@@ -56,40 +70,32 @@ namespace ft
                 x = y;
                 y = tmp;
             }
+        protected:
+            typedef Key key_type;
+            typedef T mapped_type;
+            key_compare _key_compare;
+            value_compare _value_compare;
+            pair< Key, T > *root;
+            pair< Key, T > *last;
         public:
-            typedef Compare                                         key_compare;
-            class value_compare: public std::binary_function<T,T,bool> {
-                friend class RBTree;
-                protected:
-                    Compare comp;
-                    value_compare	(Compare c): comp(c) {};
-
-                public:
-                    typedef	bool result_type;
-                    typedef T	first_argument_type;
-                    typedef T	second_argument_type;
-                    value_compare	(value_compare const & c): comp(c.comp) {};
-                    bool	operator() (const T &x, const T &y) const
-                    {
-                        return comp(x.first, y.first);
-                    }
-            };
             typedef pair< Key, T >* NodePtr;
 
-            RBTree() : root(NULL), last(NULL) {}
-            RBTree(RBTree const & rhs) : root(NULL), last(NULL) { (void)rhs; }
-            RBTree & operator=(RBTree const & rhs) { root = NULL; last = NULL; (void)rhs; return *this; }
+            RBTree(key_compare comp) : _key_compare(comp), _value_compare(_key_compare), root(NULL), last(NULL) {}
+            RBTree(RBTree const & rhs) : _key_compare(rhs._key_compare), _value_compare(rhs._value_compare), root(NULL), last(NULL) { (void)rhs; }
+            RBTree & operator=(RBTree const & rhs) { _key_compare = rhs._key_compare; _value_compare = rhs._value_compare; root = NULL; last = NULL; (void)rhs; return *this; }
             virtual ~RBTree() {}
             NodePtr find(pair< Key, T> const & toFind) const
             {
+                std::cout << "init find pair (" << toFind.first << ")" << std::endl;
                 NodePtr fromRoot = root;
                 while (fromRoot)
                 {
+                    std::cout << "find pair (" << toFind.first << ")" << std::endl;
                     if (fromRoot == last)
                         return last;
-                    if (toFind.first < fromRoot->first)
+                    if (_value_compare(toFind, *fromRoot))
                         fromRoot = fromRoot->left;
-                    else if (toFind.first > fromRoot->first)
+                    else if (!_value_compare(toFind, *fromRoot) && toFind.first != fromRoot->first)
                         fromRoot = fromRoot->right;
                     else
                         return fromRoot;
@@ -121,119 +127,43 @@ namespace ft
                 NodePtr parentX = x->parent;
 
                 x->right = leftY;
-                y->left =  tmpX;
-                x->parent = tmpY;
+                if (y->left)
+                    y->left->parent = x;
                 y->parent = parentX;
                 if (!parentX)
                     root = y;
+                else if (x == x->parent->left)
+                    x->parent->left = y;
                 else
-                    y->parent->right = y;    
+                    x->parent->right = y;
                 root->color = 0;
+                y->left =  tmpX;
+                x->parent = tmpY;
             }
-            void rightRotate(NodePtr y)
+            void rightRotate(NodePtr x)
             {
-                NodePtr x = y->left;
-                NodePtr tmpY = y;
-                NodePtr tmpX = x;
-                NodePtr rightX = x->right;
-                //NodePtr rightY = y->right;
-                //NodePtr leftX = x->left;
-                NodePtr parentY = y->parent;
-
-                x->right = tmpY;
-                y->left =  rightX;
-                x->parent = parentY;
-                y->parent = tmpX;
-               //x->parent->left = x;
-                if (!parentY)
-                    root = x;
-                else
-                  x->parent->left = x;    
-                root->color = 0;
-            }
-            /*void leftRotate(NodePtr x)
-            {
-                NodePtr y = x->right;
+                NodePtr y = x->left;
                 NodePtr tmpY = y;
                 NodePtr tmpX = x;
                 //NodePtr rightX = x->right;
                 //NodePtr rightY = y->right;
-                NodePtr leftY = y->left;
+                NodePtr rightY = y->right;
                 NodePtr parentX = x->parent;
 
-                if (leftY != last)
-                    x->right = leftY;
-                else
-                    x->right = NULL;
-                if (tmpX != last)
-                    y->left =  tmpX;
-                else
-                    y->left = NULL;
-                if (tmpY != last)
-                    x->parent = tmpY;
-                else
-                    x->parent = NULL;
-                if (parentX != last)
-                    y->parent = parentX;
-                else
-                    y->parent = NULL;
+                x->left = rightY;
+                if (y->right)
+                    y->right->parent = x;
+                y->parent = parentX;
                 if (!parentX)
-                {
                     root = y;
-           //         root->parent = last;
-           //         last->left = root;
-                }
+                else if (x == x->parent->right)
+                    x->parent->right = y;
                 else
-                    y->parent->right = y; 
-               NodePtr max = findMaximum(root);
-                initializeNode(last);
-                max->right = last;
-                last->parent = max;
-                prettyPrint();
+                    x->parent->left = y;
                 root->color = 0;
+                y->right =  tmpX;
+                x->parent = tmpY;
             }
-            void rightRotate(NodePtr y)
-            {
-                NodePtr x = y->left;
-                NodePtr tmpY = y;
-                NodePtr tmpX = x;
-                NodePtr rightX = x->right;
-                //NodePtr rightY = y->right;
-                //NodePtr leftX = x->left;
-                NodePtr parentY = y->parent;
-
-                if (tmpY != last)
-                x->right = tmpY;
-                else
-                x->right = NULL;
-                if (rightX != last)
-                y->left =  rightX;
-                else
-                y->left = NULL;
-                if (parentY != last)
-                x->parent = parentY;
-                else
-                x->parent = NULL;
-                if (tmpX != last)
-                y->parent = tmpX;
-                else
-                y->parent = NULL;
-               //x->parent->left = x;
-                if (!parentY)
-                {
-                    root = x;
-          //          root->parent = last;
-          //          last->left = root;
-                }
-                else
-                  x->parent->left = x;    
-                NodePtr max = findMaximum(root);
-                initializeNode(last);
-                max->right = last;
-                last->parent = max;  
-                prettyPrint();
-                root->color = 0;
-            }*/
             void insert(pair< Key, T > const &toInsert)
             {
                 NodePtr node = new pair< Key, T >;
@@ -247,10 +177,12 @@ namespace ft
                 while (fromRoot && fromRoot != last)
                 {
                     parentNode = fromRoot;
-                    if (node->first < fromRoot->first)
+                    if (_value_compare(*node, *fromRoot))
                         fromRoot = fromRoot->left;
-                    else
+                    else if (!_value_compare(*node, *parentNode) && node->first != parentNode->first)
                         fromRoot = fromRoot->right;
+                    else
+                        return ;
                     if (fromRoot)
                     {
                         child = fromRoot;
@@ -266,21 +198,21 @@ namespace ft
                     node->color = 0;
                     return ;
                 }
-                if (node->first < root->first)
+                if (_value_compare(*node, *root))
                 {
-                    if (node->first < parentNode->first)
+                    if (_value_compare(*node, *parentNode))
                         parentNode->left = node;
-                    else
+                    else if (!_value_compare(*node, *parentNode) && node->first != parentNode->first)
                         parentNode->right = node;
-                    //rightRotate(root);
+                    rightRotate(root);
                 }
                 else
                 {
-                    if (node->first < parentNode->first)
+                    if (_value_compare(*node, *parentNode))
                         parentNode->left = node;
-                    else
+                    else if (!_value_compare(*node, *parentNode) && node->first != parentNode->first)
                         parentNode->right = node;
-                    //leftRotate(root);
+                    leftRotate(root);
                 }
                 NodePtr max = findMaximum(root);
                 max->right = last;
@@ -459,7 +391,7 @@ namespace ft
                 {
                     if (node->first == value)
                         found = node;
-                    if (value <= node->first)
+                    if (!_value_compare(pair< Key, T >(value, T()), *node) && node->first != value)
                         node = node->left;
                     else
                         node = node->right;
@@ -488,7 +420,7 @@ namespace ft
                     }
                     return ;
                 }
-                if (value < found->parent->first)
+                if (_value_compare(pair< Key, T >(value, T()), *found->parent))
                 {
                     while (found && found->left)
                     {
