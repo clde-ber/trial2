@@ -25,8 +25,8 @@ void	printSize(T_MAP const &mp, bool print_content = 1)
 	{
 		typename T_MAP::const_iterator it = mp.begin(), ite = mp.end();
 		std::cout << std::endl << "Content is:" << std::endl;
-		for (; it != ite; ++it)
-			std::cout << "- " << printPair(it, false) << std::endl;
+		for (; ite != it; --ite)
+			std::cout << "- " << printPair(ite, false) << std::endl;
 	}
 	std::cout << "###############################################" << std::endl;
 }
@@ -37,9 +37,9 @@ void	printReverse(TESTED_NAMESPACE::map<T1, T2> &mp)
 	typename TESTED_NAMESPACE::map<T1, T2>::iterator it = mp.end(), ite = mp.begin();
 
 	std::cout << "printReverse:" << std::endl;
-	/*while (it != ite) {
+	while (it != ite) {
 		it--;
 		std::cout << "-> " << printPair(it, false) << std::endl;
-	}*/
+	}
 	std::cout << "_______________________________________________" << std::endl;
 }

@@ -189,8 +189,7 @@ namespace ft
 
                 if (!_p.getRoot())
                     return ;
-                if (iterator(_p.find(*it)) != end())
-                    _p.deleteNode((*pos.base()).first);
+                _p.deleteNode(pos->first);
                 print();
             }
             void erase(iterator first, iterator last, typename ft::enable_if<!is_integral<iterator>::value>::type* = NULL)
@@ -215,14 +214,13 @@ namespace ft
 				for (size_type i = 0; i < difference; i++)
 				{
 					tmp = it;
-					if (i != difference)
+					if (i != difference - 1)
 						it++;
-					_p.deleteNode((*tmp.base()).first);
+                    _p.deleteNode(tmp->first);
 					if (i != difference - 1)
 						it = iterator(_p.find(*it));
 				}
 				_n -= difference;
-                _p.deleteNode((*it.base()).first);
                 print();
             }
             size_type erase(const Key& key)
@@ -234,7 +232,7 @@ namespace ft
                     return 0;
                 while (it != ite)
                 {
-                    if ((*it.base()).first == key)
+                    if (it->first == key)
                     {
                         _p.deleteNode((*it.base()).first);
                         break ;

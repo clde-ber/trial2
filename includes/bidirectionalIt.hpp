@@ -75,17 +75,9 @@ namespace ft
             biIter operator--(int)
             {
                 T tmp = _it;
-                //int boolean = 0;
-
-                    if (!_it->parent && _it->left)
+                if (!_it->parent && _it->left)
                     {
                         _it = _it->left;
-                        while (_it->right)
-                            _it = _it->right;
-                        return tmp;
-                    }
-                    if (_it->right && _it->parent && _it->parent->parent && _it->parent->first < _it->parent->parent->first)
-                    {
                         while (_it->right)
                             _it = _it->right;
                         return tmp;
@@ -93,6 +85,17 @@ namespace ft
                     if (_it->parent)
                     {
                         _it = _it->parent;
+                        return tmp;
+                    }
+                    if (_it->right && _it->parent && _it->parent->parent && _it->parent->first > _it->parent->parent->first)
+                    {
+                        while (_it->right)
+                            _it = _it->right;
+                        return tmp;
+                    }
+                    if (_it->parent && _it->parent->parent && _it == _it->parent->left)
+                    {
+                        _it = _it->parent->parent;
                         return tmp;
                     }
                     if (_it->left)

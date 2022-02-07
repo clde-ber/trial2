@@ -27,8 +27,10 @@ int		main(void)
 {
 	std::list<T3> lst;
 	unsigned int lst_size = 10;
-	for (unsigned int i = 0; i < lst_size; ++i)
+	for (unsigned int i = 0; i < lst_size; ++i){
 		lst.push_back(T3(i, std::string((lst_size - i), i + 65)));
+		std::cout << "pushed " << std::string((lst_size - i), i + 65) << std::endl;
+	}
 	TESTED_NAMESPACE::map<T1, T2> mp(lst.begin(), lst.end());
 	printSize(mp);
 
