@@ -98,6 +98,8 @@ namespace ft
             }
             T& operator[](const Key& key)
             {
+                if (find(key) == end())
+					_n++;
                 return (*((insert(pair< Key, T >(key ,mapped_type()))).first)).second;
             }
             iterator begin()
@@ -152,7 +154,8 @@ namespace ft
             }
             void clear()
             {
-                erase(begin(), end());
+                _p.freeNodes(_p.getRoot());
+                _n = 0;
             }
             pair<iterator, bool> insert(const value_type& value)
             {
@@ -244,7 +247,7 @@ namespace ft
             }
             void swap(map& x)
             {
-                 T *tmpP = x._p;
+                RBTree< Key, T, Compare, Allocator > tmpP = x._p;
                 size_t tmpC = x._capacity;
                 size_t tmpN = x._n;
                 x._p = this->_p;
@@ -256,7 +259,7 @@ namespace ft
             }
             size_type count(const Key& key) const
             {
-                if (_p.find(key))
+                if (find(key) != end())
                     return TRUE;
                 return FALSE;
             }
@@ -271,19 +274,28 @@ namespace ft
                         return _p.find(*it);
                     it++;
                 }
-                return end();
+                return it;
             }	
             const_iterator find(const Key& key) const
             {
-                return _p.find(key);
+                const_iterator it = begin();
+                const_iterator ite = end();
+
+                while (it != ite)
+                {
+                    if (it->first == key)
+                        return _p.find(*it);
+                    it++;
+                }
+                return const_iterator(it);
             }
-            RBTree< iterator,iterator, Compare, Allocator > equal_range(const Key& key)
+            pair< iterator,iterator > equal_range(const Key& key)
             {
-                return RBTree< Key, T, Compare, Allocator >(lower_bound(key), upper_bound(key));
+                return value_type().make_pair(lower_bound(key), upper_bound(key));
             }
-            RBTree< const_iterator,const_iterator, Compare, Allocator > equal_range(const Key& key) const
+            pair< const_iterator,const_iterator > equal_range(const Key& key) const
             {
-                return RBTree< Key, T, Compare, Allocator >(lower_bound(key), upper_bound(key));
+                return value_type().make_pair(lower_bound(key), upper_bound(key));
             }
             iterator lower_bound(const Key& key)
             {
@@ -291,21 +303,23 @@ namespace ft
                 iterator ite = end();
                 while (it != ite)
                 {
-                    if (!comp(*it, key))
+                    if (!_key_compare(it->first, key))
                         return it;
                     it++;
                 }
+                return it;
             }
             const_iterator lower_bound(const Key& key) const
             {
-                iterator it = begin();
-                iterator ite = end();
+                const_iterator it = begin();
+                const_iterator ite = end();
                 while (it != ite)
                 {
-                    if (!comp(*it, key))
+                    if (!_key_compare(it->first, key))
                         return it;
                     it++;
                 }
+                return it;
             }
             iterator upper_bound(const Key& key)
             {
@@ -313,21 +327,23 @@ namespace ft
                 iterator ite = end();
                 while (it != ite)
                 {
-                    if (!comp(*it, key) && !equiv(*it, key))
+                    if (!_key_compare(it->first, key))
                         return it;
                     it++;
                 }
+                return it;
             }
             const_iterator upper_bound(const Key& key) const
             {
-                iterator it = begin();
-                iterator ite = end();
+                const_iterator it = begin();
+                const_iterator ite = end();
                 while (it != ite)
                 {
-                    if (!comp(*it, key) && !equiv(*it, key))
+                    if (!_key_compare(it->first, key))
                         return it;
                     it++;
                 }
+                return it;
             }
             void print()
             {

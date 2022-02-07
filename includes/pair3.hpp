@@ -11,20 +11,24 @@ namespace ft
     template< class Key, class T >
     struct pair
     {
-        typedef Key key_type;
-        typedef T mapped_type;
-        Key first; // holds the key
-        T second;
+        typedef Key first_type;
+        typedef T second_type;
+        first_type first; // holds the key
+        second_type second;
         pair *parent; // pointer to the parent
         pair *left; // pointer to left child
         pair *right; // pointer to right child
         int color; // 1 -> Red, 0 -> Black
-        pair() : first(key_type()), second(mapped_type()), parent(NULL), left(NULL), right(NULL), color(0) {}
-        pair(Key const & key, T const & value) : first(key), second(value), parent(NULL), left(NULL), right(NULL), color(0) {}
-        pair(pair const & rhs) : first(rhs.first), second(rhs.second), parent(NULL), left(NULL), right(NULL), color(rhs.color) {}
+        pair() : first(first_type()), second(second_type()), parent(NULL), left(NULL), right(NULL), color(0) {}
+        pair(first_type const & key, second_type const & value) : first(key), second(value), parent(NULL), left(NULL), right(NULL), color(0) {}
         template<class U, class V>
         pair (const pair<U,V>& pr) : first(pr.first), second(pr.second), parent(NULL), left(NULL), right(NULL), color(0) {}
         pair & operator=(pair const & rhs) { first = rhs.first; second = rhs.second; parent = NULL; left = NULL; right = NULL; return *this; }
+        template <class T1,class T2>
+        pair<T1,T2> make_pair(T1 x, T2 y)
+        {
+            return pair<T1,T2>(x,y);
+        }
     };
     template< class Key, class T, class Compare, class alloc = std::allocator<pair< Key, T > > >
     class RBTree
@@ -74,7 +78,7 @@ namespace ft
 
             RBTree() : root(NULL), last(NULL) {}
             RBTree(RBTree const & rhs) : root(NULL), last(NULL) { (void)rhs; }
-            RBTree & operator=(RBTree const & rhs) { root = NULL; last = NULL; (void)rhs; }
+            RBTree & operator=(RBTree const & rhs) { root = NULL; last = NULL; (void)rhs; return *this; }
             virtual ~RBTree() {}
             NodePtr find(pair< Key, T> const & toFind) const
             {
