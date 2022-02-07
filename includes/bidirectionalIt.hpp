@@ -136,39 +136,81 @@ namespace ft
             virtual ~biReviter() {}
             biReviter& operator--()
             {
-                if (_it->right)
-                    _it = _it->right;
-                else if (_it->parent)
-                    _it = _it->parent;
-                else if (_it->left)
-                    _it = _it->left;
-                else
-                    _it = _it.getLast();
+                (*this)--;
                 return *this;
             }
             biReviter operator--(int)
             {
-                T ret = _it;
-                --_it;
-                return ret;
+                 T tmp = _it;
+                //int boolean = 0;
+
+                    if (!_it->parent && _it->right)
+                    {
+                        _it = _it->right;
+                        while (_it->left)
+                            _it = _it->left;
+                        return tmp;
+                    }
+                    if (_it->right)
+                    {
+                        _it = _it->right;
+                        return tmp;
+                    }
+                    if (_it->left && _it->parent && _it->parent->parent && _it->parent->first > _it->parent->parent->first)
+                    {
+                        while (_it->left)
+                            _it = _it->left;
+                        return tmp;
+                    }
+                    /*if (_it->parent && _it->parent->parent && _it == _it->parent->right)
+                    {
+                        _it = _it->parent->parent;
+                        return tmp;
+                    }*/
+                    if (_it->parent)
+                    {
+                        _it = _it->parent;
+                        return tmp;
+                    }
+                return tmp;
             }
             biReviter& operator++()
             {
-                if (_it->left)
-                    _it = _it->left;
-                else if (_it->parent)
-                    _it = _it->parent;
-                else if (_it->right)
-                    _it = _it->right;
-                else
-                    _it = _it.getLast();
+                (*this)++;
                 return *this;
             }
             biReviter operator++(int)
             {
-               T ret = _it;
-                ++_it;
-                return ret;
+               T tmp = _it;
+                if (!_it->parent && _it->left)
+                    {
+                        _it = _it->left;
+                        while (_it->right)
+                            _it = _it->right;
+                        return tmp;
+                    }
+                    if (_it->parent)
+                    {
+                        _it = _it->parent;
+                        return tmp;
+                    }
+                    if (_it->right && _it->parent && _it->parent->parent && _it->parent->first > _it->parent->parent->first)
+                    {
+                        while (_it->right)
+                            _it = _it->right;
+                        return tmp;
+                    }
+                   /* if (_it->parent && _it->parent->parent && _it == _it->parent->left)
+                    {
+                        _it = _it->parent->parent;
+                        return tmp;
+                    }*/
+                    if (_it->left)
+                    {
+                        _it = _it->left;
+                        return tmp;
+                    }
+                return tmp;
             }
             pointer operator->() const {return &operator*();}
             reference operator*() const {T tmp(_it); return *--tmp;}

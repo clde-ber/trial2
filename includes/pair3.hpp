@@ -559,6 +559,42 @@ namespace ft
             // If a node is red, both of its children are black. This means no two nodes on a path can be red nodes.
             // Every path from a root node to a NULL node has the same number of black nodes.
     };
+    template< class T1, class T2 >
+    bool operator==( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
+    {
+        return lhs.first == rhs.first && lhs.second == lhs.second;
+    }
+    template< class T1, class T2 >
+    bool operator!=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
+    {
+        return !(lhs == rhs);
+    }
+    template< class T1, class T2 >
+    bool operator<( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
+    {
+        if (lhs.first < rhs.first)
+            return 1;
+        if (rhs.first < lhs.first)
+            return 0;
+        if (lhs.second < rhs.second)
+            return 1;
+        return 0; 
+    }
+    template< class T1, class T2 >
+    bool operator<=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
+    {
+        return !(rhs < lhs);
+    }
+    template< class T1, class T2 >
+    bool operator>( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
+    {
+        return rhs < lhs;
+    }
+    template< class T1, class T2 >
+    bool operator>=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
+    {
+        return !(lhs < rhs);
+    }
 }
 
 //https://algorithmtutor.com/Data-Structures/Tree/Red-Black-Trees/
