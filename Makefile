@@ -1,10 +1,10 @@
 .SUFFIXES:
 
 NAME	=	containers
-LIST	=	tricky_erase \
+LIST	=	erase \
 			
 HEADER	=	-I includes/
-CFLAGS	=	-Wall -Wextra -Werror -MMD -fsanitize=address
+CFLAGS	=	-Wall -Wextra -Werror -MMD -g3 -fsanitize=address
 CC		=	clang++
 
 S_DIR	=	srcs/
