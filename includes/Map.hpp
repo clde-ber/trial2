@@ -173,12 +173,13 @@ namespace ft
             {
                 iterator it;
                 int exists = 0;
-				if ((it = iterator(_p.find(value))) == end())
+				if ((it = iterator(_p.find(Leaf< Key, T >(value.first, value.second)))) == end())
                 {
+                    //std::cout << "insertion OK " << std::endl;
                     exists = 1;
-					_p.insert(value);
+					_p.insert(Leaf< Key, T >(value.first, value.second));
                 }
-				return pair<iterator, bool>(iterator(_p.find(value)), exists);
+				return pair<iterator, bool>(iterator(_p.find(Leaf< Key, T >(value.first, value.second))), exists);
             }
             iterator insert(iterator hint, const value_type& value)
             {
@@ -204,7 +205,10 @@ namespace ft
                 if (!_p.getRoot())
                     return ;
                 if (find(pos->first) != end())
+                {
+                    std::cout << "***** pos first *****" << pos->first << std::endl;
                     _p.deleteNode(pos->first);
+                }
             }
             void erase(iterator first, iterator last, typename ft::enable_if<!is_integral<iterator>::value>::type* = NULL)
             {

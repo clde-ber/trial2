@@ -292,8 +292,10 @@ namespace ft
             }
             int isDeletable(NodePtr found)
             {
+                std::cout << "***********found -> " << found->first << std::endl;
                 if (!found->parent && !found->left && found->right && found->right == last)
                 {
+                    std::cout << "**************1" << found->first << std::endl;
                     initializeNode(found);
                     initializeNode(last);
                     initializeNode(root);
@@ -305,6 +307,7 @@ namespace ft
                 }
                 if (!found->parent && found->right && found->right == last && found->left)
                 {
+                    std::cout << "***********2" << found->first << std::endl;
                     root = found->left;
                     root->parent = NULL;
                     initializeNode(found);
@@ -317,6 +320,7 @@ namespace ft
                 }
                 if (!found->parent && !found->left && found->right && found->right != last)
                 {
+                    std::cout << "***********3" << found->first << std::endl;
                     found->right->parent = NULL;
                     root = found->right;
                     root->parent = NULL;
@@ -330,6 +334,7 @@ namespace ft
                 }
                 if (found->left && found->right && found->right != last && !found->left->left && !found->left->right && !found->right->left && found->right->right == last)
                     {
+                        std::cout << "***********4" << found->first << std::endl;
                         if (found == found->parent->right)
                         {
                             found->parent->right = found->right;
@@ -354,6 +359,7 @@ namespace ft
                     }
                     if (found->left && found->right && found->right == last)
                     {
+                        std::cout << "***********5" << found->first << std::endl;
                         if (found == found->parent->right)
                         {
                             found->parent->right = found->left;
@@ -374,6 +380,7 @@ namespace ft
                     }
                     if (found->right && found->right != last && !found->left)
                     {
+                        std::cout << "***********6" << found->first << std::endl;
                         if (found == found->parent->right)
                         {
                             found->parent->right = found->right;
@@ -394,6 +401,7 @@ namespace ft
                     }
                     if (found->right && found->right == last && !found->left)
                     {
+                        std::cout << "***********7" << found->first << std::endl;
                         if (found == found->parent->right)
                         {
                             found->parent->right = NULL;
@@ -416,20 +424,30 @@ namespace ft
             }
             void deleteNode(Key value)
             {
+                std::cout << "value" << value << std::endl;
                 NodePtr found = NULL;
                 NodePtr node = getRoot();
                 int i = 0;
                 while (node)
                 {
+                    std::cout << "****NODE FIRST" <<  node->first << std::endl;
+                    std::cout << "****VALUE" << value << std::endl;
                     if (node->first == value)
+                    {
+                        std::cout << "!!!!!!!!found" << std::endl;
                         found = node;
+                    }
                     if (!_value_compare(_pair_type.make_pair(value, T()), _pair_type.make_pair(node->first, node->second)) && node->first != value)
+                    {
+                        std::cout << "VALUE COMPARE " << std::endl;
                         node = node->left;
+                    }
                     else
                         node = node->right;
                 }
                 if (!found || (found && !found->parent))
                 {
+                    std::cout << "ici ???? " << std::endl;
                     if (!found)
                         return ;
                     else

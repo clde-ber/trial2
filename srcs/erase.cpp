@@ -35,8 +35,9 @@ int		main(void)
 	printSize(mp);
 
 	ft_erase(mp, ++mp.begin());
+	printSize(mp);
 
-	ft_erase(mp, mp.begin());
+/*	ft_erase(mp, mp.begin());
 	ft_erase(mp, --mp.end());
 
 	ft_erase(mp, mp.begin(), ++(++(++mp.begin())));
@@ -52,7 +53,7 @@ int		main(void)
 	mp[14] = "THREE";
 	mp[15] = "FOUR";
 	printSize(mp);
-	ft_erase(mp, mp.begin(), mp.end());
+	ft_erase(mp, mp.begin(), mp.end());*/
 
 	return (0);
 }
